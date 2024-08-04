@@ -1,0 +1,49 @@
+body{
+  border: none;
+  margin: 0;
+ 
+  padding-top: 100px;
+  padding-left: 240px;
+
+  background-color:  white;
+
+  font-family:  'Roboto' , sans-serif;
+  color: black;
+ }
+ p{
+   margin: 0;
+ }
+ h2{
+   margin: 0;
+ }
+ /* Small screens (less than 576px) */
+ @media only screen and (max-width: 575px) {
+   body {
+    padding-top: 0; 
+    padding-right:7px ;
+     padding-left: 7px; 
+   }
+ }
+ 
+ /* Medium screens (between 576px and 992px) */
+ @media only screen and (min-width: 576px) and (max-width: 991px) {
+   body {
+     padding-top: 60px; 
+     padding-left: 60px; 
+     padding-right:15px ;
+      }
+ }
+ 
+ /* Large screens (greater than 1200px) */
+ @media only screen and (min-width: 1200px) {
+   body {
+     padding-top: 5px; 
+      padding-left: 120px; 
+      padding-right:15px ;
+
+   }
+ }
+ .usernamePopup{
+  background-color: red;
+  color: green;
+ }

@@ -1,0 +1,196 @@
+.sise-bar{
+  position: fixed;  
+  bottom: 0;
+  left: 0;
+  top: 64px;
+  width: 220px;
+
+  border-top: none;
+ background-color: white;
+
+ color: black;  
+ border-right: 1px rgb(192, 192, 192) solid ;
+}
+.all-names{
+  margin-top: 10px;
+  height: 305px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  width: 190px;
+
+}
+.name{
+  height: 60px;
+  margin-left: 10px;
+  padding-left: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: black;
+  border: 1px  rgb(192, 192, 192) solid;  
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+
+}
+.name:hover{
+  background-color: lightgray;
+}
+.name:active{
+  background-color: rgb(238, 232, 232);
+
+}
+
+.most-reviewd{
+  margin-left: 15px;
+  margin-bottom: 8px ;
+}
+.ratingNames{
+  margin-top: 2px;
+  margin-left: 25px;
+  font-size: 18px;
+}
+.BulkAmnt{
+  position: absolute;
+  top: 55px;
+  right: 35px;
+  padding-top: 1px;
+  color: black;
+  padding-bottom: 1px;
+  padding-left: 4px;
+  padding-right: 4px;  
+}
+.bulkavai{
+  position: absolute;
+  top: 55px;
+  left: 25px;
+  font-size: 15px;
+  color: black;
+}
+.SideTipperAmnt{
+  position: absolute;
+  top: 115px;
+  right: 35px;
+  color: black;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 4px;
+  padding-right: 4px;  
+}
+.sideTipperavai{
+  position: absolute;
+  top: 115px;
+  left: 25px;
+  font-size: 15px;
+  color: black;
+}
+.lowBedAmnt{
+  position: absolute;
+  top: 170px;
+  right: 35px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 4px;
+  padding-right: 4px;  
+  color: black;
+}
+.lowbedavai{
+  position: absolute;
+  top: 180px;
+  left: 25px;
+  font-size: 15px;
+  color: black;
+}
+.TankerAmnt{
+  position: absolute;
+  top: 230px;
+  right: 35px;
+  color: black;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 4px;
+  padding-right: 4px;  
+}
+.tankeravai{
+  position: absolute;
+  top: 240px ;
+  left: 25px;
+  font-size: 15px;
+  color: black;
+}
+.tauntlinerAmnt{
+  position: absolute;
+  top: 290px;
+  right: 35px;
+  color: black;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 4px;
+  padding-right: 4px;  
+
+}
+.tauntlineAvai{
+  position: absolute;
+  top: 300px;
+  left: 25px;
+  font-size: 15px;
+  color: black;
+
+}
+
+ /* Small screens (less than 576px) */
+ @media only screen and (max-width: 575px) {
+}
+/* Medium screens (between 576px and 992px) */
+@media only screen and (min-width: 576px) and (max-width: 991px) {
+  .sise-bar {
+    width: 220px; /* Restore width */
+    height: calc(100% - 50px); /* Adjust height */
+    top: 94px; /* Restore top position */
+    border-top: none;
+
+  }
+  .all-names {
+    margin-top: 10px; /* Adjust margin top */
+    height: 305px; /* Adjust height */
+    border-radius: 20px; /* Restore border radius */
+    width: 180px; /* Change to full width */
+  }
+  .name {
+    height: 60px; /* Restore height */
+    margin-left: 10px; /* Restore margin left */
+  }
+  .most-reviewd, .Best-reviews {
+    margin-left: 15px; /* Adjust margin left */
+  }
+  .Best-reviews > span {
+    margin-left: 40px; /* Adjust margin left */
+    font-size: 20px; /* Restore font size */
+  }
+}
+
+/* Large screens (greater than 1200px) */
+@media only screen and (min-width: 1200px) {
+  .sise-bar {
+    position: fixed; /* Restore position */
+    width: 220px; /* Restore width */
+    height: calc(100vh - 64px); /* Adjust height to fill viewport */
+    top: 94px; /* Restore top position */
+    border-top: none;
+  }
+  .all-names {
+    height: 305px; /* Restore height */
+    border-radius: 20px; /* Restore border radius */
+    width: 200px; /* Restore width */
+  }
+  .name {
+    height: 60px; /* Restore height */
+    margin-left: 10px; /* Restore margin left */
+    display: flex;
+    align-items: center;
+  }
+  .most-reviewd {
+    margin-left: 30px; /* Restore margin left */
+  }
+
+}
+

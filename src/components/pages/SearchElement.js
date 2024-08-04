@@ -1,0 +1,94 @@
+import React,{useState,useEffect} from "react";
+import { View , Text , ScrollView , TouchableOpacity,TextInput} from "react-native";
+
+import { collection, onSnapshot ,doc } from 'firebase/firestore';
+import { db } from "../config/fireBase";
+// import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+// import { Ionicons } from "@expo/vector-icons";
+
+function SearchIterms({navigation}){
+     const loadsCollection = collection(db, 'Loads');  
+      const [loadsList, setLoadsList] = useState([]);
+
+    useEffect(() => {
+      const unsubscribe = onSnapshot(loadsCollection, (querySnapshot) => {
+        let filteredData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        filteredData =   filteredData.sort((a, b) => a.timestamp - b.timestamp);
+
+        setLoadsList(filteredData);
+      });
+  
+      return () => {
+        unsubscribe(); // Unsubscribe the listener when the component unmounts
+      };
+    }, []);
+     const allData = [  ...loadsList]
+          
+
+        const [filteredData, setFilteredData] = React.useState([]);
+        const [wordEntered, setWordEntered] = React.useState("");
+      
+        const handleFilter = (text) => {
+          const searchWord = text
+          const newFilter = allData.filter((value) => {
+            return ( value.companyName ||  value.fromLocation || value.toLocation ).toLowerCase().includes(searchWord.toLowerCase());
+          });
+      
+          if (searchWord === "") {
+            setFilteredData([]);
+          } else {
+            setFilteredData(newFilter);
+          }
+        };
+        const clearInput = () => {
+          setFilteredData([]); 
+          setWordEntered("");
+        };
+        
+
+        const displaySearched =  filteredData.slice(0, 15).map((value , key)=>{
+            return(
+              <TouchableOpacity  style={{flex : 1, marginBottom :6 , padding : 6}} key={value.id} onPress={()=> navigation.navigate('selectedUserLoads', {userId : value.userId}) }>
+
+            { value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
+            {/* <MaterialIcons name="verified" size={26} color="green" /> */}
+            </View>}
+            <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}>{value.companyName} </Text>
+            <Text >Commodity {value.typeofLoad}  rate {value.ratePerTonne} </Text>
+            <Text >from {value.fromLocation } to {value.toLocation} </Text>
+              
+              </TouchableOpacity>
+            )
+          })
+          
+           return(
+            <View>
+            <View  style={{ height : 84  ,   paddingTop:10  ,paddingTop : 15 , alignItems : 'center' , paddingTop : 10  , alignItems : 'center', justifyContent:'center',borderColor:'#6a0c0c', borderWidth:2}} >
+
+              <View  style={{flexDirection : 'row' ,height : 40 , backgroundColor :'#6a0c0c' , alignItems : 'center'}}>
+                <TouchableOpacity style={{marginRight: 10}} onPress={() => navigation.goBack()}>
+                {/* <Ionicons name="arrow-back" size={30} color="white"style={{ marginLeft: 10 }}  /> */}
+                </TouchableOpacity>
+                <TextInput
+                    placeholder="Search"
+                    onChangeText={(text) => handleFilter(text)}  
+                    style={{height:40, flex : 1 ,fontSize : 17 , backgroundColor: '#6a0c0c' , color:'white'}}      
+                    placeholderTextColor="white"    
+                    /> 
+                    </View>
+            </View> 
+             { filteredData.length > 0 && (
+              <ScrollView  >
+              {displaySearched}
+             </ScrollView>
+              )
+              } 
+
+            </View>
+           )
+}
+export default React.memo(SearchIterms)

@@ -1,0 +1,247 @@
+.Main-grid{
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr ;
+
+  row-gap: 40px;
+  column-gap: 16px;
+
+}
+.truck-image{
+  width: 100%;
+  height:200px ;
+  border-radius: 9px;
+  margin-bottom: 10px;
+}
+.card-tittle{
+  overflow: hidden;
+  text-overflow:ellipsis ;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.truck-name{
+  margin-left: 50px;
+  margin-bottom: 10px;
+}
+.About{
+  display: flex;
+  align-items: center;
+}
+.star{
+  height: 30px;
+  margin-right: 7px;
+}
+.truck-name{
+  font-style: italic;
+}
+.price{
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+.price > span{
+  margin-right: 8px;
+}
+.location{
+  font-size: 15px;
+}
+.makeBackgroundColor{
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #23242a;
+  z-index: 200;
+}
+.authDiv{
+  display: flex;
+  align-items: center;
+  align-items: center;
+  flex-direction: column;
+  position: fixed;
+  top: 130px;
+  left: 500px;
+  height: 300px;
+  background-color: #23242a;
+}
+.authDiv > h1{
+  font-style: italic;
+  color: rgb(34, 243, 34);
+  margin-bottom: 1px;
+}
+.authDiv > h3{
+  font-style: italic;
+  color: rgb(164, 89, 238) ;
+}
+ 
+.singIN ,
+.userNameInput{
+  height: 30px;
+  width: 250px;
+  margin-bottom : 20px;
+  border-radius: 7px;
+  padding: 4px;
+}
+.singIN:focus{
+  border: 2px solid #007bff ;
+}
+.singInButton{
+  height: 30px;
+  background-color: rgb(47, 201, 47);
+  border: none;
+  width: 80px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+.googleButton{
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+}
+.currentUserMain{
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr ;
+
+  row-gap: 40px;
+  column-gap: 16px;
+}
+.EnterCurrentUser{
+  position: fixed;
+  top: 70px;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: white;
+  padding-left: 240px;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+}
+.updateUsername{
+  position: fixed;
+  top: 100;
+  left: 300px;
+}
+.inputContainer {
+  display: flex;
+  align-items: center;
+  }
+.userNameInput{
+  border: none;
+  border-bottom: 1px green solid;
+  margin: 0;
+  background-color: transparent;
+
+}
+.userNameInput:focus{
+  border: none;
+  outline: none;
+}
+.inputUsernameBTN{
+  height: 40px; /* Adjust the height as needed */
+  border: none;
+  border-bottom: 1px green solid;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  margin-left: -2px;
+}
+.eneterUserNameDiv{
+  margin-top: 5 0px;
+}
+.labelspan{
+  font-size: 13px;
+  color: rgb(210, 203, 203);
+}
+
+/* Small screens (less than 576px) */
+@media only screen and (max-width: 575px) {
+  .authDiv{
+    top: 100px;
+    left: 50px;
+    right: 30px;
+    height: 200px;
+  }  
+  .Main-grid {
+    grid-template-columns: 1fr; /* Change to one column grid layout */
+    row-gap: 20px; /* Reduce row gap */
+    column-gap: 0; /* Remove column gap */
+  }
+  .truck-image {
+    margin-bottom: 5px; /* Reduce margin bottom */
+  }
+  .card-tittle {
+    grid-template-columns: 1fr; /* Change to one column grid layout */
+    margin-bottom: 5px; /* Reduce margin bottom */
+  }
+  .truck-name {
+    margin-left: 0; /* Remove left margin */
+    margin-bottom: 5px; /* Reduce margin bottom */
+  }
+  .About {
+    align-items: flex-start; /* Align items to left */
+  }
+  .star {
+    height: 20px; /* Reduce star height */
+    margin-right: 3px; /* Reduce margin right */
+  }
+  .price, .location {
+    font-size: 16px; /* Reduce font size */
+  }
+}
+
+/* Medium screens (between 576px and 768px) */
+@media only screen and (min-width: 576px) and (max-width: 952px) {
+  .authDiv{
+    top: 200px;
+    left: 150px;
+    right: 100px;
+    height: 700px;
+  }  
+
+  .Main-grid {
+    grid-template-columns: repeat(2, 1fr); /* Change to two column grid layout */
+    row-gap: 30px; /* Reduce row gap */
+    column-gap: 10px; /* Reduce column gap */
+  }
+  .truck-name {
+    margin-left: 20px; /* Add left margin */
+  }
+  .About {
+    align-items: center; /* Align items to center */
+  }
+  .star {
+    height: 25px; /* Increase star height */
+    margin-right: 5px; /* Increase margin right */
+  }
+  .price, .location {
+    font-size: 16px; /* Increase font size */
+  }
+}
+
+/* Large screens (greater than 992px) */
+@media only screen and (min-width: 992px) {
+  .Main-grid {
+    grid-template-columns: repeat(3, 1fr); /* Change to four column grid layout */
+    row-gap: 30px; /* Restore row gap */
+    column-gap: 15px; /* Restore column gap */
+  }
+  .card-tittle {
+    margin-bottom: 10px; /* Restore margin bottom */
+  }
+  .truck-name {
+    margin-left: 50px; /* Restore left margin */
+    margin-bottom: 10px; /* Restore margin bottom */
+  }
+  .About {
+    flex-direction: row; /* Restore row layout */
+    align-items: center; /* Restore alignment */
+  }
+  .star {
+    height: 30px; /* Restore star height */
+    margin-right: 7px; /* Restore margin right */
+  }
+  .price, .location {
+    font-size: 16px; /* Restore font size */
+  }
+}
