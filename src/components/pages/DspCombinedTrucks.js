@@ -42,7 +42,8 @@ function DspAllTrucks(){
         </View>}
         {/* {item.imageUrl&& <Image source={{uri: item.imageUrl }} style={{flex : 1 , height : 250}} />} */}
         {/* {!item.imageUrl &&<Image source={{uri: item.imageUrl }} style={{flex : 1 , height : 250}} /> } */}
-        {item.imageUrl && <Image source={{ uri: item.imageUrl }}  />}
+        {/* {item.imageUrl && <Image source={{ uri: item.imageUrl }}  />} */}
+          <img src={item.imageUrl} style={{height : 250}}/>
 
         
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20}} >{item.CompanyName} </Text>
@@ -61,9 +62,11 @@ function DspAllTrucks(){
  
 return(
         <ScrollView>
+          <div className='Main-grid'>
          {allTrucks.length > 0 ? rendereIterms   : <Text>Loading...</Text>}
          <View style={{height : 550}} >
            </View>
+            </div>
         </ScrollView>
 )
 }

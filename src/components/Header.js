@@ -13,7 +13,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 
- function Header (){
+ function Header ({toggleSmallMenu}){
 
   const navigate = useNavigate()
 
@@ -87,14 +87,14 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 
                           {/* <FontAwesome name="search" size={24} color="white" /> */}
                           {/* <Text>yaya  </Text> */}
-                          <SearchIcon/>
+                          <SearchIcon style={{color : 'white'}}/>
 
                     </TouchableOpacity>
 
                     {/* <TouchableOpacity style={{marginLeft : 6}} onPress={currentUser? toggleSmallMenu :()=> navigation.navigate('createUser')  } > */}
-                    <TouchableOpacity style={{marginLeft : 6}}  >
+                    <TouchableOpacity style={{marginLeft : 6}}  onPress={toggleSmallMenu}>
                     {/* <Ionicons name="ellipsis-vertical" size={24} color="white" /> */}
-                    <MoreVertIcon/>
+                    <MoreVertIcon style={{color : 'white'}}/>
                     </TouchableOpacity>
                 </View>
 

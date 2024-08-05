@@ -8,8 +8,12 @@ import inputstyles from "../styles/inputElement";
 
 import ReactFlagsSelect from "react-flags-select";
 import { countries } from 'countries-list';
-function PersonalAccInfo({navigation , route}){
+import { useNavigate } from "react-router-dom";
 
+function PersonalAccInfo({}){
+  
+
+  const navigate = useNavigate()
 
   const [errorOccur , setErrorOccur] = React.useState("")
   const [username, setUsername] = React.useState("");
@@ -19,10 +23,10 @@ function PersonalAccInfo({navigation , route}){
 
 const handleSubmitData = async (event) => {
     if(!countryCode){
-        Alert.alert("Select country code ")
+        alert("Select country code ")
         return
     }else if(!contact){
-        Alert.alert("Enter your phone number")
+        alert("Enter your phone number")
         return
     }
     
@@ -43,7 +47,7 @@ const handleSubmitData = async (event) => {
           await setDoc(doc(db, 'personalData', userId), { username: usernameValue, contact: `+${countryCode}${contact}` });
           setUsername("");
           setContact("");
-           navigation.navigate('Truckerz')
+           navigate('Truckerz')
         } else {
           // Username already exists, handle the situation here
           setErrorOccur('Username already exists!');
@@ -73,32 +77,23 @@ const handleSubmitData = async (event) => {
 
   const handleCountrySelect = (code) => {
       const selectedCallingCode = getCallingCode(code);
-      setCallingCode(selectedCallingCode);
-  };
+      setCountryCode(selectedCallingCode);
+};
 
     return(
         <View style={{paddingTop:60 , alignItems : 'center'}} > 
 
             {errorOccur&& <Text>{errorOccur} </Text>}
-      {/* {!countryCode&&  <CountryPicker
-          countryCode={callingCode}
-          withFlag={true}
-          withCountryNameButton={true}
-          withCallingCode={true}
-          withFilter={true}
-          onSelect={handleCountrySelect}
-
-        />P
-          }       */}
+    
       <ReactFlagsSelect
-        select={callingCode}
+        select={countryCode}
         onSelect={(code) => handleCountrySelect(code)}
         placeholder="Select Country"
         searchable
       />
     
 
-      {<Text>asdasd{callingCode}</Text>}
+      {<Text>code {countryCode}</Text>}
           <TextInput
             placeholder="Username"
             type="text"

@@ -11,7 +11,7 @@ function AddIterms(){
         setTruckType(prev =>!prev)
     }
     return(
-        <View style={{alignItems : 'center' , paddingTop : 260}} >
+        <View style={{alignItems : 'center' , paddingTop : 60}} >
 
           {!truckType&& <View>
             <TouchableOpacity  onPress={()=> navigate('addLoadsDB') } style={styles.buttonSelectStyle} >

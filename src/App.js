@@ -120,12 +120,19 @@ const navigate = useNavigate()
     const [smallMenu , setSmallMenu] = React.useState(true)
 
     function toggleSmallMenu(){
-        setSmallMenu(prev => !prev)
+
+     if(!currentUser){
+      navigate("createUser")
+    }else if(currentUser &&!username){
+      navigate("addPersnoalInfo")
+    }else {
+    setSmallMenu(prev => !prev) 
+    }
     }
   return (
     <View >  
               <Header  toggleGoHome = {toggleGoHome} toggleDspLoads={toggleDspLoads} toggleDspTrckType={toggleDspTrckType} toggleSmallMenu={toggleSmallMenu}    />
-              
+
      <View  style={{flexDirection:'row' , justifyContent : 'space-between' , paddingLeft : 20 , paddingRight: 20 , height : 40 , alignItems : 'center' , backgroundColor : '#6a0c0c' , paddingTop : 10 }}>
 
                <TouchableOpacity onPress={toggleGoHome}> 
@@ -151,7 +158,7 @@ const navigate = useNavigate()
    {!dspLoads && !dspTruckType && <View  >
 
      <MiniLoad/>
-     {/* <DspAllTrucks/> */}
+     <DspAllTrucks/>
     </View>}
 
     {dspLoads && !dspTruckType&& <DspAllLoads  username = {username}/>}
