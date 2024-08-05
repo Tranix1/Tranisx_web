@@ -1,9 +1,9 @@
 import React,{useState} from "react";
 import { storage } from "../config/fireBase";
 import { getDownloadURL, ref, uploadBytes, uploadBytesResumable ,} from "firebase/storage";
-import { collection, doc, getDoc, addDoc } from 'firebase/firestore';
+import { collection, addDoc } from 'firebase/firestore';
 import { db, auth } from "../config/fireBase";
-import {View, TextInput , Text ,    TouchableOpacity , Button , Image , ActivityIndicator} from "react-native"
+import {View, TextInput , Text ,    TouchableOpacity , Image , ActivityIndicator} from "react-native"
 import inputstyles from "../styles/inputElement";
 
 // import * as ImagePicker from 'expo-image-picker';
@@ -11,10 +11,11 @@ import inputstyles from "../styles/inputElement";
 // import Fontisto from '@expo/vector-icons/Fontisto';
 
 
+import { useParams } from 'react-router-dom';
 
-function DBTrucksAdd( {route} ) {
+function DBTrucksAdd( { username ,contact , isVerified } ) {
 
-  const {truckType ,username ,contact , isVerified } = route.params
+    const {truckType} = useParams()
 
   const trucksDB = collection(db, "Trucks");
 
@@ -36,79 +37,30 @@ function DBTrucksAdd( {route} ) {
 
 
 
- const [image, setImage] = useState(null);
-     const selectImage = async () => {
-//     let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+ const [image, setImage] = useState(null);  
 
-//     if (permissionResult.granted === false) {
-//       alert('Permission to access camera roll is required!');
-//       return;
-//     }
-
-//     let pickerResult = await ImagePicker.launchImageLibraryAsync();
-    
-//     if (pickerResult.cancelled === true) {
-//       return;
-//     }
-
-//     // Check if assets array exists and has at least one element
-//     if (pickerResult.assets && pickerResult.assets.length > 0) {
-//       const firstAsset = pickerResult.assets[0];
-//       if (firstAsset.uri) {
-//         setImage({ localUri: firstAsset.uri });
-//         uploadImage(firstAsset); // Call uploadImage with the selected asset
-//       } else {
-//         alert('Selected image URI is undefined');
-//       }
-//     } else {
-//       alert('No assets found in the picker result');
-//     }
-  };
-
-const [storagePath, setStoragePath] = React.useState('');
-const [downloadURL, setDownloadURL] = React.useState('')
-
-// async function uploadImage(asset) {  
-// const response = await fetch(asset.uri);
-// const blob = await response.blob();
-// const storageRef = ref(storage, `Trucks/` + new Date().getTime() );
-// const path = `Stuff/${new Date().getTime()}`;
-// const uploadTask = uploadBytesResumable(storageRef, blob);
-
-// return new Promise((resolve, reject) => {
-//   // Listen for events
-//   uploadTask.on(
-//     'state_changed',
-//     (snapshot) => {
-//       // Progress handling
-//     },
-//     (error) => {
-//       // Error handling
-//       reject(error);
-//     },
-//     () => {
-//       getDownloadURL(uploadTask.snapshot.ref)
-//         .then((downloadURL) => {
-//            setDownloadURL(downloadURL)
-//           resolve(downloadURL);
-//         })
-//         .catch((error) => {
-//           reject(error);
-//         });
-//     }
-//     );
-// });
-// }
-
-
-let _downloadURL = downloadURL
   
+  const [ imageUpload, setImageUpload] = React.useState(null)    
+
+    const uploadImage = ()=>{
+      if(imageUpload === null) return
+      const imageRef = ref(storage , `Trucks/${imageUpload.name + new Date().getTime()  }`)
+      uploadBytes(imageRef , imageUpload).then(()=>{
+        alert("refresh page to see changes")
+      })
+    }
 
     const [spinnerItem, setSpinnerItem] = React.useState(false);
+    
  
   const handleSubmit = async () => {
 
       setSpinnerItem(true)
+        uploadImage()
+       const imageRef = ref(storage , `Trucks/${imageUpload.name}`)
+       await uploadBytes(imageRef , imageUpload)
+       // get image  url 
+       let imageUrl = await getDownloadURL(imageRef)
 
     let userId = auth.currentUser.uid
     try {
@@ -117,7 +69,7 @@ let _downloadURL = downloadURL
         contact : contact ,
         fromLocation: formData.fromLocation,
         toLocation: formData.toLocation,
-        imageUrl: _downloadURL,
+        imageUrl: imageUrl,
         userId : userId ,
         additionalInfo : formData.additionalInfo ,
         trailerType : formData.trailerType ,
@@ -139,15 +91,28 @@ let _downloadURL = downloadURL
   };
   return (
       <View style={{alignItems :'center', paddingTop : 40}} >
+         <View key={item.id} style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
+         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+            {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
+            <Text>backkkkk</Text>
+        </TouchableOpacity> 
+        
+        <Text style={{fontSize: 20 , color : 'white'}} > Add Iterms  </Text>
+       </View>
+
 
      {image && <Image source={{ uri: image.localUri }} style={{ width: 200, height: 200 }} />}
 
-     {!image && <TouchableOpacity onPress={selectImage} style={{marginBottom : 9}}>
+     {!image && <TouchableOpacity style={{marginBottom : 9 , backgroundColor:'red'}}>
 
 
 
           {/* <Fontisto name="camera" size={30} color="#6a0c0c" /> */}
-
+     <input
+      className="inputFIle"
+      type="file"
+      onChange={(e)=>{setImageUpload(e.target.files[0])}}
+      />
 
 
      </TouchableOpacity>}

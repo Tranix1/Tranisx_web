@@ -3,10 +3,11 @@ import { db } from '../config/fireBase';
 import { View , Text , Image , ScrollView ,TouchableOpacity} from 'react-native';
 import {onSnapshot ,  query ,collection,where ,} from "firebase/firestore"
 
+    const {userId} = useParams()
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 function SelectedUserTrucks ({route , navigation } ){ 
 
-  const {userId  } = route.params
+    const {userId} = useParams()
   const [allTrucks, setAllTrucks] = useState([]);
 
 
@@ -74,9 +75,11 @@ return(
        </View> )})
        }
         <ScrollView>
+      <div className="Main-grid">
          {allTrucks.length > 0 ? rendereIterms   : <Text>Loading...</Text>}
          <View style={{height : 550}} >
            </View>
+           </div>
         </ScrollView> 
         </View>
 )

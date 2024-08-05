@@ -96,7 +96,7 @@ function  SelectedUserLoads(){
           const showUserName = comapnyName !== companyName;
           comapnyName = companyName;
       return(     
-        showUserName&&<View key={item.id} style={{flexDirection : 'row' , height : 84  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
+        showUserName&&<View key={item.id} style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
         {/* <TouchableOpacity style={{marginRight: 10}} onPress={() => navigation.goBack()}>
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
         {/* </TouchableOpacity> */}

@@ -7,9 +7,8 @@ import { db , auth} from "../config/fireBase";
 
 // import { Ionicons } from '@expo/vector-icons';
 
-function MainGroup({route}){
+function MainGroup({username}){
 
-  const {username } = route.params
 
   const [message , setMessages]=React.useState([])
 
@@ -161,7 +160,14 @@ const formattedPreviousDate = prevDate.toLocaleDateString('en-US', {
 const scrollViewRef = React.useRef();
     return(
 <View style={{ flex: 1 , paddingBottom : 6}}>
-
+ <View key={item.id} style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
+         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+            {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
+            <Text>backkkkk</Text>
+        </TouchableOpacity> 
+        
+        <Text style={{fontSize: 20 , color : 'white'}} > Add Iterms  </Text>
+       </View>
 
 
     <ScrollView      style={{ flex: 1, paddingBottom: 0, paddingLeft: 7, paddingRight: 7, paddingTop: 20, marginBottom: 40 }}

@@ -199,8 +199,10 @@ function DspAllLoads({username}){
 
   return(
     <ScrollView style={{padding : 10 , marginTop : 10 }} >
+      <div className="Main-grid">
         {rendereIterms}
         <View style={{height : 200}} ></View>
+        </div>
     </ScrollView>
   )
 

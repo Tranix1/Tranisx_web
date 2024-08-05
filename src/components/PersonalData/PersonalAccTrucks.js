@@ -73,7 +73,10 @@ function PersonalAccTrucks(){
   })
   return(
     <ScrollView>
+      
+      <div className="Main-grid">
         {rendereIterms}
+      </div>
     </ScrollView>
   )
 }

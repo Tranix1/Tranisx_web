@@ -2,11 +2,15 @@ import React from "react";
 import { View , Text , TouchableOpacity , StyleSheet} from "react-native";
 // import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
-function SelectOneTruckType({navigation}){
+import {useNavigate} from 'react-router-dom';
+
+function SelectOneTruckType({}){
+
+const navigate = useNavigate()
     return(
         <View style={{alignItems : 'center' , paddingTop : 20}} >
 
-            <TouchableOpacity onPress={()=> navigation.navigate('dspOneTrckType', {truckType:'BulkTrailers'})  } style={styles.selectTruck}>
+            <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/BulkTrailers')   } style={styles.selectTruck}>
 
                 <Text>BulkTrailer</Text>
 
@@ -14,24 +18,24 @@ function SelectOneTruckType({navigation}){
             </TouchableOpacity>
 
             <View  style={{flexDirection : 'row'}}>
-                <TouchableOpacity onPress={()=> navigation.navigate( 'dspOneTrckType', {truckType:'sideTippers'}) } style={styles.selectTruck}>
+                <TouchableOpacity onPress={()=> navigate( '/dspOneTrckType/sideTippers') } style={styles.selectTruck}>
                 <Text>Side Tipper</Text>
                 {/* <FontAwesome5 name="truck" size={28} color="black" /> */}
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={()=> navigation.navigate('dspOneTrckType', {truckType:'LowBeds'}) } style={styles.selectTruck}>
+                <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/LowBeds') } style={styles.selectTruck}>
                     <Text>LowBed</Text>
                 {/* <FontAwesome5 name="truck" size={28} color="black" /> */}
                 </TouchableOpacity>
             </View>
 
             <View style={{flexDirection : 'row'}} >
-                <TouchableOpacity onPress={()=> navigation.navigate('dspOneTrckType', {truckType:'tauntliner'}) }style={styles.selectTruck} >
+                <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/tauntliner' ) }style={styles.selectTruck} >
                 <Text> Tautliner </Text>
                 {/* <FontAwesome5 name="truck" size={28} color="black" /> */}
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={()=> navigation.navigate('dspOneTrckType', {truckType:'tanker'}) } style={styles.selectTruck}>
+                <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/tanker') } style={styles.selectTruck}>
                 <Text>Tanker</Text>
                 {/* <FontAwesome5 name="truck" size={28} color="black" /> */}
                 </TouchableOpacity>

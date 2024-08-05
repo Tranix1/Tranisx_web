@@ -1,28 +1,19 @@
 import React ,{useEffect} from "react";
 // import CountryPicker from 'react-native-country-picker-modal';
-import { View , TouchableOpacity , Text , TextInput, Alert , StyleSheet} from "react-native";
+import { View , TouchableOpacity , Text , TextInput, StyleSheet} from "react-native";
 
 import { db , auth } from "../config/fireBase";
 
 import {  updateDoc , doc } from 'firebase/firestore';
 import inputstyles from "../styles/inputElement";
 
-function PersonalAccInfoEdit({route}){
+import ReactFlagsSelect from "react-flags-select";
+import { countries } from 'countries-list';
 
 
-  const {username ,contact } = route.params
-  
-
-
-
-            
-
-
-
+function PersonalAccInfoEdit({username ,contact }){
 
 const [ newUserName , setNewUserName ] = React.useState('')
-
-
 
     const handleUpdateUsername = async () => {
       try {
@@ -31,7 +22,7 @@ const [ newUserName , setNewUserName ] = React.useState('')
 
           const docRef = doc(db, 'personalData', userId);
           await updateDoc(docRef, { username: newUserName,  });
-          Alert.alert("Username updated successfully!");
+          alert("Username updated successfully!");
           setNewUserName("")
         }
       } catch (err) {
@@ -45,19 +36,27 @@ const [ newCOntact , setNewCOntact ] = React.useState('')
 
 const [countryCode, setCountryCode] = React.useState('');
 
-  const [callingCode, setCallingCode] = React.useState('');
-
-const handleCountrySelect = (country) => {
-  setCallingCode(country.cca2);
-    setCountryCode(country.callingCode);
+  
+  const getCallingCode = (countryCode) => {
+    const countryData = countries[countryCode];
+    if (countryData) {
+      return countryData.phone;
+    }
+    return null;
   };
 
+  const handleCountrySelect = (code) => {
+      const selectedCallingCode = getCallingCode(code);
+      setCountryCode(selectedCallingCode);
+};
+
+  
     const handleUpdateContact = async () => {
       if(!countryCode){
-        Alert.alert("Select you country code")
+        alert("Select you country code")
         return
       }else if(countryCode && !newCOntact){
-        Alert.alert("Enter phone number")
+        alert("Enter phone number")
         return
       }
       try {
@@ -67,7 +66,7 @@ const handleCountrySelect = (country) => {
           const docRef = doc(db, 'personalData', userId);
           await updateDoc(docRef, { contact: `+${countryCode}${newCOntact}` });
           setNewCOntact("")
-          Alert.alert("phone number updated successfully!");
+          lert("phone number updated successfully!");
         }
       } catch (err) {
         console.error(err);
@@ -130,14 +129,12 @@ return(
 
    { editContact &&  <View  >
 
-{/*           
-       { !countryCode &&<CountryPicker
-        countryCode={callingCode}
-        withCountryNameButton={true}
-        withCallingCode={true}
-        withFilter={true}
-        onSelect={handleCountrySelect}
-      />} */}
+       <ReactFlagsSelect
+        select={countryCode}
+        onSelect={(code) => handleCountrySelect(code)}
+        placeholder="Select Country"
+        searchable
+      />
       
       { countryCode&& <Text> Country code {countryCode}</Text>} 
       <TextInput

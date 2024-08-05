@@ -1,6 +1,5 @@
 import React,{useState} from "react";
-import { View , Text , Button , TouchableOpacity , StatusBar} from "react-native";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View , Text  , TouchableOpacity , StatusBar} from "react-native";
 
 import  { auth , db,  } from "./components/config/fireBase"
 import {doc , getDoc ,query ,collection , where,onSnapshot} from "firebase/firestore"
@@ -41,7 +40,7 @@ import SelectedUserTrucks from "./components/selectedUserIterms/userPersonalTruc
 // '#6a0c0c'
 import MainStyle from "./components/styles/Main.css"
 
-import { BrowserRouter as Router, Route, Routes, BrowserRouter, useNavigate , } from 'react-router-dom';
+import { BrowserRouter as  Route, Routes, BrowserRouter, useNavigate , } from 'react-router-dom';
 
 
 function HomeScreen() {
@@ -113,7 +112,7 @@ const navigate = useNavigate()
     }else if(currentUser &&!username){
       navigate("addPersnoalInfo")
     }else {
-      navigate('selectAddIterms') 
+      navigate('AddIterms') 
     }
   }
 
@@ -133,7 +132,7 @@ const navigate = useNavigate()
     <View >  
               <Header  toggleGoHome = {toggleGoHome} toggleDspLoads={toggleDspLoads} toggleDspTrckType={toggleDspTrckType} toggleSmallMenu={toggleSmallMenu}    />
 
-     <View  style={{flexDirection:'row' , justifyContent : 'space-between' , paddingLeft : 20 , paddingRight: 20 , height : 40 , alignItems : 'center' , backgroundColor : '#6a0c0c' , paddingTop : 10 }}>
+     <View  style={{flexDirection:'row' , justifyContent : 'space-evenly' , paddingLeft : 20 , paddingRight: 20 , height : 40 , alignItems : 'center' , backgroundColor : '#6a0c0c' , paddingTop : 10 }}>
 
                <TouchableOpacity onPress={toggleGoHome}> 
                     <Text style={{color : 'white'}} >Home</Text>
@@ -162,7 +161,7 @@ const navigate = useNavigate()
     </View>}
 
     {dspLoads && !dspTruckType&& <DspAllLoads  username = {username}/>}
-    {/* {dspTruckType &&  <SelectOneTruckType navigation={navigation} />} */}
+    {dspTruckType &&  <SelectOneTruckType  />}
     </View>
   );
 }
@@ -248,8 +247,6 @@ function App(){
     return(
           <BrowserRouter>
 
-
-
        <Routes>
 
 
@@ -263,52 +260,31 @@ function App(){
       
 
       <Route path="/selectPeronalAcc/" element={<SelectPersnalAcc/>} />
-      <Route path="/personalInfomation/" element={<PersnonalAccInfoEdit/>}/>
+      <Route path="/personalInfomation/" element={<PersnonalAccInfoEdit  
+      username ={username}  contact ={contact} />}/>
       <Route path="/peronalAccLoads/" element={<PersnalAccLoads/>}/>
       <Route path="/peronalAccTrucks/" element={<PersonalAccTrucks/>} />
 
       <Route path="/selectChat/" element={<SelectChat/>} />
-      <Route path="/mainGroup/" element={<MainGroup/>}/>
-      <Route path="/message/:messageData"   element={<Messaging/>}/>
+      <Route path="/mainGroup/" element={<MainGroup username={username}/>}/>
+      <Route path="/message/:messageData"   element={<Messaging username={username}/>}/>
       <Route path="/bookings/" element={<Bookings/>} />
 
 
-      <Route path="/selectAddIterms/" element={<AddIterms/>}/>
-      <Route path="/addLoadsDB/" element={<AddLoadDB/>} initialParams={{username : username , contact : contact , isVerified:isVerified}} />
-      <Route path="addTrucksDB" element={<DBTrucksAdd/>} initialParams={{username : username , contact : contact , isVerified : isVerified}} />
+      <Route path="/AddIterms/" element={<AddIterms/>}/>
+      <Route path="/addLoadsDB" element={<AddLoadDB  
+      username = {username} contact = {contact}  isVerified={isVerified}/>} />
 
-      <Route path="/dspOneTrckType/" element={<DspOneTruckType/>} initialParams={{username : username , contact : contact , isVerified : isVerified}} />
+      <Route path="/addTrucksDB/:truckType" element={<DBTrucksAdd 
+       username={ username}  contact = {contact}  isVerified ={ isVerified} />} />
+
+      <Route path="/dspOneTrckType/:truckType" element={<DspOneTruckType/>} initialParams={{username : username , contact : contact , isVerified : isVerified}} />
       <Route path="/selectedUserLoads/:userId" element={<SelectedUserLoads/>} />
       <Route path="/selectedUserTrucks/:userId" element={<SelectedUserTrucks/>} />
 
     </Routes>
 
-      {/* <Stack.Navigator> */}
-        
-        {/* <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} /> */}
-        {/* <Stack.Screen name="Truckerz"  */}
-        {/* component={HomeScreen} */}
-        {/* // options={({ navigation, route }) => ({ */}
-        {/* //   header: () => <Header navigation={navigation} />, */}
-        {/* // })} */}
-          {/* /> */}
-
-      {/* <Stack.Screen name="Loads" component={DspAllLoads} options={{title: 'Loads',headerStyle: {backgroundColor: '#6a0c0c', },headerTintColor: 'white',}}/> */}
-
-
-
-
-
-                
-
-
-
-
-
-      {/* </Stack.Navigator>   */}
-
-      
+           
        
       </BrowserRouter>
 

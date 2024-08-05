@@ -5,9 +5,10 @@ import {onSnapshot ,  query ,collection,where } from "firebase/firestore"
 
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-function DspOneTruckType ({route} ){ 
+import { useParams } from 'react-router-dom';
+function DspOneTruckType ({} ){ 
 
-  const {truckType  } = route.params
+    const {truckType} = useParams()
   const [allTrucks, setAllTrucks] = useState([]);
 
 
@@ -67,9 +68,11 @@ function DspOneTruckType ({route} ){
 return(
   <View>
         <ScrollView>
+      <div className="Main-grid">
          {allTrucks.length > 0 ? rendereIterms   : <Text>Loading...</Text>}
          <View style={{height : 550}} >
            </View>
+           </div>
         </ScrollView> 
         
         </View>

@@ -13,8 +13,16 @@ function AddIterms(){
     return(
         <View style={{alignItems : 'center' , paddingTop : 60}} >
 
+        <View key={item.id} style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
+         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+            {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
+            <Text>backkkkk</Text>
+        </TouchableOpacity> 
+        
+        <Text style={{fontSize: 20 , color : 'white'}} > Add Iterms  </Text>
+       </View> 
           {!truckType&& <View>
-            <TouchableOpacity  onPress={()=> navigate('addLoadsDB') } style={styles.buttonSelectStyle} >
+            <TouchableOpacity  onPress={()=> navigate('/addLoadsDB') } style={styles.buttonSelectStyle} >
                 <Text style={{color:"white"}}>Add Loads </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={toggleSelecTruck} style={styles.buttonSelectStyle}>
@@ -23,23 +31,23 @@ function AddIterms(){
             </View>}
 
            { truckType &&<View>
-                <TouchableOpacity  onPress={()=> navigate('addTrucksDB', {truckType:'BulkTrailers'}) }  style={styles.buttonStyle}>
+                <TouchableOpacity  onPress={()=> navigate('/addTrucksDB/BulkTrailers') }  style={styles.buttonStyle}>
                     <Text style={{color:"#6a0c0c"}}>BulkTrailers </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity  onPress={()=> navigate( 'addTrucksDB', {truckType:'sideTippers'}) }  style={styles.buttonStyle}>
+                <TouchableOpacity  onPress={()=> navigate( '/addTrucksDB/sideTippers') }  style={styles.buttonStyle}>
                     <Text style={{color:"#6a0c0c"}}>SideTipper </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={()=> navigate('addTrucksDB', {truckType:'LowBeds'}) }  style={styles.buttonStyle}>
+                <TouchableOpacity onPress={()=> navigate('/addTrucksDB/LowBeds') }  style={styles.buttonStyle}>
                     <Text style={{color:"#6a0c0c"}}> Lowbeds </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={()=> navigate('addTrucksDB', {truckType:'tauntliner'}) } style={styles.buttonStyle}>
+                <TouchableOpacity onPress={()=> navigate('/addTrucksDB/tauntliner' ) } style={styles.buttonStyle}>
                     <Text style={{color:"#6a0c0c"}}> Tautliner </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={()=> navigate('addTrucksDB', {truckType:'tanker'}) } style={styles.buttonStyle} >
+                <TouchableOpacity onPress={()=> navigate('/addTrucksDB/tanker') } style={styles.buttonStyle} >
                     <Text style={{color:"#6a0c0c"}}>Takers </Text>
                 </TouchableOpacity>
 
