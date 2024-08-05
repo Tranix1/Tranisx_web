@@ -3,10 +3,10 @@ import { db } from '../config/fireBase';
 import { View , Text , Image , ScrollView ,TouchableOpacity} from 'react-native';
 import {onSnapshot ,  query ,collection,where ,} from "firebase/firestore"
 
-    const {userId} = useParams()
+import { useParams } from 'react-router-dom';
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 function SelectedUserTrucks ({route , navigation } ){ 
-
+  
     const {userId} = useParams()
   const [allTrucks, setAllTrucks] = useState([]);
 

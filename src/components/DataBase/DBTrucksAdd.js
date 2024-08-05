@@ -11,11 +11,12 @@ import inputstyles from "../styles/inputElement";
 // import Fontisto from '@expo/vector-icons/Fontisto';
 
 
-import { useParams } from 'react-router-dom';
+import { useParams , useNavigate } from 'react-router-dom';
 
 function DBTrucksAdd( { username ,contact , isVerified } ) {
 
     const {truckType} = useParams()
+    const {navigate} = useNavigate()
 
   const trucksDB = collection(db, "Trucks");
 
@@ -91,7 +92,7 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
   };
   return (
       <View style={{alignItems :'center', paddingTop : 40}} >
-         <View key={item.id} style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
+         <View  style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
          <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
             <Text>backkkkk</Text>

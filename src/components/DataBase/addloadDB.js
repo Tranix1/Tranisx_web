@@ -5,10 +5,13 @@ import { collection, doc, getDoc, addDoc, serverTimestamp ,} from 'firebase/fire
 import { View , TextInput , Text, Alert ,TouchableOpacity , ActivityIndicator} from "react-native";
 
 import inputstyles from "../styles/inputElement";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-function AddLoadDB ({route}) {
+import {useNavigate} from 'react-router-dom';
+function AddLoadDB ({username ,contact , isVerified }) {
 
-  const {username ,contact , isVerified } = route.params
+
+const navigate = useNavigate()
 
   const loadsCollection = collection(db, "Loads");
   const [formData, setFormData] = React.useState({
@@ -75,14 +78,15 @@ function AddLoadDB ({route}) {
   };
 
   return (
-    <View   style={{alignItems :'center', paddingTop : 40}}>
- <View key={item.id} style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
-         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+    <View   style={{alignItems :'center', paddingTop : 80}}>
+ <View  style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
+         <TouchableOpacity style={{marginRight: 10}}  onPress={()=>navigate(-1)}>
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
-            <Text>backkkkk</Text>
+                    <ArrowBackIcon style={{color : 'white'}} />
+
         </TouchableOpacity> 
         
-        <Text style={{fontSize: 20 , color : 'white'}} > Add Iterms  </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} > Add Load  </Text>
        </View>
 
   <TextInput

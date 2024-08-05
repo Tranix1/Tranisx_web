@@ -11,9 +11,9 @@ function AddIterms(){
         setTruckType(prev =>!prev)
     }
     return(
-        <View style={{alignItems : 'center' , paddingTop : 60}} >
+        <View style={{alignItems : 'center' , paddingTop : 80}} >
 
-        <View key={item.id} style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
+        <View  style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
          <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
             <Text>backkkkk</Text>
@@ -22,7 +22,7 @@ function AddIterms(){
         <Text style={{fontSize: 20 , color : 'white'}} > Add Iterms  </Text>
        </View> 
           {!truckType&& <View>
-            <TouchableOpacity  onPress={()=> navigate('/addLoadsDB') } style={styles.buttonSelectStyle} >
+            <TouchableOpacity  onPress={()=> navigate('/AddIterms/addLoadsDB') } style={styles.buttonSelectStyle} >
                 <Text style={{color:"white"}}>Add Loads </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={toggleSelecTruck} style={styles.buttonSelectStyle}>

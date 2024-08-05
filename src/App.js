@@ -40,7 +40,7 @@ import SelectedUserTrucks from "./components/selectedUserIterms/userPersonalTruc
 // '#6a0c0c'
 import MainStyle from "./components/styles/Main.css"
 
-import { BrowserRouter as  Route, Routes, BrowserRouter, useNavigate , } from 'react-router-dom';
+import { BrowserRouter as Router ,Route, Routes, BrowserRouter, useNavigate , } from 'react-router-dom';
 
 
 function HomeScreen() {
@@ -112,7 +112,7 @@ const navigate = useNavigate()
     }else if(currentUser &&!username){
       navigate("addPersnoalInfo")
     }else {
-      navigate('AddIterms') 
+      navigate('/AddIterms') 
     }
   }
 
@@ -272,7 +272,7 @@ function App(){
 
 
       <Route path="/AddIterms/" element={<AddIterms/>}/>
-      <Route path="/addLoadsDB" element={<AddLoadDB  
+      <Route path="/AddIterms/addLoadsDB" element={<AddLoadDB  
       username = {username} contact = {contact}  isVerified={isVerified}/>} />
 
       <Route path="/addTrucksDB/:truckType" element={<DBTrucksAdd 

@@ -66,7 +66,7 @@ const [countryCode, setCountryCode] = React.useState('');
           const docRef = doc(db, 'personalData', userId);
           await updateDoc(docRef, { contact: `+${countryCode}${newCOntact}` });
           setNewCOntact("")
-          lert("phone number updated successfully!");
+          alert("phone number updated successfully!");
         }
       } catch (err) {
         console.error(err);
