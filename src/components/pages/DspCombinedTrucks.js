@@ -3,6 +3,7 @@ import { collection, onSnapshot, } from 'firebase/firestore';
 import { db } from '../config/fireBase';
 import { View , Text , Image , ScrollView } from 'react-native';
 
+import VerifiedIcon from '@mui/icons-material/Verified';
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 function DspAllTrucks(){      
   const trucksDB = collection(db , "Trucks")
@@ -31,20 +32,11 @@ function DspAllTrucks(){
     return(
       <View  key={item.id}>
 
-
-        { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white',zIndex : 66}} >
-
-
-              {/* <MaterialIcons name="verified" size={24} color="green" /> */}
-
-
-
-        </View>}
-        {/* {item.imageUrl&& <Image source={{uri: item.imageUrl }} style={{flex : 1 , height : 250}} />} */}
-        {/* {!item.imageUrl &&<Image source={{uri: item.imageUrl }} style={{flex : 1 , height : 250}} /> } */}
-        {/* {item.imageUrl && <Image source={{ uri: item.imageUrl }}  />} */}
-          <img src={item.imageUrl} style={{height : 250}}/>
-
+      { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
+            <VerifiedIcon style={{color : 'green'}} />
+      </View>}
+      
+          {item.imageUrl &&<img src={item.imageUrl} style={{height : 250 , borderRadius : 10}}/>}
         
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20}} >{item.CompanyName} </Text>
       {item.fromLocation && (  <Text > From {item.fromLocation} to {item.toLocation} </Text>) }

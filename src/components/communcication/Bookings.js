@@ -5,6 +5,7 @@ import { auth , db } from "../config/fireBase";
 
 
 import {useNavigate} from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function Bookings(){
     const navigate = useNavigate()
@@ -52,9 +53,7 @@ const getBookedIterms = () => {
 React.useEffect(() => {
   const unsubscribe = getBookedIterms();
 
-  return () => {
-    unsubscribe(); // Clean up the listeners when the component unmounts
-  };
+  
 }, []);
 
 
@@ -83,13 +82,14 @@ React.useEffect(() => {
 let whnBookAload = AllBooks.map((item) => {
   const userId = auth.currentUser.uid;
 
+        const serializedItem = JSON.stringify(item);
   if (item.bookerId === userId) {
     return (
       <View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300}}>
         <Text>You booked {item.ownerName} load</Text>
         <Text>He accepted / denied</Text>
 
-        <TouchableOpacity onPress={()=>navigate(`/message/${item}`)}>
+        <TouchableOpacity onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)}>
           <Text>Message</Text>
         </TouchableOpacity>
       </View>
@@ -103,8 +103,9 @@ let whnBookAload = AllBooks.map((item) => {
  let whenMyLoadBooked = AllBooks.map((item)=>{
 const userId = auth.currentUser.uid;
 
+        const serializedItem = JSON.stringify(item);
 if(!item.ownerId !== userId ){ 
-return (<View style={{height : 50 , backgroundColor :'green'}} key = {item.id}>
+return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300}} key = {item.id}>
 
           <Text> {item.ownerName} booked ur load </Text>
           
@@ -116,7 +117,7 @@ return (<View style={{height : 50 , backgroundColor :'green'}} key = {item.id}>
           <Text>Trucks owned by person</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={()=>navigate(`/message/${item}`)} >
+          <TouchableOpacity onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)} >
           <Text>Message </Text>
             </TouchableOpacity>
 
@@ -137,15 +138,15 @@ return (<View style={{height : 50 , backgroundColor :'green'}} key = {item.id}>
     }
       
   return(
-    <View style={{alignItems :'center',paddingTop:78}}>     
+    <View style={{alignItems :'center',paddingTop:80}}>     
 
-       <View style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
+       <View style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
          <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
-            <Text>backkkkk</Text>
+                    <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
         
-        <Text style={{fontSize: 20 , color : 'white'}} > Add Iterms  </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} > Bookings  </Text>
        </View>
 
         { !yourBookedIterms&&   <TouchableOpacity onPress={toggelItermsYouBooKed} style={styles.slctView}>

@@ -116,7 +116,7 @@ const navigate = useNavigate()
     }
   }
 
-    const [smallMenu , setSmallMenu] = React.useState(true)
+    const [smallMenu , setSmallMenu] = React.useState(false)
 
     function toggleSmallMenu(){
 
@@ -266,8 +266,12 @@ function App(){
       <Route path="/peronalAccTrucks/" element={<PersonalAccTrucks/>} />
 
       <Route path="/selectChat/" element={<SelectChat/>} />
-      <Route path="/mainGroup/" element={<MainGroup username={username}/>}/>
-      <Route path="/message/:messageData"   element={<Messaging username={username}/>}/>
+
+
+      <Route path="/mainGroup" element={<MainGroup username={username}/>} style={{backgroundColor:'green'}} />
+
+
+      <Route path="/message/:item"   element={<Messaging username={username}/>}/>
       <Route path="/bookings/" element={<Bookings/>} />
 
 
@@ -279,7 +283,7 @@ function App(){
        username={ username}  contact = {contact}  isVerified ={ isVerified} />} />
 
       <Route path="/dspOneTrckType/:truckType" element={<DspOneTruckType/>} initialParams={{username : username , contact : contact , isVerified : isVerified}} />
-      <Route path="/selectedUserLoads/:userId" element={<SelectedUserLoads/>} />
+      <Route path="/selectedUserLoads/:userId" element={<DspAllLoads/>} />
       <Route path="/selectedUserTrucks/:userId" element={<SelectedUserTrucks/>} />
 
     </Routes>

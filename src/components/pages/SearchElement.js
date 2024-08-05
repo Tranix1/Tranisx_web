@@ -6,7 +6,13 @@ import { db } from "../config/fireBase";
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 // import { Ionicons } from "@expo/vector-icons";
 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import {useNavigate,} from 'react-router-dom';
+import VerifiedIcon from '@mui/icons-material/Verified';
+
+
 function SearchIterms({navigation}){
+const navigate = useNavigate()
      const loadsCollection = collection(db, 'Loads');  
       const [loadsList, setLoadsList] = useState([]);
 
@@ -52,10 +58,10 @@ function SearchIterms({navigation}){
 
         const displaySearched =  filteredData.slice(0, 15).map((value , key)=>{
             return(
-              <TouchableOpacity  style={{flex : 1, marginBottom :6 , padding : 6}} key={value.id} onPress={()=> navigation.navigate('selectedUserLoads', {userId : value.userId}) }>
+              <TouchableOpacity  style={{flex : 1, marginBottom :6 , padding : 6}} key={value.id} onPress={()=> navigate(`/selectedUserLoads/${value.userId}` ) }>
 
-            { value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
-            {/* <MaterialIcons name="verified" size={26} color="green" /> */}
+            {value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
+            <VerifiedIcon style={{color : 'green'}} />
             </View>}
             <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}>{value.companyName} </Text>
             <Text >Commodity {value.typeofLoad}  rate {value.ratePerTonne} </Text>
@@ -70,8 +76,8 @@ function SearchIterms({navigation}){
             <View  style={{ height : 84  ,   paddingTop:10  ,paddingTop : 15 , alignItems : 'center' , paddingTop : 10  , alignItems : 'center', justifyContent:'center',borderColor:'#6a0c0c', borderWidth:2}} >
 
               <View  style={{flexDirection : 'row' ,height : 40 , backgroundColor :'#6a0c0c' , alignItems : 'center'}}>
-                <TouchableOpacity style={{marginRight: 10}} onPress={() => navigation.goBack()}>
-                {/* <Ionicons name="arrow-back" size={30} color="white"style={{ marginLeft: 10 }}  /> */}
+                <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+                    <ArrowBackIcon style={{color : 'white'}} />
                 </TouchableOpacity>
                 <TextInput
                     placeholder="Search"

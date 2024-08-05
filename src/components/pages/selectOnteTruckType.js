@@ -1,6 +1,7 @@
 import React from "react";
 import { View , Text , TouchableOpacity , StyleSheet} from "react-native";
 // import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 
 import {useNavigate} from 'react-router-dom';
 
@@ -13,31 +14,31 @@ const navigate = useNavigate()
             <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/BulkTrailers')   } style={styles.selectTruck}>
 
                 <Text>BulkTrailer</Text>
+                <LocalShippingIcon  />
 
-                {/* <FontAwesome5 name="truck" size={28} color="black" /> */}
             </TouchableOpacity>
 
             <View  style={{flexDirection : 'row'}}>
                 <TouchableOpacity onPress={()=> navigate( '/dspOneTrckType/sideTippers') } style={styles.selectTruck}>
                 <Text>Side Tipper</Text>
-                {/* <FontAwesome5 name="truck" size={28} color="black" /> */}
+                <LocalShippingIcon  />
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/LowBeds') } style={styles.selectTruck}>
                     <Text>LowBed</Text>
-                {/* <FontAwesome5 name="truck" size={28} color="black" /> */}
+                <LocalShippingIcon  />
                 </TouchableOpacity>
             </View>
 
             <View style={{flexDirection : 'row'}} >
                 <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/tauntliner' ) }style={styles.selectTruck} >
                 <Text> Tautliner </Text>
-                {/* <FontAwesome5 name="truck" size={28} color="black" /> */}
+                <LocalShippingIcon  />
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/tanker') } style={styles.selectTruck}>
                 <Text>Tanker</Text>
-                {/* <FontAwesome5 name="truck" size={28} color="black" /> */}
+                <LocalShippingIcon  />
                 </TouchableOpacity>
             </View>
 

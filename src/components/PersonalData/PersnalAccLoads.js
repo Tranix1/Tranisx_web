@@ -1,11 +1,17 @@
 import React,{useEffect} from "react";
-import { View ,Text,Image, TouchableOpacity,ScrollView } from "react-native";
+import { View ,Text,Image, TouchableOpacity,ScrollView , StyleSheet } from "react-native";
 import { auth, db } from '../config/fireBase'; 
 import { collection, onSnapshot,where ,query , doc , deleteDoc} from 'firebase/firestore';
 // import AntDesign from '@expo/vector-icons/AntDesign';
 
+import {useNavigate} from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 function PersonalAccLoads(){
+
+const navigate = useNavigate()
 
     const deleteLoad = async (id) => {
     const loadsDocRef = doc(db, 'Loads' , id);
@@ -42,8 +48,8 @@ function PersonalAccLoads(){
 
    const rendereIterms =  loadIterms.map((item)=>{ 
   return(
-    <View  >
-        <Text>Company {item.companyName} </Text>
+    <View  style={{ backgroundColor:  "#DDDDDD", marginBottom : 8, padding :6  }} >
+        <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}> {item.companyName} </Text>
         <Text>Contact : {item.contact}</Text>
         <Text>type of load {item.typeofLoad} </Text>
         <Text>from {item.fromLocation} to {item.toLocation} </Text>
@@ -54,17 +60,27 @@ function PersonalAccLoads(){
 
             <TouchableOpacity onPress={()=>deleteLoad(item.id)} >
               {/* <AntDesign name="delete" size={24} color="red" />    */}
+              <DeleteIcon style={{color : 'red'} }/>
             </TouchableOpacity>
       </View>     
   )})
 
-  return(
+  return(<View style={{paddingTop : 80}} > 
+       <View style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
+         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+           <ArrowBackIcon style={{color : 'white'}} />
+        </TouchableOpacity> 
+        <Text style={{fontSize: 20 , color : 'white'}} > Manage Loads </Text>
+       </View>
     <ScrollView>
       
       <div className="Main-grid">
-        {rendereIterms}
+        {loadIterms.length > 0 ? rendereIterms : <Text>Loading.....</Text> } 
       </div>
-    </ScrollView>
+    </ScrollView> 
+    </View>
   )
 }
 export default React.memo(PersonalAccLoads)
+
+

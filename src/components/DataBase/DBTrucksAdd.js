@@ -9,6 +9,7 @@ import inputstyles from "../styles/inputElement";
 // import * as ImagePicker from 'expo-image-picker';
 
 // import Fontisto from '@expo/vector-icons/Fontisto';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 
 import { useParams , useNavigate } from 'react-router-dom';
@@ -36,18 +37,31 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
 
 
 
-
-
- const [image, setImage] = useState(null);  
-
   
+  
+  const [image, setImage] = useState(null);  
   const [ imageUpload, setImageUpload] = React.useState(null)    
+
+
+    const handleFileInputChange = (e) => {
+    // Handle file input change here
+    setImageUpload(e.target.files[0])
+    const file = e.target.files[0];
+
+     if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
 
     const uploadImage = ()=>{
       if(imageUpload === null) return
       const imageRef = ref(storage , `Trucks/${imageUpload.name + new Date().getTime()  }`)
       uploadBytes(imageRef , imageUpload).then(()=>{
-        alert("refresh page to see changes")
       })
     }
 
@@ -91,8 +105,8 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
     }
   };
   return (
-      <View style={{alignItems :'center', paddingTop : 40}} >
-         <View  style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
+      <View style={{alignItems :'center', paddingTop : 80}} >
+         <View  style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
          <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
             <Text>backkkkk</Text>
@@ -102,21 +116,24 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
        </View>
 
 
-     {image && <Image source={{ uri: image.localUri }} style={{ width: 200, height: 200 }} />}
+     {/* {image && <Image source={{ uri: image.localUri }} style={{ width: 200, height: 200 }} />} */}
+      {image && <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />}
 
-     {!image && <TouchableOpacity style={{marginBottom : 9 , backgroundColor:'red'}}>
+   
+       {!image&&<div>
+    <label for="fileInput" >     
+        <CameraAltIcon style={{color : '#6a0c0c' , fontSize : 33}} />
 
-
-
-          {/* <Fontisto name="camera" size={30} color="#6a0c0c" /> */}
-     <input
-      className="inputFIle"
+    </label>
+    <input
+      style={{display: 'none'}}
+      id="fileInput"
       type="file"
-      onChange={(e)=>{setImageUpload(e.target.files[0])}}
-      />
+      onChange={handleFileInputChange}
+    />
 
+    </div>}
 
-     </TouchableOpacity>}
 
       
         <TextInput

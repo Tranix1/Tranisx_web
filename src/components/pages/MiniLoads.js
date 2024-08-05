@@ -3,9 +3,10 @@ import { collection, onSnapshot ,query } from 'firebase/firestore';
 import { View , Text , ScrollView , TouchableOpacity} from 'react-native';
 import { db } from '../config/fireBase';
 
-import { BrowserRouter as Router, Route, Routes, BrowserRouter , useNavigate} from 'react-router-dom';
+import {  useNavigate} from 'react-router-dom';
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 const MiniLoad = () => {
 
@@ -46,7 +47,7 @@ const rendereIterms = mainLoadsList.map((item)=>{
   onPress={()=> navigate(`/selectedUserLoads/${item.userId}`) } >
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
-         {/* <MaterialIcons name="verified" size={26} color="green" /> */}
+            <VerifiedIcon style={{color : 'green'}} />
       </View>}
 
       <View className='miniloadH3Div' key={item.id} style={{backgroundColor : 'rgb(129,201,149)' ,  }} >

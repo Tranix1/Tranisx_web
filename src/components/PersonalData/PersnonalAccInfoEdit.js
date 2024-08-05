@@ -11,8 +11,11 @@ import ReactFlagsSelect from "react-flags-select";
 import { countries } from 'countries-list';
 
 
+import {useNavigate} from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 function PersonalAccInfoEdit({username ,contact }){
 
+const navigate = useNavigate()
 const [ newUserName , setNewUserName ] = React.useState('')
 
     const handleUpdateUsername = async () => {
@@ -92,8 +95,13 @@ const [countryCode, setCountryCode] = React.useState('');
 
 
 return(
-  <View style={{alignItems :'center' , paddingTop: 60}} >
-
+  <View style={{alignItems :'center' , paddingTop: 80}} >
+   <View style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
+         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+           <ArrowBackIcon style={{color : 'white'}} />
+        </TouchableOpacity> 
+        <Text style={{fontSize: 20 , color : 'white'}} > Personal Information </Text>
+       </View>
   { !editContact && !editUsername &&<View>
       <TouchableOpacity onPress={toggleIntrstUserName}  style={styles.selectToEdit} >
 

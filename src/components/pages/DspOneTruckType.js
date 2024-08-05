@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../config/fireBase';
-import { View , Text , Image , ScrollView } from 'react-native';
+import { View , Text , Image , ScrollView , TouchableOpacity} from 'react-native';
 import {onSnapshot ,  query ,collection,where } from "firebase/firestore"
 
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-import { useParams } from 'react-router-dom';
+import { useParams , useNavigate } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import VerifiedIcon from '@mui/icons-material/Verified';
+
 function DspOneTruckType ({} ){ 
 
+const navigate = useNavigate()
     const {truckType} = useParams()
   const [allTrucks, setAllTrucks] = useState([]);
 
@@ -41,15 +45,11 @@ function DspOneTruckType ({} ){
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white',zIndex : 66}} >
 
-
-            {/* <MaterialIcons name="verified" size={24} color="green" /> */}
-
-
+            <VerifiedIcon style={{color : 'green'}} />
 
       </View>}
 
-        {item.imageUrl&& <Image source={{uri: item.imageUrl }} style={{flex : 1 , height : 250}} />}
-        {!item.imageUrl &&<Image source={{uri: item.imageUrl }} style={{flex : 1 , height : 250}} /> }
+          {<img src={item.imageUrl} style={{height : 250}}/>}
         
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20}} >{item.CompanyName} </Text>
       {item.fromLocation && (  <Text > From {item.fromLocation} to {item.toLocation} </Text>) }
@@ -66,7 +66,14 @@ function DspOneTruckType ({} ){
   
  
 return(
-  <View>
+  <View style={{paddingTop:80}} >
+      <View style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
+         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+        
+                    <ArrowBackIcon style={{color : 'white'}} />
+        </TouchableOpacity> 
+        <Text style={{fontSize: 20 , color : 'white'}} > Truckerz </Text>
+       </View>
         <ScrollView>
       <div className="Main-grid">
          {allTrucks.length > 0 ? rendereIterms   : <Text>Loading...</Text>}

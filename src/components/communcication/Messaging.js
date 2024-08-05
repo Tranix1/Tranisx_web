@@ -5,13 +5,21 @@ import { db  , auth} from "../config/fireBase";
 
 import { useParams , useNavigate} from 'react-router-dom';
 // import { Ionicons } from "@expo/vector-icons";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SendIcon from '@mui/icons-material/Send';
 function Messaging ({username}){
   
 // Improve code to get Message Data later 
 
     const navigate = useNavigate()
-    const {messageData} = useParams()
-useEffect(() => {
+    let {item } = useParams()
+      let messageData = JSON.parse(decodeURIComponent(item));
+
+      
+      const contactId = messageData.msgReceiverId || messageData.userId
+      
+      useEffect(() => {
+  const userId = auth.currentUser.uid
 
   let chatRef 
   if(messageData.chatId){
@@ -35,7 +43,7 @@ useEffect(() => {
     });
     
     return () => unsubscribe(); // Cleanup the listener when the component unmounts
-}, [userId, contactId ]);
+}, [ contactId ]);
 
 
 
@@ -53,9 +61,7 @@ const chatQuery = query(chatsRef, where('chatId', '==', chatId)); // Query for m
     return !querySnapshot.empty; // Returns true if a document exists, false otherwise
   };
 
-const userId = auth.currentUser.uid;
 
-const contactId = messageData.msgReceiverId
 
 const [messages, setMessages] = useState([]);
 const [message, setMessage] = useState("");
@@ -64,6 +70,7 @@ const [message, setMessage] = useState("");
 
 const handleSubmit = async () => {
 
+  const userId = auth.currentUser.uid
 try {
   let addChatId 
   
@@ -125,10 +132,12 @@ if (!existingChat) {
         let previousDate = null;
 
         let dspMessages = messages.map((item, index) => {
+
           const messageDate = item.currentDate;
           const showMessageDate = previousDate !== messageDate;
           previousDate = messageDate;
 
+         const userId = auth.currentUser.uid
           if (item.msgReceiverId === userId) {
             return (
               <View key={item.id} style={{ padding: 7, marginBottom: 6, backgroundColor: "green", marginRight: 80 }}>
@@ -174,16 +183,13 @@ if (!existingChat) {
 
 
 const scrollViewRef = React.useRef();
-return (<View style={{ flex: 1 , paddingBottom : 6}}>
+return (<View style={{ position : 'absolute' , top :0 , bottom : 0, width : 420 , }}>
         <View  style={{flexDirection : 'row' , height : 84  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
-
-
-            {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
-
+                    <ArrowBackIcon style={{color : 'white'}} />
 
         </TouchableOpacity>
-        <Text style={{fontSize: 20 , color : 'white'}} >{messageData.companyName}{ messageData.receiverName} </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} >{messageData.companyName}{ messageData.receiverName}{messageData.ownerName} </Text>
        </View>
 
 
@@ -213,11 +219,7 @@ return (<View style={{ flex: 1 , paddingBottom : 6}}>
   />
 
      <TouchableOpacity onPress={handleSubmit} style={{ width : 50 , backgroundColor : '#9d1e1e', borderRadius : 6  ,  alignItems : 'center' , justifyContent: 'center' , height : 35, marginLeft : 4 , marginRight : 6}}  >
-
-
-      {/* <Ionicons name="send" size={25} color="white" /> */}
-
-
+      <SendIcon style={{color : 'white'}}/>
     </TouchableOpacity>
    
   </View>

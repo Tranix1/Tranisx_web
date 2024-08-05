@@ -5,6 +5,7 @@ import { auth ,db} from "../config/fireBase";
 
 
 import {useNavigate} from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 function SelectChat(){
 
 
@@ -57,7 +58,7 @@ React.useEffect(() => {
 
     if(item.msgSenderId === userId){
     return(
-      <TouchableOpacity  key={item.id} style={{height : 30  , alignItems : 'center' , margin : 10}} onPress={()=>navigate(`message/${item}`)}>
+      <TouchableOpacity  key={item.id} style={{height : 30  , alignItems : 'center' , margin : 10 }} onPress={()=>navigate(`message/${item}`)}>
         <Text>{item.receiverName} </Text>
       </TouchableOpacity>
     )
@@ -70,16 +71,16 @@ React.useEffect(() => {
     }
   } )
 
-return(<View style={{padding : 10}} >
-   <View  style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
+return(<View style={{padding : 10 , paddingTop : 80 , }} >
+   <View  style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
          <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
-            <Text>backkkkk</Text>
+                    <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
         
         <Text style={{fontSize: 20 , color : 'white'}} > Add Iterms  </Text>
        </View>
-  <TouchableOpacity onPress={()=>navigate('mainGroup') } style={{borderBlockColor : "#6a0c0c" , width : 300 , borderWidth : 2, marginTop :10 ,  height : 40  ,justifyContent : 'center' , alignItems:'center'}} >
+  <TouchableOpacity onPress={()=>navigate('/mainGroup') } style={{borderBlockColor : "#6a0c0c" , width : 300 , borderWidth : 2, marginTop :10 ,  height : 40  ,justifyContent : 'center' , alignItems:'center'}} >
     <Text>Main Group </Text>
   </TouchableOpacity>
   {_ppleInTouch}

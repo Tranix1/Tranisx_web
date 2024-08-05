@@ -6,11 +6,12 @@ import { db , auth} from "../config/fireBase";
 
 
 import { useNavigate } from 'react-router-dom';
-// import { Ionicons } from '@expo/vector-icons';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SendIcon from '@mui/icons-material/Send';
 
 function MainGroup({username}){
 
-    const {navigate} = useNavigate()
+    const navigate = useNavigate()
 
   const [message , setMessages]=React.useState([])
 
@@ -161,14 +162,13 @@ const formattedPreviousDate = prevDate.toLocaleDateString('en-US', {
 
 const scrollViewRef = React.useRef();
     return(
-<View style={{ flex: 1 , paddingBottom : 6}}>
+<View style={{ position : 'absolute' ,bottom : 0 , top : 0 , width:420 , }}>
  <View  style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
          <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
-            {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
-            <Text>backkkkk</Text>
+                    <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
         
-        <Text style={{fontSize: 20 , color : 'white'}} > Add Iterms  </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} > Main Group</Text>
        </View>
 
 
@@ -199,6 +199,7 @@ const scrollViewRef = React.useRef();
      <TouchableOpacity onPress={handleSubmit} style={{ width : 50 , backgroundColor : '#9d1e1e', borderRadius : 6  ,  alignItems : 'center' , justifyContent: 'center' , height : 35, marginLeft : 4 , marginRight : 6}}  >
 
       {/* <Ionicons name="send" size={25} color="white" /> */}
+      <SendIcon style={{color : 'white'}}/>
 
     </TouchableOpacity>
    

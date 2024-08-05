@@ -42,7 +42,7 @@ function SelectedUserTrucks ({route , navigation } ){
          {/* <MaterialIcons name="verified" size={26} color="green" /> */}
       </View>}
       
-        {item.imageUrl&& <Image source={{uri: item.imageUrl }} style={{flex : 1 , height : 250}} />}
+          {item.imageUrl &&<img src={item.imageUrl} style={{height : 250 , borderRadius : 10}}/>}
         {!item.imageUrl &&<Image source={{uri: item.imageUrl }} style={{flex : 1 , height : 250}} /> }
         
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20}} >{item.CompanyName} </Text>
@@ -71,7 +71,7 @@ return(
         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigation.goBack()}>
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
         </TouchableOpacity>
-      <Text style={{fontSize: 20 , color : 'white'}} > {item.companyName} </Text>
+      <Text style={{fontSize: 20 , color : 'white'}} > {item.companyName} Trucks</Text>
        </View> )})
        }
         <ScrollView>

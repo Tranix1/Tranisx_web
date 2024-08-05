@@ -2,12 +2,18 @@ import React, { useEffect, useState} from 'react';
 import { View , Text , ScrollView, TouchableOpacity , ActivityIndicator , StyleSheet , Linking, Alert} from "react-native"
 import { auth, db } from '../config/fireBase';
 import { collection, onSnapshot , serverTimestamp ,addDoc, query , where , getDocs ,doc,deleteDoc} from 'firebase/firestore';
-import { useNavigation } from '@react-navigation/native';
 
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
+import {useNavigate,useParams} from 'react-router-dom';
+import VerifiedIcon from '@mui/icons-material/Verified';
 function DspAllLoads({username}){  
-  const navigation = useNavigation();
+
+const navigate = useNavigate()
+const {userId} = useParams()
+
 
   const deleteLoad = async (id) => {
   try {
@@ -23,48 +29,70 @@ function DspAllLoads({username}){
 };
 
 
-     const loadsCollection = collection(db, 'Loads');  
+    //  const loadsCollection = collection(db, 'Loads');  
       const [loadsList, setLoadsList] = useState([]);
 
-    useEffect(() => {
-      const unsubscribe = onSnapshot(loadsCollection, (querySnapshot) => {
-        let filteredData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        
-       filteredData = filteredData.sort((a, b) => b.timeStamp - a.timeStamp);
 
-        setLoadsList(filteredData);
-      });
-      
-   const checkAndDeleteExpiredItems = () => {
-    loadsList.forEach((item) => {
-      const deletionTime = item.deletionTime;
+  useEffect(() => {
+    const loadData = () => {
+      if (userId) {
+        const dataQuery = query(collection(db, "Loads"), where("userId", "==", userId));
 
-      const timeRemaining = deletionTime - Date.now();
-      if (timeRemaining <= 0) {
-        deleteLoad(item.id);
+        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
+          const loadedData = [];
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added' || change.type === 'modified') {
+              const dataWithId = { id: change.doc.id, ...change.doc.data() };
+              loadedData.push(dataWithId);
+            }
+          });
+
+          setLoadsList(loadedData);
+        });
+
+        return unsubscribe;
       } else {
-        setTimeout(() => {
-          deleteLoad(item.id);
-        }, timeRemaining);
+        const loadsCollection = collection(db, "Loads");
+
+        const unsubscribe = onSnapshot(loadsCollection, (querySnapshot) => {
+          let filteredData = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          filteredData = filteredData.sort((a, b) => b.timeStamp - a.timeStamp);
+
+          setLoadsList(filteredData);
+        });
+
+        const checkAndDeleteExpiredItems = () => {
+          loadsList.forEach((item) => {
+            const deletionTime = item.deletionTime;
+            const timeRemaining = deletionTime - Date.now();
+            if (timeRemaining <= 0) {
+              deleteLoad(item.id);
+            } else {
+              setTimeout(() => {
+                deleteLoad(item.id);
+              }, timeRemaining);
+            }
+          });
+        };
+
+        checkAndDeleteExpiredItems();
+
+        const interval = setInterval(() => {
+          checkAndDeleteExpiredItems();
+        }, 1000); // Check every second for expired items
+
+        return () => {
+          clearInterval(interval);
+          unsubscribe(); // Unsubscribe the listener when the component unmounts
+        };
       }
-    });
-  };
+    };
 
-  checkAndDeleteExpiredItems();
-
-  const interval = setInterval(() => {
-    checkAndDeleteExpiredItems();
-  }, 1000); // Check every second for expired items
-
-  return () => {
-    clearInterval(interval);
-    unsubscribe(); // Unsubscribe the listener when the component unmounts
-  };
-      
-    }, [loadsList]);
+    loadData();
+  }, [userId, loadsList]); 
     
     
 
@@ -88,13 +116,11 @@ function DspAllLoads({username}){
     };
 
 
-
-
-
     const rendereIterms =  loadsList.map((item)=>{ 
       
   
-      
+        const serializedItem = JSON.stringify(item);
+
       const handleBook = async (clickedItem) => {
 
         
@@ -119,9 +145,9 @@ function DspAllLoads({username}){
         rate : item.ratePerTonne,
         timestamp : serverTimestamp() ,
       });
-      Alert.alert("Booking successful!")    
+      alert("Booking successful!")    
         }else {
-          Alert.alert("Already Booked this Item!")    
+          alert("Already Booked this Item!")    
 
         }
       setSpinnerItem(null)      
@@ -133,7 +159,7 @@ function DspAllLoads({username}){
         
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-          <TouchableOpacity onPress={()=>navigation.navigate('message', {messageData :item }) }>
+          <TouchableOpacity onPress={()=>navigate(`/message/${item} `) }>
             <Text>Message now</Text>
           </TouchableOpacity>
 
@@ -152,10 +178,7 @@ function DspAllLoads({username}){
     <View  key={item.id} style={{ backgroundColor:  "#DDDDDD", marginBottom : 8, padding :6  }} >
 
             { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white',zIndex : 66}} >
-                  {/* <MaterialIcons name="verified" size={24} color="green" /> */}
-
-
-
+            <VerifiedIcon style={{color : 'green'}} />
             </View>}
         <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}  >{item.companyName} </Text>
         <Text>Commodity {item.typeofLoad} </Text>
@@ -188,7 +211,7 @@ function DspAllLoads({username}){
         </TouchableOpacity>
       )}
 
-        <TouchableOpacity  onPress={()=>navigation.navigate('message', {messageData :item }) } style={styles.buttonStyle} >
+        <TouchableOpacity  onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)} style={styles.buttonStyle} >
           <Text>Message</Text>
         </TouchableOpacity>
 
@@ -197,13 +220,32 @@ function DspAllLoads({username}){
       </View>     
   )})
 
+        let comapnyName = null;
   return(
+    <View>
+        {userId && loadsList.map((item)=>{
+      
+          const companyName = item.companyName;
+          const showUserName = comapnyName !== companyName;
+          comapnyName = companyName;
+      return(     
+        showUserName&&<View key={item.id} style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
+      
+           <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+            {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
+                    <ArrowBackIcon style={{color : 'white'}} />
+        </TouchableOpacity> 
+        
+        <Text style={{fontSize: 20 , color : 'white'}} > {item.companyName}  </Text>
+       </View> )})
+       }
     <ScrollView style={{padding : 10 , marginTop : 10 }} >
       <div className="Main-grid">
         {rendereIterms}
         <View style={{height : 200}} ></View>
         </div>
-    </ScrollView>
+    </ScrollView> 
+    </View>
   )
 
 }
