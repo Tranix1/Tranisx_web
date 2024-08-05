@@ -6,6 +6,8 @@ import { query , doc ,  getDocs,collection,where,setDoc } from "firebase/firesto
 // import CountryPicker from 'react-native-country-picker-modal';
 import inputstyles from "../styles/inputElement";
 
+import ReactFlagsSelect from "react-flags-select";
+import { countries } from 'countries-list';
 function PersonalAccInfo({navigation , route}){
 
 
@@ -58,16 +60,24 @@ const handleSubmitData = async (event) => {
 
 
 
-
   const [callingCode, setCallingCode] = React.useState('');
-
-const handleCountrySelect = (country) => {
-  setCallingCode(country.cca2);
-    setCountryCode(country.callingCode);
-  };
   
+  
+  const getCallingCode = (countryCode) => {
+    const countryData = countries[countryCode];
+    if (countryData) {
+      return countryData.phone;
+    }
+    return null;
+  };
+
+  const handleCountrySelect = (code) => {
+      const selectedCallingCode = getCallingCode(code);
+      setCallingCode(selectedCallingCode);
+  };
+
     return(
-        <View style={{paddingTop:60}} > 
+        <View style={{paddingTop:60 , alignItems : 'center'}} > 
 
             {errorOccur&& <Text>{errorOccur} </Text>}
       {/* {!countryCode&&  <CountryPicker
@@ -80,7 +90,15 @@ const handleCountrySelect = (country) => {
 
         />P
           }       */}
-      {countryCode && <Text>{countryCode}</Text>}
+      <ReactFlagsSelect
+        select={callingCode}
+        onSelect={(code) => handleCountrySelect(code)}
+        placeholder="Select Country"
+        searchable
+      />
+    
+
+      {<Text>asdasd{callingCode}</Text>}
           <TextInput
             placeholder="Username"
             type="text"

@@ -6,6 +6,7 @@ import  { auth , db,  } from "./components/config/fireBase"
 import {doc , getDoc ,query ,collection , where,onSnapshot} from "firebase/firestore"
 
 import Header from "./components/Header"
+import SmallMenu from "./components/SmallMenu";
 import SearchIterms from "./components/pages/SearchElement"
 
 import CreateUser from "./components/Auth/LogIn"
@@ -34,6 +35,7 @@ import Bookings from "./components/communcication/Bookings"
 
 import SelectedUserLoads from "./components/selectedUserIterms/userPersonalLoads"
 import SelectedUserTrucks from "./components/selectedUserIterms/userPersonalTrucls"
+
 // 'rgb(129,201,149)
 // '#6a0c0c'
 // '#6a0c0c'
@@ -115,15 +117,37 @@ const navigate = useNavigate()
     }
   }
 
+    const [smallMenu , setSmallMenu] = React.useState(true)
+
+    function toggleSmallMenu(){
+        setSmallMenu(prev => !prev)
+    }
   return (
     <View >  
-              <Header/>
+              <Header  toggleGoHome = {toggleGoHome} toggleDspLoads={toggleDspLoads} toggleDspTrckType={toggleDspTrckType} toggleSmallMenu={toggleSmallMenu}    />
+              
+     <View  style={{flexDirection:'row' , justifyContent : 'space-between' , paddingLeft : 20 , paddingRight: 20 , height : 40 , alignItems : 'center' , backgroundColor : '#6a0c0c' , paddingTop : 10 }}>
+
+               <TouchableOpacity onPress={toggleGoHome}> 
+                    <Text style={{color : 'white'}} >Home</Text>
+                </TouchableOpacity>
+
+             <TouchableOpacity onPress={ toggleDspLoads  }>
+                    <Text style={{color : 'white'}} >Loads</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={toggleDspTrckType} >
+                    <Text  style={{color : 'white'}}>Trucks</Text>
+
+                </TouchableOpacity>
+             </View>
+             {smallMenu && <SmallMenu   /> }
             
          {/* { currentUser&& !username&& <PersonalAccInfo personalInfo={personalInfo} />}  */}
 
              <TouchableOpacity onPress={checkAuth}  style={{position :'absolute',top: 440 ,right:10 , width : 60 , height : 35 , alignItems :"center" , justifyContent :'center', backgroundColor:'rgb(129,201,149)' , zIndex :200 , borderRadius: 8}} >
                 <Text style={{color : 'white'}} >Add</Text>
              </TouchableOpacity>
+
    {!dspLoads && !dspTruckType && <View  >
 
      <MiniLoad/>
@@ -220,6 +244,7 @@ function App(){
 
 
        <Routes>
+
 
       <Route exact path="/" element={<HomeScreen/>} />
 

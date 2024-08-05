@@ -7,11 +7,15 @@ import { auth } from "./config/fireBase";
 import {doc , onSnapshot} from "firebase/firestore"
 import { db } from "./config/fireBase";
 
+
+import { useNavigate } from "react-router-dom";
+import SearchIcon from '@mui/icons-material/Search';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
+
  function Header (){
-    const [smallMenu , setSmallMenu] = React.useState(true)
-    function toggleSmallMenu(){
-        setSmallMenu(prev => !prev)
-    }
+
+  const navigate = useNavigate()
 
   const [currentUser, setCurrentUser] = React.useState(null);
 
@@ -74,27 +78,31 @@ import { db } from "./config/fireBase";
              {/* import { BsThreeDotsVertical } from "react-icons/bs"; */}
                 {/* {smallMenu && ! currentUser  } */}
 
-             {smallMenu && <SmallMenu   /> }
 
              <View style={{flexDirection : 'row' , height : 54 ,justifyContent : 'space-between' ,  paddingLeft : 15 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , }} >
                 <Text style={{color : 'white' , fontSize : 19 , zIndex : 50}} >Truckerz</Text>
                 <View style={{flexDirection: 'row'}} > 
-                    {/* <TouchableOpacity onPress={()=> navigation.navigate('searchElement') }> */}
+                    <TouchableOpacity onPress={()=> navigate('searchElement') }>
 
 
                           {/* <FontAwesome name="search" size={24} color="white" /> */}
                           {/* <Text>yaya  </Text> */}
+                          <SearchIcon/>
 
-                    {/* </TouchableOpacity> */}
+                    </TouchableOpacity>
 
                     {/* <TouchableOpacity style={{marginLeft : 6}} onPress={currentUser? toggleSmallMenu :()=> navigation.navigate('createUser')  } > */}
                     <TouchableOpacity style={{marginLeft : 6}}  >
                     {/* <Ionicons name="ellipsis-vertical" size={24} color="white" /> */}
+                    <MoreVertIcon/>
                     </TouchableOpacity>
                 </View>
 
              </View>
-             <View></View>
+
+             <View>
+
+             </View>
 
         </View>
     )

@@ -4,8 +4,10 @@ import { db , auth } from "../config/fireBase";
 import { View , TextInput ,TouchableOpacity , Text, Alert} from "react-native";
 
 import inputstyles from "../styles/inputElement"
+import { useNavigate } from "react-router-dom";
 
 function CreateUser({route , navigation}) {
+  const navigate = useNavigate()
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -16,7 +18,7 @@ function CreateUser({route , navigation}) {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       setEmail("")
       setPassword("")
-      navigation.navigate('addPersnoalInfo')
+      navigate('addPersnoalInfo')
     } catch (err) {
       setError(err.toString());
     }
