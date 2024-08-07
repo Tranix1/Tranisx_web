@@ -9,6 +9,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import {useNavigate,useParams} from 'react-router-dom';
 import VerifiedIcon from '@mui/icons-material/Verified';
+import DeleteIcon from '@mui/icons-material/Delete';
 function DspAllLoads({username}){  
 
 const navigate = useNavigate()
@@ -39,7 +40,7 @@ const {userId} = useParams()
         const dataQuery = query(collection(db, "Loads"), where("userId", "==", userId));
 
         const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
-          const loadedData = [];
+          let loadedData = [];
           snapshot.docChanges().forEach((change) => {
             if (change.type === 'added' || change.type === 'modified') {
               const dataWithId = { id: change.doc.id, ...change.doc.data() };
@@ -47,6 +48,7 @@ const {userId} = useParams()
             }
           });
 
+          loadedData = loadedData.sort((a, b) => b.timeStamp - a.timeStamp);
           setLoadsList(loadedData);
         });
 
@@ -63,7 +65,8 @@ const {userId} = useParams()
 
           setLoadsList(filteredData);
         });
-
+         
+      }
         const checkAndDeleteExpiredItems = () => {
           loadsList.forEach((item) => {
             const deletionTime = item.deletionTime;
@@ -86,9 +89,7 @@ const {userId} = useParams()
 
         return () => {
           clearInterval(interval);
-          unsubscribe(); // Unsubscribe the listener when the component unmounts
         };
-      }
     };
 
     loadData();
@@ -106,6 +107,8 @@ const {userId} = useParams()
     
     
     const [spinnerItem, setSpinnerItem] = React.useState(null);
+    const [ bookingError , setBookingError] =React.useState("")
+
     const checkExistiDoc = async (docId) => {
     const chatsRef = collection(db, 'bookings'); // Reference to the 'ppleInTouch' collection
     const chatQuery = query(chatsRef, where('docId', '==',docId )); // Query for matching chat ID
@@ -152,7 +155,7 @@ const {userId} = useParams()
         }
       setSpinnerItem(null)      
     } catch (err) {
-      console.error(err);
+      setBookingError(err.toString());
     }
   };
 
@@ -202,7 +205,7 @@ const {userId} = useParams()
         <View style={{flexDirection : 'row', justifyContent : 'space-evenly' }} >
 
   
-      
+      {bookingError&&<Text>{bookingError}</Text>}
           {spinnerItem === item ? (
         <ActivityIndicator size={34} />
       ) : (
@@ -215,6 +218,7 @@ const {userId} = useParams()
           <Text>Message</Text>
         </TouchableOpacity>
 
+       
         </View>
 
       </View>     
@@ -231,7 +235,7 @@ const {userId} = useParams()
       return(     
         showUserName&&<View key={item.id} style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
       
-           <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+           <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate("/")}>
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
                     <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 

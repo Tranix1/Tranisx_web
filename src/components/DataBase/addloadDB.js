@@ -37,8 +37,8 @@ const navigate = useNavigate()
     const [spinnerItem, setSpinnerItem] = React.useState(false);
   const handleSubmit = async () => {
     if(!formData.ratePerTonne || !formData.typeofLoad || !formData.toLocation || !formData.fromLocation || !formData.paymentTerms){
-        // Alert.alert('Enter Rate , Commodity ,  ','Routes and Payment terms' )
-        // return
+        alert('Enter Rate , Commodity ,  ','Routes and Payment terms' )
+        return
       }
       setSpinnerItem(true)
 
@@ -150,6 +150,7 @@ const navigate = useNavigate()
     type="text"
     style={inputstyles.addIterms }
   />
+  {/* <Text>acive Loading</Text> */}
 
   <TouchableOpacity  onPress={handleSubmit} style={{backgroundColor : '#6a0c0c' , width : 80 , height : 35 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center'}}>
     <Text style={{color : 'white'}}>submit</Text>

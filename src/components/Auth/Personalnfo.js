@@ -10,6 +10,7 @@ import ReactFlagsSelect from "react-flags-select";
 import { countries } from 'countries-list';
 import { useNavigate } from "react-router-dom";
 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 function PersonalAccInfo({}){
   
 
@@ -47,7 +48,7 @@ const handleSubmitData = async (event) => {
           await setDoc(doc(db, 'personalData', userId), { username: usernameValue, contact: `+${countryCode}${contact}` });
           setUsername("");
           setContact("");
-           navigate('Truckerz')
+           navigate('/')
         } else {
           // Username already exists, handle the situation here
           setErrorOccur('Username already exists!');
@@ -81,14 +82,13 @@ const handleSubmitData = async (event) => {
 };
 
     return(
-        <View style={{paddingTop:78 , alignItems : 'center'}} > 
- <View style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
+        <View style={{paddingTop:80 , alignItems : 'center'}} > 
+ <View style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
          <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
-            {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
-            <Text>backkkkk</Text>
+                    <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
         
-        <Text style={{fontSize: 20 , color : 'white'}} > Add Iterms  </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} > personal Infomation  </Text>
        </View>
             {errorOccur&& <Text>{errorOccur} </Text>}
     

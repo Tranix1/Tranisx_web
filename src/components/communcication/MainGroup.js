@@ -37,19 +37,65 @@ React.useEffect(() => {
 
 }, []);
 
+ const [currentTime, setCurrentTime] = useState(formatTime(new Date()));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(formatTime(new Date()));
+    }, 1000); // Update every minute
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, []); // Empty dependency array to run the effect only once
+
+  function formatTime(date) {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+
+const [currentDateTime, setCurrentDateTime] = useState(formatDateTime(new Date()));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentDateTime(formatDateTime(new Date()));
+    }, 5000); // Update every 5 seconds
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, []); // Empty dependency array to run the effect only once
+
+  function formatDateTime(date) {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  }
+
+    const [previousDateTime, setPreviousDateTime] = useState(formatDateTime(getPreviousDate()));
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPreviousDateTime(formatDateTime(getPreviousDate()));
+    }, 5000); // Update every 5 seconds
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, []); // Empty dependency array to run the effect only once
+
+  function formatDateTime(date) {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  }
+
+  function getPreviousDate() {
+    const currentDate = new Date();
+    const previousDate = new Date(currentDate);
+    previousDate.setDate(currentDate.getDate() - 1);
+    return previousDate;
+  }
 
 
 
- const [image, setImage] = useState(null);
 
-
-
-
-
-
-
-
- const mainGroup = collection(db ,'mainGroup');
+ const mainGroup = collection(db ,'MainGroupChats');
 
 const [typedMsg , setTypedMsg] = React.useState('')
 
@@ -59,8 +105,8 @@ const handleSubmit = async (event) => {
       typedMsg: typedMsg,
       username: username,
       userId: auth.currentUser.uid,
-      currentDate: currentDate,
-      // currentTime: currentTime,
+      currentDate: currentDateTime,
+      currentTime: currentTime,
       timestamp: serverTimestamp(),
       // addedImage: imageUrl,
       isViewed: false, // Set the initial value to indicate the message is not viewed
@@ -75,36 +121,18 @@ const handleSubmit = async (event) => {
 
 
 
-const currentDate = new Date();
-
-// Format the date as "Thursday, July 25, 2024"
-const formattedDate = currentDate.toLocaleDateString('en-US', {
-  weekday: 'long',
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric'
-});
-const prevDate = new Date(currentDate.getTime() - (24 * 60 * 60 * 1000));
-
-// Format the previous date as "Thursday, July 25, 2024"
-const formattedPreviousDate = prevDate.toLocaleDateString('en-US', {
-  weekday: 'long',
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric'
-});
 
  let previousDate = null;
  const dspMessages =   message.map((item) => {
-      let messageDate = item.currentDate;
-      const showMessageDate = previousDate !== messageDate;
-      previousDate = messageDate;
-
-      if (messageDate === formattedDate) {
-        messageDate = 'today';
-      } else if (messageDate === formattedPreviousDate) {
-        messageDate = 'yesterday';
-      }
+     let messageDate = item.currentDate;
+          const showMessageDate = previousDate !== messageDate;
+          previousDate = messageDate;
+          
+          if (messageDate === currentDateTime) {
+                messageDate = 'today';
+              } else if (messageDate === previousDateTime) {
+                messageDate = 'yesterday';
+              }
 
       if (item.userId === auth.currentUser.uid) {
         return (<View key={item.id}>
@@ -172,7 +200,7 @@ const scrollViewRef = React.useRef();
        </View>
 
 
-    <ScrollView      style={{ flex: 1, paddingBottom: 0, paddingLeft: 7, paddingRight: 7, paddingTop: 20, marginBottom: 40 }}
+    <ScrollView      style={{ flex: 1, paddingBottom: 10, paddingLeft: 7, paddingRight: 7, paddingTop: 20, marginBottom: 40 }}
             contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
             showsVerticalScrollIndicator={false}
             onContentSizeChange={(contentWidth, contentHeight) => {
@@ -197,8 +225,6 @@ const scrollViewRef = React.useRef();
   />
 
      <TouchableOpacity onPress={handleSubmit} style={{ width : 50 , backgroundColor : '#9d1e1e', borderRadius : 6  ,  alignItems : 'center' , justifyContent: 'center' , height : 35, marginLeft : 4 , marginRight : 6}}  >
-
-      {/* <Ionicons name="send" size={25} color="white" /> */}
       <SendIcon style={{color : 'white'}}/>
 
     </TouchableOpacity>

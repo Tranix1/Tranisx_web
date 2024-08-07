@@ -12,13 +12,13 @@ import inputstyles from "../styles/inputElement";
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useParams , useNavigate } from 'react-router-dom';
 
 function DBTrucksAdd( { username ,contact , isVerified } ) {
 
     const {truckType} = useParams()
-    const {navigate} = useNavigate()
-
+    const navigate = useNavigate()
   const trucksDB = collection(db, "Trucks");
 
   const [formData, setFormData] = React.useState({
@@ -108,11 +108,10 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
       <View style={{alignItems :'center', paddingTop : 80}} >
          <View  style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
          <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
-            {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
-            <Text>backkkkk</Text>
+                    <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
         
-        <Text style={{fontSize: 20 , color : 'white'}} > Add Iterms  </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} > Add Trucks  </Text>
        </View>
 
 

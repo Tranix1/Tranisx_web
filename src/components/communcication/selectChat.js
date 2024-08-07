@@ -56,15 +56,16 @@ React.useEffect(() => {
   let _ppleInTouch = ppleInTouch.map((item)=>{
     const userId = auth.currentUser.uid
 
+        const serializedItem = JSON.stringify(item);
     if(item.msgSenderId === userId){
     return(
-      <TouchableOpacity  key={item.id} style={{height : 30  , alignItems : 'center' , margin : 10 }} onPress={()=>navigate(`message/${item}`)}>
+      <TouchableOpacity  key={item.id} style={{height : 30  , alignItems : 'center' , margin : 10 }} onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)}>
         <Text>{item.receiverName} </Text>
       </TouchableOpacity>
     )
     }else{
       return(
-        <TouchableOpacity onPress={()=>navigate(`/message/${item}`)} key={item.id}>
+        <TouchableOpacity onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)} key={item.id}>
           <Text>{item.senderName} </Text>
         </TouchableOpacity>
       )

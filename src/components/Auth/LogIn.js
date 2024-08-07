@@ -3,10 +3,11 @@ import { createUserWithEmailAndPassword , } from 'firebase/auth';
 import { db , auth } from "../config/fireBase";
 import { View , TextInput ,TouchableOpacity , Text, Alert} from "react-native";
 
-import inputstyles from "../styles/inputElement"
 import { useNavigate } from "react-router-dom";
 
-function CreateUser({route , navigation}) {
+import inputstyles from "../styles/inputElement"
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+function CreateUser({}) {
   const navigate = useNavigate()
 
   const [email, setEmail] = React.useState("");
@@ -18,7 +19,7 @@ function CreateUser({route , navigation}) {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       setEmail("")
       setPassword("")
-      navigate('addPersnoalInfo')
+      navigate('/addPersnoalInfo/')
     } catch (err) {
       setError(err.toString());
     }
@@ -27,9 +28,20 @@ function CreateUser({route , navigation}) {
  
 
   return (
-      <View style={{alignItems:'center' , marginTop: 60}} >
-        <Text> </Text>
-        <Text>{error} </Text>
+      <View style={{alignItems:'center' , paddingTop: 90}} >
+         <View style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
+         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+                    <ArrowBackIcon style={{color : 'white'}} />
+        </TouchableOpacity> 
+        
+        <Text style={{fontSize: 20 , color : 'white'}} > Create New Account </Text>
+       </View>
+        <TouchableOpacity onPress={()=>navigate('/signInexistAcc/')} style={{position : 'absolute' , top : 83 , right: 10 ,backgroundColor : '#6a0c0c' , width : 80 , height : 35 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center' }}>
+          <Text> Sign In</Text>
+        </TouchableOpacity>
+
+        {error &&<Text>{error} </Text>}
+
         <TextInput
           placeholder="Email"
            onChangeText={(text) => setEmail(text)}

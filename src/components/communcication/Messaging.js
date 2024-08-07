@@ -9,7 +9,65 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SendIcon from '@mui/icons-material/Send';
 function Messaging ({username}){
   
-// Improve code to get Message Data later 
+
+ const [currentTime, setCurrentTime] = useState(formatTime(new Date()));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(formatTime(new Date()));
+    }, 1000); // Update every minute
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, []); // Empty dependency array to run the effect only once
+
+  function formatTime(date) {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+
+const [currentDateTime, setCurrentDateTime] = useState(formatDateTime(new Date()));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentDateTime(formatDateTime(new Date()));
+    }, 5000); // Update every 5 seconds
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, []); // Empty dependency array to run the effect only once
+
+  function formatDateTime(date) {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  }
+
+    const [previousDateTime, setPreviousDateTime] = useState(formatDateTime(getPreviousDate()));
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPreviousDateTime(formatDateTime(getPreviousDate()));
+    }, 5000); // Update every 5 seconds
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, []); // Empty dependency array to run the effect only once
+
+  function formatDateTime(date) {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  }
+
+  function getPreviousDate() {
+    const currentDate = new Date();
+    const previousDate = new Date(currentDate);
+    previousDate.setDate(currentDate.getDate() - 1);
+    return previousDate;
+  }
+
+
+
+
 
     const navigate = useNavigate()
     let {item } = useParams()
@@ -84,7 +142,9 @@ try {
     receiverName : messageData.companyName   || messageData.receiverName ,
     msgReceiverId: contactId ,
     chatId : chatId ,
-    timestamp : serverTimestamp()
+    timestamp : serverTimestamp() ,
+      currentDate: currentDateTime,
+      currentTime: currentTime,
     });  
   addChatId = chatId
 }else{
@@ -97,8 +157,10 @@ try {
     senderName : username ,
     receiverName : messageData.companyName   || messageData.senderName ,
     chatId : chatId ,
-    timestamp : serverTimestamp()
-    
+    timestamp : serverTimestamp() ,
+      currentDate: currentDateTime,
+      currentTime: currentTime,
+   
   });  
   addChatId = chatId
 }
@@ -133,9 +195,15 @@ if (!existingChat) {
 
         let dspMessages = messages.map((item, index) => {
 
-          const messageDate = item.currentDate;
+          let messageDate = item.currentDate;
           const showMessageDate = previousDate !== messageDate;
           previousDate = messageDate;
+
+          if (messageDate === currentDateTime) {
+                messageDate = 'today';
+              } else if (messageDate === previousDateTime) {
+                messageDate = 'yesterday';
+              }
 
          const userId = auth.currentUser.uid
           if (item.msgReceiverId === userId) {

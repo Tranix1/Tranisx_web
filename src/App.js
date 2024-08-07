@@ -108,9 +108,9 @@ const navigate = useNavigate()
 
   function checkAuth(){
     if(!currentUser){
-      navigate("createUser")
+      navigate("/createUser/")
     }else if(currentUser &&!username){
-      navigate("addPersnoalInfo")
+      navigate("/addPersnoalInfo/")
     }else {
       navigate('/AddIterms') 
     }
@@ -121,9 +121,9 @@ const navigate = useNavigate()
     function toggleSmallMenu(){
 
      if(!currentUser){
-      navigate("createUser")
+      navigate("/createUser/")
     }else if(currentUser &&!username){
-      navigate("addPersnoalInfo")
+      navigate("/addPersnoalInfo/")
     }else {
     setSmallMenu(prev => !prev) 
     }
@@ -255,6 +255,7 @@ function App(){
       <Route path="/searchElement/" element={<SearchIterms/>} />
 
       <Route path="/createUser/" element={<CreateUser/>} />
+      <Route path="/signInexistAcc/" element={<SignIn/>} />
 
       <Route path="/addPersnoalInfo/" element={<PersonalAccInfo/>} />
       
@@ -283,7 +284,7 @@ function App(){
        username={ username}  contact = {contact}  isVerified ={ isVerified} />} />
 
       <Route path="/dspOneTrckType/:truckType" element={<DspOneTruckType/>} initialParams={{username : username , contact : contact , isVerified : isVerified}} />
-      <Route path="/selectedUserLoads/:userId" element={<DspAllLoads/>} />
+      <Route path="/selectedUserLoads/:userId" element={<DspAllLoads username={username} />} />
       <Route path="/selectedUserTrucks/:userId" element={<SelectedUserTrucks/>} />
 
     </Routes>

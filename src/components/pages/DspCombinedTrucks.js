@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, onSnapshot, } from 'firebase/firestore';
 import { db } from '../config/fireBase';
 import { View , Text , Image , ScrollView } from 'react-native';
+import defaultImage from '../images/logo.png'
 
 import VerifiedIcon from '@mui/icons-material/Verified';
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -19,8 +20,16 @@ function DspAllTrucks(){
           ...doc.data()
         });
       });
+      const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      };
+      const shuffledData = shuffleArray(filteredData);
 
-      setAllTrucks(filteredData);
+      setAllTrucks(shuffledData);
     });
 
     return () => {
@@ -37,6 +46,7 @@ function DspAllTrucks(){
       </View>}
       
           {item.imageUrl &&<img src={item.imageUrl} style={{height : 250 , borderRadius : 10}}/>}
+          {!item.imageUrl && <img src={defaultImage}  style={{height : 250 , borderRadius : 10}}/>}
         
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20}} >{item.CompanyName} </Text>
       {item.fromLocation && (  <Text > From {item.fromLocation} to {item.toLocation} </Text>) }

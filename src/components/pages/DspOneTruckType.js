@@ -5,6 +5,7 @@ import {onSnapshot ,  query ,collection,where } from "firebase/firestore"
 
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
+import defaultImage from '../images/logo.png'
 import { useParams , useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -49,7 +50,8 @@ const navigate = useNavigate()
 
       </View>}
 
-          {<img src={item.imageUrl} style={{height : 250}}/>}
+          {item.imageUrl &&<img src={item.imageUrl} style={{height : 250 , borderRadius : 10}}/>}
+          {!item.imageUrl && <img src={defaultImage}  style={{height : 250 , borderRadius : 10}}/>}
         
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20}} >{item.CompanyName} </Text>
       {item.fromLocation && (  <Text > From {item.fromLocation} to {item.toLocation} </Text>) }

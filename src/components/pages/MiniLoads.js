@@ -18,7 +18,7 @@ const MiniLoad = () => {
    useEffect(() => {
     const unsubscribe = onSnapshot(mainLoadsCollection, (querySnapshot) => {
       const userIds = new Set(); // To keep track of unique user IDs
-      const filteredData = [];
+      let filteredData = [];
 
       querySnapshot.forEach((doc) => {
         const userId = doc.data().userId;
@@ -33,7 +33,7 @@ const MiniLoad = () => {
           userIds.add(userId);
         }
       });
-
+      filteredData = filteredData.sort((a, b) => b.timeStamp - a.timeStamp);
       setMainLoadsList(filteredData);
     });
 
@@ -72,7 +72,7 @@ const rendereIterms = mainLoadsList.map((item)=>{
 })
  
   return (
-    <ScrollView style={{margin:10 , height : 140}} horizontal  showsHorizontalScrollIndicator={false}>
+    <ScrollView style={{margin:10 , height : 110}} horizontal  showsHorizontalScrollIndicator={false}>
       {mainLoadsList.length > 0 ? rendereIterms   : <Text>Loading...</Text>}
 
     </ScrollView>
