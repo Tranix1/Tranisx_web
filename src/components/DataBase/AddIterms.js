@@ -1,11 +1,13 @@
 import React from "react"
 import {View , TouchableOpacity , Text ,StyleSheet }from "react-native"
 
-import {useNavigate} from 'react-router-dom';
+import {useNavigate , useParams} from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 function AddIterms(){
     const [truckType , setTruckType] =React.useState(false)
     const navigate = useNavigate()
+const {addTrucks} = useParams()
 
     function toggleSelecTruck(){
         setTruckType(prev =>!prev)
@@ -18,18 +20,18 @@ function AddIterms(){
                     <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
         
-        <Text style={{fontSize: 20 , color : 'white'}} > Add Iterms  </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} > Add Items  </Text>
        </View> 
-          {!truckType&& <View>
+          {!addTrucks&& <View>
             <TouchableOpacity  onPress={()=> navigate('/AddIterms/addLoadsDB') } style={styles.buttonSelectStyle} >
                 <Text style={{color:"white"}}>Add Loads </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={toggleSelecTruck} style={styles.buttonSelectStyle}>
+            <TouchableOpacity onPress={()=>navigate('/AddIterms/addTrucks') } style={styles.buttonSelectStyle}>
                 <Text style={{color:"white"}}>Add Trucks</Text>
             </TouchableOpacity>
             </View>}
 
-           { truckType &&<View>
+           { addTrucks &&<View>
                 <TouchableOpacity  onPress={()=> navigate('/addTrucksDB/BulkTrailers') }  style={styles.buttonStyle}>
                     <Text style={{color:"#6a0c0c"}}>BulkTrailers </Text>
                 </TouchableOpacity>

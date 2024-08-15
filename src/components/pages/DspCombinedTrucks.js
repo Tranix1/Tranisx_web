@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { collection, onSnapshot, } from 'firebase/firestore';
-import { db } from '../config/fireBase';
+import { db , auth} from '../config/fireBase';
 import { View , Text , Image , ScrollView , TouchableOpacity , Linking} from 'react-native';
 import defaultImage from '../images/logo.png'
 
@@ -50,12 +50,13 @@ const navigate = useNavigate()
     };
 
   const rendereIterms = allTrucks.map((item)=>{
+    const serializedItem = JSON.stringify(item);
 
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-          <TouchableOpacity onPress={()=>navigate(`/message/${item} `) }>
+       {auth.currentUser && <TouchableOpacity  onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)}  >
             <Text>Message now</Text>
-          </TouchableOpacity>
+          </TouchableOpacity>}
 
           <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)}>
             <Text>Phone call</Text>

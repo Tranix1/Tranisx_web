@@ -207,9 +207,9 @@ setTimeout(() => {
         
   let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-          <TouchableOpacity onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)} `) }>
+        { auth.currentUser && <TouchableOpacity onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)} `) }>
             <Text>Message now</Text>
-          </TouchableOpacity>
+          </TouchableOpacity>}
           
           <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)}>
             <Text>Phone call</Text>
@@ -297,9 +297,8 @@ setTimeout(() => {
           <Text style={{textDecorationLine:'underline'}} > get In Touch now</Text>
         </TouchableOpacity>
         
-        <View style={{flexDirection : 'row', justifyContent : 'space-evenly' }} >
-
-  
+        
+       { auth.currentUser ? <View style={{flexDirection : 'row', justifyContent : 'space-evenly' }} >  
       {bookingError&&<Text>{bookingError}</Text>}
           {spinnerItem === item ? (
         <ActivityIndicator size={34} />
@@ -315,10 +314,10 @@ setTimeout(() => {
 
         <TouchableOpacity  onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)} style={styles.buttonStyle} >
           <Text>Message</Text>
-        </TouchableOpacity>
-
-       
-        </View>
+        </TouchableOpacity>       
+        </View> : 
+        <Text> Sign In to Book Bid and Message </Text>
+        }
 
       </View>     
   )})
@@ -354,7 +353,7 @@ setTimeout(() => {
        </View>}
        
 
-   {!localLoads &&  <ScrollView style={{padding : 10 , marginTop : 10 }} >
+   {!localLoads &&  <ScrollView style={{padding : 10 , marginTop : 10 , paddingTop : 0}} >
    {!location && <View style={{flexDirection : 'row' , justifyContent : 'space-evenly' }} >
     <TouchableOpacity onPress={toggleLocalLoads} style={styles.buttonStyle} >
       <Text> Local </Text>

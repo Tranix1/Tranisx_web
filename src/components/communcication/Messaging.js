@@ -5,8 +5,6 @@ import { db  , auth} from "../config/fireBase";
 import { storage } from "../config/fireBase";
 import { getDownloadURL, ref, uploadBytes, uploadBytesResumable ,} from "firebase/storage";
 
-
-
 import { useParams , useNavigate} from 'react-router-dom';
 // import { Ionicons } from "@expo/vector-icons";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';

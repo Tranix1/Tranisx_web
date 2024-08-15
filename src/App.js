@@ -2,7 +2,8 @@ import React,{useState} from "react";
 import { View , Text  , TouchableOpacity , StatusBar} from "react-native";
 
 import  { auth , db,  } from "./components/config/fireBase"
-import {doc , getDoc ,query ,collection , where,onSnapshot} from "firebase/firestore"
+import {doc , getDoc ,query ,collection , where,onSnapshot } from "firebase/firestore"
+import { signOut} from  'firebase/auth'
 
 import Header from "./components/Header"
 import SmallMenu from "./components/SmallMenu";
@@ -47,6 +48,14 @@ import OneFirmsShop from "./components/shop/OneFirmsShop";
 
 
 function HomeScreen() {
+    const logout = async ()=>{
+    
+    try{
+    await signOut(auth)
+    }catch (err){
+      console.error(err)
+    }
+  }
   // const navigation = useNavigation();
 const navigate = useNavigate()
 const {page} = useParams()
@@ -127,7 +136,6 @@ const {page} = useParams()
                <TouchableOpacity onPress={()=>navigate("/")}> 
                     <Text style={{color : 'white'}} >Home</Text>
                 </TouchableOpacity>
-
              <TouchableOpacity onPress={ ()=>navigate('/loads') }>
                     <Text style={{color : 'white'}} >Loads</Text>
                 </TouchableOpacity>
@@ -268,6 +276,7 @@ function App(){
 
 
       <Route path="/AddIterms/" element={<AddIterms/>}/>
+      <Route path="/AddIterms/:addTrucks" element={<AddIterms/>}/>
       <Route path="/AddIterms/addLoadsDB" element={<AddLoadDB  
       username = {username} contact = {contact}  isVerified={isVerified}/>} />
 

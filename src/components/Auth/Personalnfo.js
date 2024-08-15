@@ -1,5 +1,5 @@
 import React from "react";
-import {Alert, TextInput, TouchableOpacity, View ,  Text}from "react-native"
+import {Alert, TextInput, TouchableOpacity, View ,  Text , ActivityIndicator}from "react-native"
 import {auth , db} from "../config/fireBase"
 import { query , doc ,  getDocs,collection,where,setDoc } from "firebase/firestore"
 
@@ -18,11 +18,13 @@ function PersonalAccInfo({}){
 
   const [errorOccur , setErrorOccur] = React.useState("")
   const [username, setUsername] = React.useState("");
+  const [spinnerItem, setSpinnerItem] = React.useState(null);
 
   const [contact, setContact] = React.useState("");
   const [countryCode , setCountryCode] = React.useState(null)
 
 const handleSubmitData = async (event) => {
+    setSpinnerItem(true)
     if(!countryCode){
         alert("Select country code ")
         return
@@ -51,19 +53,23 @@ const handleSubmitData = async (event) => {
              userEmail : 'aaa' ,
              shopLocation : ""
               });
+      setSpinnerItem(false)
           setUsername("");
           setContact("");
            navigate('/')
         } else {
           // Username already exists, handle the situation here
           setErrorOccur('Username already exists!');
+      setSpinnerItem(false)
         }
       } else {
         setErrorOccur('Username is undefined or empty!');
+      setSpinnerItem(false)
       }
     }
   } catch (err) {
       setErrorOccur(err.toString());
+      setSpinnerItem(false)
   }
 };
 
@@ -113,7 +119,8 @@ const handleSubmitData = async (event) => {
            onChangeText={(text) => setUsername(text)}
            style={inputstyles.inputElem}
           />
-
+        
+          {spinnerItem && <ActivityIndicator/>}
           <TextInput
             placeholder="contact"
             type="text"

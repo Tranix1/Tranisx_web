@@ -25,9 +25,7 @@ return(
         <Text>Bookings</Text>
     </TouchableOpacity>
     
-    <TouchableOpacity   onPress={()=>navigate('/shopLocation/') }  style={styles.buttonStyle}>
-        <Text>Shop</Text>
-    </TouchableOpacity>
+   
 </View>
 )
 }
