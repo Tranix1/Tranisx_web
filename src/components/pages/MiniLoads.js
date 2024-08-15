@@ -12,7 +12,7 @@ const MiniLoad = () => {
 
   const navigate = useNavigate();
 
-  const mainLoadsCollection = collection(db, 'Loads');
+const mainLoadsCollection = collection(db, 'Loads');
   const [mainLoadsList, setMainLoadsList] = useState([]);
 
    useEffect(() => {
@@ -33,7 +33,7 @@ const MiniLoad = () => {
           userIds.add(userId);
         }
       });
-      filteredData = filteredData.sort((a, b) => b.timeStamp - a.timeStamp);
+       filteredData = filteredData.sort((a, b) => b.timeStamp - a.timeStamp);
       setMainLoadsList(filteredData);
     });
 

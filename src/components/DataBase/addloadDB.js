@@ -2,7 +2,7 @@ import React from "react";
 import { db, auth } from "../config/fireBase";
 import { collection, doc, getDoc, addDoc, serverTimestamp ,} from 'firebase/firestore';
 
-import { View , TextInput , Text, Alert ,TouchableOpacity , ActivityIndicator} from "react-native";
+import { View , TextInput , Text, Alert ,TouchableOpacity , ActivityIndicator, StyleSheet} from "react-native";
 
 import inputstyles from "../styles/inputElement";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -18,14 +18,39 @@ const navigate = useNavigate()
     typeofLoad: "",
     fromLocation: "",
     toLocation: "",
-    ratePerTonne: 0,
+    ratePerTonne: null,
     paymentTerms: "",
     requirements: "",
     additionalInfo: "",
   });
 
- 
+    const [currency , setCurrency] = React.useState(true)
+  function toggleCurrency(){
+    setCurrency(prev=>!prev)
+  }
+
+  const [perTonne , setPerTonne] = React.useState(false)
+  function togglePerTonne(){
+    setPerTonne(prev=>!prev)
+  }
   
+  const [ activeLoading , setActiveLoading] = React.useState(false)
+  function toggleActiveLoading(){
+    setActiveLoading(prev=>!prev)
+  }
+
+  const [location , setlocation] =   React.useState("International")
+  const [localLoads , setLocalLoads]=React.useState(false)
+
+  function toggleLocalLoads(){
+    setLocalLoads(prevState => !prevState)
+  }
+
+  function specifyLocation(loc){
+    setlocation(loc)
+    setLocalLoads(prev => false)
+  }
+
 
   const  handleTypedText  = (value, fieldName) => {
     setFormData((prevFormData) => ({
@@ -36,9 +61,12 @@ const navigate = useNavigate()
   
     const [spinnerItem, setSpinnerItem] = React.useState(false);
   const handleSubmit = async () => {
-    if(!formData.ratePerTonne || !formData.typeofLoad || !formData.toLocation || !formData.fromLocation || !formData.paymentTerms){
-        alert('Enter Rate , Commodity ,  ','Routes and Payment terms' )
+     if(!formData.ratePerTonne || !formData.typeofLoad || !formData.toLocation || !formData.fromLocation || !formData.paymentTerms){
+        alert('Enter Rate , Commodity,Routes and Payment terms' )
         return
+      }else if(!username){
+        
+        alert('Create an accont' )
       }
       setSpinnerItem(true)
 
@@ -59,7 +87,10 @@ const navigate = useNavigate()
         deletionTime :Date.now() + 3 * 24 * 60 * 60 * 1000 ,
         timeStamp : serverTimestamp() ,
         isVerified : isVerified ,
-
+        currency : currency ,
+        perTonne : perTonne , 
+        activeLoading : activeLoading ,
+        location : location
       });
 
       setFormData({
@@ -114,6 +145,16 @@ const navigate = useNavigate()
     type="text"
     style={inputstyles.addIterms }
   />
+
+  <View style={{flexDirection:'row', alignItems : 'center'}}>
+
+    <View>   
+     <TouchableOpacity onPress={toggleCurrency}>
+        {currency ? <Text style={styles.buttonIsFalse} >USD</Text> :
+         <Text style={styles.bttonIsTrue}>Rand </Text>}
+      </TouchableOpacity>
+    </View>
+
     <TextInput
         onChangeText={(text) => handleTypedText(text, 'ratePerTonne')}
         name="ratePerTonne"
@@ -123,8 +164,14 @@ const navigate = useNavigate()
         style={inputstyles.addIterms }
         placeholder="Enter rate here"
       />
-  
+      <TouchableOpacity onPress={togglePerTonne} >
+         {perTonne ? <Text style={styles.bttonIsTrue} >Per tonne</Text> : 
+          <Text style={styles.buttonIsFalse}>Per tonne</Text>}
+      </TouchableOpacity>
+   </View>
       { spinnerItem &&<ActivityIndicator size={36} />}
+
+ { !localLoads &&   <View>
   <TextInput
     value={formData.paymentTerms}
     placeholderTextColor="#6a0c0c"
@@ -150,9 +197,44 @@ const navigate = useNavigate()
     type="text"
     style={inputstyles.addIterms }
   />
-  {/* <Text>acive Loading</Text> */}
+   </View>}
+  {localLoads && <View>
+    <TouchableOpacity onPress={()=>specifyLocation('Zimbabwe')}> 
+      <Text>Zimbabwe </Text>
+    </TouchableOpacity>
 
-  <TouchableOpacity  onPress={handleSubmit} style={{backgroundColor : '#6a0c0c' , width : 80 , height : 35 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center'}}>
+    <TouchableOpacity>
+      <Text>South Africa </Text>  
+    </TouchableOpacity>
+    <TouchableOpacity>
+      
+      <Text>South Africa </Text>  
+    </TouchableOpacity>
+    <TouchableOpacity>
+      
+      <Text>South Africa </Text>  
+    </TouchableOpacity>
+    <TouchableOpacity>
+      
+      <Text>South Africa </Text>  
+    </TouchableOpacity>
+  </View>
+  }
+
+{location !== "International"&& <Text>local load for {location} </Text>}
+<View style={{flexDirection : 'row' , margin : 10  , flex :1 , justifyContent:'space-between' , width : 200}}> 
+
+  <TouchableOpacity onPress={toggleActiveLoading}>
+    {!activeLoading ? <Text style={styles.buttonIsFalse}>Active Loading</Text>:
+     <Text style={styles.bttonIsTrue}>acive Loading </Text> }
+  </TouchableOpacity>
+
+<TouchableOpacity onPress={toggleLocalLoads} style={{}}>
+  <Text style={styles.buttonIsFalse}>Local loads </Text>
+</TouchableOpacity>
+
+</View>
+  <TouchableOpacity  onPress={handleSubmit} style={{backgroundColor : '#6a0c0c' , width : 80 , height : 30 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center'}}>
     <Text style={{color : 'white'}}>submit</Text>
   </TouchableOpacity>
 
@@ -161,3 +243,39 @@ const navigate = useNavigate()
 }
 
 export default AddLoadDB;
+
+const styles = StyleSheet.create({
+    buttonStyle : {
+        height : 40,
+        justifyContent : 'center' , 
+        alignItems : 'center' ,
+        width : 150 ,
+        marginBottom: 15 ,
+        borderWidth: 2 ,
+        borderColor:"#6a0c0c" ,
+        borderRadius: 10
+    } ,
+    buttonSelectStyle :{
+        backgroundColor :"#6a0c0c",
+        height : 40,
+        justifyContent : 'center' , 
+        alignItems : 'center' ,
+        width : 150 ,
+        marginBottom: 15 ,
+        borderRadius: 10
+    }  ,
+  buttonIsFalse : {
+     borderWidth : 1 ,
+     borderColor : '#6a0c0c' ,
+     paddingLeft :4 , 
+     paddingRight:4 ,
+    //  marginLeft : 6
+   } , 
+    bttonIsTrue:{
+    backgroundColor : '#6a0c0c' ,
+     paddingLeft :4 ,
+     paddingRight:4 ,
+     color :'white' 
+
+    }
+});

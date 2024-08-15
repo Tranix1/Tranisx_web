@@ -11,12 +11,20 @@ const navigate = useNavigate()
     return(
         <View style={{alignItems : 'center' , paddingTop : 20}} >
 
+
+            <View  style={{flexDirection : 'row'}}>
             <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/BulkTrailers')   } style={styles.selectTruck}>
 
                 <Text>BulkTrailer</Text>
                 <LocalShippingIcon  />
 
             </TouchableOpacity>
+            
+                <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/LowBeds') } style={styles.selectTruck}>
+                    <Text>LowBed</Text>
+                <LocalShippingIcon  />
+                </TouchableOpacity>
+            </View>
 
             <View  style={{flexDirection : 'row'}}>
                 <TouchableOpacity onPress={()=> navigate( '/dspOneTrckType/sideTippers') } style={styles.selectTruck}>
@@ -24,15 +32,16 @@ const navigate = useNavigate()
                 <LocalShippingIcon  />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/LowBeds') } style={styles.selectTruck}>
-                    <Text>LowBed</Text>
+              <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/tauntliner' ) }style={styles.selectTruck} >
+                <Text> Tautliner </Text>
                 <LocalShippingIcon  />
                 </TouchableOpacity>
             </View>
 
             <View style={{flexDirection : 'row'}} >
-                <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/tauntliner' ) }style={styles.selectTruck} >
-                <Text> Tautliner </Text>
+
+                <TouchableOpacity onPress={()=> navigate('/dspOneTrckType/Rigid' ) }style={styles.selectTruck} >
+                <Text> Rigid </Text>
                 <LocalShippingIcon  />
                 </TouchableOpacity>
 

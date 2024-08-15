@@ -11,9 +11,10 @@ import {useNavigate,} from 'react-router-dom';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 
-function SearchIterms({navigation}){
+function SearchInShop({navigation}){
+
 const navigate = useNavigate()
-     const loadsCollection = collection(db, 'Loads');  
+     const loadsCollection = collection(db, 'Shop');  
       const [loadsList, setLoadsList] = useState([]);
 
     useEffect(() => {
@@ -33,51 +34,23 @@ const navigate = useNavigate()
       };
     }, []);
 
-   const trucksDB = collection(db , "Trucks")
-  const [allTrucks, setAllTrucks] = useState([]);
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(trucksDB, (querySnapshot) => {
-      const filteredData = [];
-
-      querySnapshot.forEach((doc) => {
-        filteredData.push({
-          id: doc.id,
-          ...doc.data()
-        });
-      });
-
-      setAllTrucks(filteredData);
-    });
-
-    return () => {
-      unsubscribe(); // Unsubscribe the listener when the component unmounts
-    };
-  }, []); 
+  
 
         const [filteredData, setFilteredData] = React.useState([]);
-        const [filteredDataTrucks , setFilteredDataTruks] = React.useState([]);
         const [wordEntered, setWordEntered] = React.useState("");
       
         const handleFilter = (text) => {
           const searchWord = text
           const newFilter = loadsList.filter((value) => {
-            return ( value.fromLocation || value.toLocation ).toLowerCase().includes(searchWord.toLowerCase());
+            return ( value.productName ).toLowerCase().includes(searchWord.toLowerCase());
           });
       
-          const newFilterTrucks = allTrucks.filter((value) => {
-            return ( value.fromLocation || value.toLocation ).toLowerCase().includes(searchWord.toLowerCase());
-          });
           if (searchWord === "") {
             setFilteredData([]);
           } else {
             setFilteredData(newFilter);
-            setFilteredDataTruks(newFilterTrucks)
           }
         };
-
-       
-
 
 
         const clearInput = () => {
@@ -86,19 +59,7 @@ const navigate = useNavigate()
         };
         
 
-        // const searchedTruks = 
-          const displaySearchedTrucks =  filteredDataTrucks.slice(0, 15).map((value , key)=>{
-            return(
-              <TouchableOpacity  style={{flex : 1, marginBottom :6 , padding : 6}} key={value.id} onPress={()=> navigate(`/selectedUserTrucks/${value.userId}` ) }>
-
-            {value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
-            <VerifiedIcon style={{color : 'green'}} />
-            </View>}
-            <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}>{value.CompanyName} </Text>
-            <Text >from {value.fromLocation } to {value.toLocation} </Text>
-              </TouchableOpacity>
-            )
-          })
+       
           
 
         const displaySearched =  filteredData.slice(0, 15).map((value , key)=>{
@@ -124,7 +85,7 @@ const navigate = useNavigate()
                     <ArrowBackIcon style={{color : 'white'}} />
                 </TouchableOpacity>
                 <TextInput
-                    placeholder="Search  Route"
+                    placeholder="Search  Product "
                     onChangeText={(text) => handleFilter(text)}  
                     style={{height:40, flex : 1 ,fontSize : 17 , backgroundColor: '#6a0c0c' , color:'white'}}      
                     placeholderTextColor="white"    
@@ -141,16 +102,9 @@ const navigate = useNavigate()
               )
               } 
 
-                <View style={{ width: 2, backgroundColor: '#6a0c0c' }} >
-                  </View>
-
-            { filteredDataTrucks.length > 0 && <ScrollView >
-              <Text style={{fontSize : 20 , textDecorationLine:'underline '}}> Available Trucks  </Text>
-              {displaySearchedTrucks}
-             </ScrollView>}
              </View>
 
           </View>
            )
 }
-export default React.memo(SearchIterms)
+export default React.memo(SearchInShop)

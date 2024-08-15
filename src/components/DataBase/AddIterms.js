@@ -1,7 +1,6 @@
 import React from "react"
 import {View , TouchableOpacity , Text ,StyleSheet }from "react-native"
 
-
 import {useNavigate} from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 function AddIterms(){
@@ -51,6 +50,10 @@ function AddIterms(){
                     <Text style={{color:"#6a0c0c"}}>Takers </Text>
                 </TouchableOpacity>
 
+                <TouchableOpacity onPress={()=> navigate('/addTrucksDB/Rigid') } style={styles.buttonStyle} >
+                    <Text style={{color:"#6a0c0c"}}>Rigid </Text>
+                </TouchableOpacity>
+
             </View>}
         </View>
     )
@@ -71,7 +74,7 @@ const styles = StyleSheet.create({
     } ,
     buttonSelectStyle :{
         backgroundColor :"#6a0c0c",
-        height : 47,
+        height : 40,
         justifyContent : 'center' , 
         alignItems : 'center' ,
         width : 150 ,

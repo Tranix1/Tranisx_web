@@ -4,10 +4,12 @@ import { getDownloadURL, ref, uploadBytes, uploadBytesResumable ,} from "firebas
 import {addDoc , onSnapshot , orderBy , query , serverTimestamp , collection, } from "firebase/firestore"
 import { db , auth} from "../config/fireBase";
 
+import { storage } from "../config/fireBase";
 
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SendIcon from '@mui/icons-material/Send';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 function MainGroup({username}){
 
@@ -94,12 +96,46 @@ const [currentDateTime, setCurrentDateTime] = useState(formatDateTime(new Date()
 
 
 
+ 
+  const [image, setImage] = useState(null);  
+  const [ imageUpload, setImageUpload] = React.useState(null)    
+
+
+    const handleFileInputChange = (e) => {
+    // Handle file input change here
+    setImageUpload(e.target.files[0])
+    const file = e.target.files[0];
+
+     if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+
+    const uploadImage = ()=>{
+      if(imageUpload === null) return
+      const imageRef = ref(storage , `Trucks/${imageUpload.name + new Date().getTime()  }`)
+      uploadBytes(imageRef , imageUpload).then(()=>{
+      })
+    }
 
  const mainGroup = collection(db ,'MainGroupChats');
 
 const [typedMsg , setTypedMsg] = React.useState('')
 
 const handleSubmit = async (event) => {
+      let imageUrl 
+      if(image)
+      uploadImage()
+       const imageRef = ref(storage , `Trucks/${imageUpload.name}`)
+       await uploadBytes(imageRef , imageUpload)
+       // get image  url 
+        imageUrl = await getDownloadURL(imageRef)
+
   try {
     await addDoc(mainGroup, {
       typedMsg: typedMsg,
@@ -110,6 +146,7 @@ const handleSubmit = async (event) => {
       timestamp: serverTimestamp(),
       // addedImage: imageUrl,
       isViewed: false, // Set the initial value to indicate the message is not viewed
+      addedImage: imageUrl 
     });
   } catch (err) {
     console.error(err);
@@ -140,10 +177,7 @@ const handleSubmit = async (event) => {
             <View style={{padding: 7,marginBottom: 2,backgroundColor: 'rgb(129,201,149)',marginLeft: 70,}}>
               <Text style={{ color: '#6a0c0c' }}>{item.username}</Text>
               {item.addedImage && (
-                <Image
-                  source={{ uri: item.addedImage }}
-                  style={{ width: '100%', height: 200, resizeMode: 'cover', marginBottom: 10 }}
-                />
+                   <img src={item.addedImage} style={{height : 200 , marginBottom : 10}}/>
               )}
               <Text>{item.typedMsg}</Text>
               <Text style={{ fontSize: 12, position: 'absolute', right: 8, bottom: 0 }}>
@@ -158,10 +192,7 @@ const handleSubmit = async (event) => {
             {showMessageDate && <Text>{messageDate}</Text>}
             <View style={{padding: 7,marginBottom: 6,backgroundColor: 'white',marginRight: 80,}}>
               {item.addedImage && (
-                <Image
-                  source={{ uri: item.addedImage }}
-                  style={{ width: '100%', height: 200, resizeMode: 'cover', marginBottom: 10 }}
-                />
+                   <img src={item.addedImage} style={{height : 200 , marginBottom : 10}}/>
               )}
               <Text style={{ fontSize: 15, color: '#6a0c0c' }}>{item.username}</Text>
               <Text>{item.typedMsg}</Text>
@@ -211,11 +242,13 @@ const scrollViewRef = React.useRef();
       {dspMessages}
     </ScrollView>
 
+      {image && <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />}
 
   <View>
   <View style={{ position: 'absolute', bottom: keyboardHeight, left: 0, right: 0 , flexDirection : 'row' , backgroundColor : '#e8e6e3' , height : 45 , }}>
+<View  style={{paddingLeft : 17 , maxHeight : 40, borderColor: 'black', borderWidth: 2, borderRadius: 20, flex: 1 }}>   
   <TextInput
-    style={{paddingLeft : 17 , maxHeight : 40, borderColor: 'black', borderWidth: 2, borderRadius: 20, flex: 1 }}
+    style={{flex:1}}
     placeholderTextColor="#6a0c0c"
     placeholder="Type your message"
     type="text"
@@ -223,6 +256,22 @@ const scrollViewRef = React.useRef();
     onChangeText={(text) => setTypedMsg(text)}
     multiline={true}
   />
+
+       {!image&&<div>
+    <label for="fileInput" >     
+        <CameraAltIcon style={{color : '#6a0c0c' , fontSize : 33}} />
+
+    </label>
+    <input
+      style={{display: 'none'}}
+      id="fileInput"
+      type="file"
+      onChange={handleFileInputChange}
+    />
+
+    </div>}
+    
+    </View>
 
      <TouchableOpacity onPress={handleSubmit} style={{ width : 50 , backgroundColor : '#9d1e1e', borderRadius : 6  ,  alignItems : 'center' , justifyContent: 'center' , height : 35, marginLeft : 4 , marginRight : 6}}  >
       <SendIcon style={{color : 'white'}}/>

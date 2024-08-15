@@ -1,7 +1,7 @@
 import React from "react";
 import { createUserWithEmailAndPassword , } from 'firebase/auth';
 import { db , auth } from "../config/fireBase";
-import { View , TextInput ,TouchableOpacity , Text, Alert} from "react-native";
+import { View , TextInput ,TouchableOpacity , Text, ActivityIndicator} from "react-native";
 
 import { useNavigate } from "react-router-dom";
 
@@ -13,15 +13,19 @@ function CreateUser({}) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error , setError]= React.useState("")
+  const [spinnerItem, setSpinnerItem] = React.useState(null);
 
   const create = async () => {
+    setSpinnerItem(true)
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       setEmail("")
       setPassword("")
+      setSpinnerItem(false)
       navigate('/addPersnoalInfo/')
     } catch (err) {
       setError(err.toString());
+      setSpinnerItem(false)
     }
   };
 
@@ -36,9 +40,6 @@ function CreateUser({}) {
         
         <Text style={{fontSize: 20 , color : 'white'}} > Create New Account </Text>
        </View>
-        <TouchableOpacity onPress={()=>navigate('/signInexistAcc/')} style={{position : 'absolute' , top : 83 , right: 10 ,backgroundColor : '#6a0c0c' , width : 80 , height : 35 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center' }}>
-          <Text> Sign In</Text>
-        </TouchableOpacity>
 
         {error &&<Text>{error} </Text>}
 
@@ -48,6 +49,7 @@ function CreateUser({}) {
            style={inputstyles.inputElem}
         />
 
+          {spinnerItem && <ActivityIndicator/>}
         <TextInput
           placeholder="Password"
           type="password"
@@ -55,8 +57,12 @@ function CreateUser({}) {
            style={inputstyles.inputElem}
         />
 
-        <TouchableOpacity onPress={create} >
-        <Text style={{textDecorationLine : 'underline', fontSize : 17}}>Create</Text>
+        <TouchableOpacity onPress={create} style={{backgroundColor : '#6a0c0c' , width : 80 , height : 35 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center' , marginBottom : 10}} >
+        <Text style={{color : 'white'}}>Create</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=>navigate('/signInexistAcc/')} style={{ height : 35,justifyContent : 'center' , alignItems : 'center' ,width : 80 ,borderWidth: 2 ,borderColor:"#6a0c0c" ,borderRadius: 10}}>
+                    <Text style={{color :'#6a0c0c'}}>  Sign In</Text>
         </TouchableOpacity>
 
     </View>

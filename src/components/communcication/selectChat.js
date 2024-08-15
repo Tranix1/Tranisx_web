@@ -79,7 +79,7 @@ return(<View style={{padding : 10 , paddingTop : 80 , }} >
                     <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
         
-        <Text style={{fontSize: 20 , color : 'white'}} > Add Iterms  </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} > Select Chat</Text>
        </View>
   <TouchableOpacity onPress={()=>navigate('/mainGroup') } style={{borderBlockColor : "#6a0c0c" , width : 300 , borderWidth : 2, marginTop :10 ,  height : 40  ,justifyContent : 'center' , alignItems:'center'}} >
     <Text>Main Group </Text>

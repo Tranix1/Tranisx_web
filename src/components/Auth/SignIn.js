@@ -52,6 +52,7 @@ return(
           style={inputstyles.inputElem}
            onChangeText={(text) => setEmail(text)}
           />
+          {spinnerItem && <ActivityIndicator/>}
 
         <TextInput
           placeholder="Password"

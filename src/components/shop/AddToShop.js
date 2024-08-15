@@ -1,9 +1,9 @@
 import React,{useState} from "react";
-import { storage } from "../config/fireBase"  ;
+import { storage } from "../config/fireBase";
 import { getDownloadURL, ref, uploadBytes, uploadBytesResumable ,} from "firebase/storage";
 import { collection, addDoc } from 'firebase/firestore';
 import { db, auth } from "../config/fireBase";
-import {View, TextInput , Text ,    TouchableOpacity , Image , ActivityIndicator} from "react-native"
+import {View, TextInput , Text ,    TouchableOpacity , Image , ActivityIndicator , StyleSheet} from "react-native"
 import inputstyles from "../styles/inputElement";
 
 // import * as ImagePicker from 'expo-image-picker';
@@ -11,21 +11,21 @@ import inputstyles from "../styles/inputElement";
 // import Fontisto from '@expo/vector-icons/Fontisto';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
-
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useParams , useNavigate } from 'react-router-dom';
 
-function DBTrucksAdd( { username ,contact , isVerified } ) {
+function AddToShop( { username ,contact , isVerified , shopLocation} ) {
 
-    const {truckType} = useParams()
+    const {location , specproduct ,truckType} = useParams()
+
     const navigate = useNavigate()
-  const trucksDB = collection(db, "Trucks");
+  const shopDB = collection(db, "Shop");
 
   const [formData, setFormData] = React.useState({
-    fromLocation: "",
-    toLocation: "",
+    productName: "",
+    price: "",
     additionalInfo :"" ,
-    trailerType : ''
+    deliveryRange : ''
   });
 
   const  handlechange  = (value, fieldName) => {
@@ -36,10 +36,12 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
   };
 
 
+    const [currency , setCurrency] = React.useState(true)
+  function toggleCurrency(){
+    setCurrency(prev=>!prev)
+  }
 
-  
-  
-  const [image, setImage] = useState(null);  
+const [image, setImage] = useState(null);  
   const [ imageUpload, setImageUpload] = React.useState(null)    
 
 
@@ -60,7 +62,7 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
 
     const uploadImage = ()=>{
       if(imageUpload === null) return
-      const imageRef = ref(storage , `Trucks/${imageUpload.name + new Date().getTime()  }`)
+      const imageRef = ref(storage , `Shop/${imageUpload.name + new Date().getTime()  }`)
       uploadBytes(imageRef , imageUpload).then(()=>{
       })
     }
@@ -72,31 +74,36 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
 
       setSpinnerItem(true)
         uploadImage()
-       const imageRef = ref(storage , `Trucks/${imageUpload.name}`)
+       const imageRef = ref(storage , `Shop/${imageUpload.name}`)
        await uploadBytes(imageRef , imageUpload)
        // get image  url 
        let imageUrl = await getDownloadURL(imageRef)
 
     let userId = auth.currentUser.uid
     try {
-      const docRef = await addDoc(trucksDB, {
+      const docRef = await addDoc(shopDB, {
         CompanyName : username ,
         contact : contact ,
-        fromLocation: formData.fromLocation,
-        toLocation: formData.toLocation,
+        fromLocation: formData.productName,
+        toLocation: formData.price,
         imageUrl: imageUrl,
         userId : userId ,
         additionalInfo : formData.additionalInfo ,
-        trailerType : formData.trailerType ,
+        deliveryRange : formData.deliveryRange ,
         truckType : truckType ,
         isVerified : isVerified ,
+        location : location ,
+        specproduct : specproduct ,
+        currency : currency ,
+        shopLocation : shopLocation ,
+
       });
 
        setFormData({
-        fromLocation: "",
-        toLocation: "",
+        productName: "",
+        price: "",
         additionalInfo :"",
-        trailerType : "" ,
+        deliveryRange : "" ,
       });
       setImage(null);
       setSpinnerItem(false)
@@ -111,7 +118,7 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
                     <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
         
-        <Text style={{fontSize: 20 , color : 'white'}} > Add Trucks  </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} > Add {specproduct} to Shop  </Text>
        </View>
 
 
@@ -133,37 +140,44 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
 
     </div>}
 
-
       
         <TextInput
-          value={formData.fromLocation}
-          placeholder="from location"
+          value={formData.productName}
+          placeholder="Product Name"
           placeholderTextColor="#6a0c0c"
-          onChangeText={(text) => handlechange(text, 'fromLocation')}
+          onChangeText={(text) => handlechange(text, 'productName')}
           type="text" 
           style={inputstyles.addIterms }
         />
 
+    <View style={{flexDirection:'row', alignItems : 'center'}}>   
+     <TouchableOpacity onPress={toggleCurrency}>
+        {currency ? <Text style={styles.buttonIsFalse} >USD</Text> :
+         <Text style={styles.bttonIsTrue}>Rand </Text>}
+      </TouchableOpacity>
+
         <TextInput
-          placeholder="to location"
+          placeholder="Price"
           type="text"
           onChange={handlechange}
           name="toLocation"
-          value={formData.toLocation}
+          value={formData.price}
           placeholderTextColor="#6a0c0c"
           style={inputstyles.addIterms }
-          onChangeText={(text) => handlechange(text, 'toLocation')}
+          onChangeText={(text) => handlechange(text, 'Price')}
         />
         
+    </View>
       { spinnerItem &&<ActivityIndicator size={34} />}
           <TextInput 
-            value={formData.trailerType}
+            value={formData.deliveryRange}
             placeholderTextColor="#6a0c0c"
-            placeholder="Trailer Type"
-            onChangeText={(text) => handlechange(text, 'trailerType')}
+            placeholder="Delivery Range"
+            onChangeText={(text) => handlechange(text, 'deliveryRange')}
             type="text"
           style={inputstyles.addIterms }
           />
+
           <TextInput 
             value={formData.additionalInfo}
             placeholderTextColor="#6a0c0c"
@@ -185,4 +199,22 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
 }
 
 
-export default DBTrucksAdd;
+export default React.memo(AddToShop)
+
+const styles = StyleSheet.create({
+  
+  buttonIsFalse : {
+     borderWidth : 1 ,
+     borderColor : '#6a0c0c' ,
+     paddingLeft :4 , 
+     paddingRight:4 ,
+    //  marginLeft : 6
+   } , 
+    bttonIsTrue:{
+    backgroundColor : '#6a0c0c' ,
+     paddingLeft :4 ,
+     paddingRight:4 ,
+     color :'white' 
+
+    }
+});

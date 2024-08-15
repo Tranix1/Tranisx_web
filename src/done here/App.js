@@ -559,6 +559,7 @@ function App(){
           return sortedLoadList;
         });
       }
+      
       const [currentUserLoads, setCurrentUserLoads] = React.useState([]);
 
       const fetchLoads = async () => {

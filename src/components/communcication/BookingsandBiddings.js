@@ -1,22 +1,36 @@
 import React from "react";
 import { View,TouchableOpacity , Text, StyleSheet,ScrollView } from "react-native";
-import { onSnapshot ,  query ,doc , collection,where ,updateDoc } from "firebase/firestore"
+import { onSnapshot ,  query ,doc , collection,where ,updateDoc , deleteDoc ,} from "firebase/firestore"
 import { auth , db } from "../config/fireBase";
 
 
 import {useNavigate} from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-function Bookings(){
+function BookingsandBiddings(){
+
     const navigate = useNavigate()
 
-  const [AllBooks , setAllBooks]=React.useState([])
-const getBookedIterms = () => {
+  const [getAllIterms , setAllIterms]=React.useState([])
+
+  const deleteLoad = async (id) => {
+  try {
+    const loadsDocRef = doc(db, 'Loads', id);
+    await deleteDoc(loadsDocRef);
+    console.log(`Item with ID ${id} deleted successfully from the database.`);
+
+    // Remove the deleted item from loadsList
+    setAllIterms((prevLoadsList) => prevLoadsList.filter(item => item.id !== id));
+  } catch (error) {
+    console.error('Error deleting item:', error);
+  }
+};
+const getBookedIterms = (dbName) => {
   try {
     if (auth.currentUser) {
       const userId = auth.currentUser.uid;
-      const whenBookingIterm = query(collection(db, "bookings"), where("bookerId", "==", userId));
-      const whenReceivingABook = query(collection(db, "bookings"), where("ownerId", "==", userId));
+      const whenBookingIterm = query(collection(db, `${dbName}`), where("bookerId", "==", userId));
+      const whenReceivingABook = query(collection(db, `${dbName}`), where("ownerId", "==", userId));
       
       const sendedMsgs = [];
       const unsubscribe1 = onSnapshot(whenBookingIterm, (querySnapshot) => {
@@ -26,7 +40,7 @@ const getBookedIterms = () => {
         });
         
         const combineBoth = [ ...sendedMsgs];
-        setAllBooks(combineBoth);
+        setAllIterms(combineBoth);
       });
       
       const unsubscribe2 = onSnapshot(whenReceivingABook, (querySnapshot) => {
@@ -37,7 +51,7 @@ const getBookedIterms = () => {
         });
         
         const combineBoth = [...reacevedMsg, ...sendedMsgs];
-        setAllBooks(combineBoth);
+        setAllIterms(combineBoth);
       });
 
       return () => {
@@ -45,41 +59,70 @@ const getBookedIterms = () => {
         unsubscribe2(); // Clean up the listener when the component unmounts
       };
     }
+
+
+        const checkAndDeleteExpiredItems = () => {
+          getAllIterms.forEach((item) => {
+            const deletionTime = item.deletionTime;
+            const timeRemaining = deletionTime - Date.now();
+            if (timeRemaining <= 0) {
+              deleteLoad(item.id);
+            } else {
+              setTimeout(() => {
+                deleteLoad(item.id);
+              }, timeRemaining);
+            }
+          });
+        };
+
+        checkAndDeleteExpiredItems();
+
+        const interval = setInterval(() => {
+          checkAndDeleteExpiredItems();
+        }, 1000); // Check every second for expired items
+
+        return () => {
+          clearInterval(interval);
+        };
+    
   } catch (error) {
     console.error(error);
   }
 };
 
-React.useEffect(() => {
-  const unsubscribe = getBookedIterms();
-
-  
-}, []);
 
 
- function toggleAcceptOrDeny(id) {
-      // return prevTruck.map(oneTruck => {
-      //   if (oneTruck.id === id) {
-      //     const newRating = oneTruck.Accept ? oneTruck.rating = true : oneTruck.rating = false;
-      //     const docRef = doc(collection(db, "bookings"), id);
-      //   updateDoc(docRef, {
-      //       rating: newRating
-      //     })
-         
-      //     return {
-      //       ...oneTruck,
-      //       rating: newRating
-      //     };
-      //   } else {
-      //     return oneTruck;
-      //   }
-      // });
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const toggleAcceptOrDeny = async (id) => {
+   
+      try {
+        if (auth.currentUser) {
+
+          const docRef = doc(db, 'bookings', id);
+          await updateDoc(docRef, { Accept : true ,  });
+          alert("Username updated successfully!");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
   }
 
 
 
-let whnBookAload = AllBooks.map((item) => {
+let whnBookAload = getAllIterms.map((item) => {
   const userId = auth.currentUser.uid;
 
         const serializedItem = JSON.stringify(item);
@@ -100,7 +143,7 @@ let whnBookAload = AllBooks.map((item) => {
 });
 
 
- let whenMyLoadBooked = AllBooks.map((item)=>{
+ let whenMyLoadBooked = getAllIterms.map((item)=>{
 const userId = auth.currentUser.uid;
 
         const serializedItem = JSON.stringify(item);
@@ -130,12 +173,37 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300
     const [itermsYouBooked , setItemsYouBooked] = React.useState(false)
     function toggelItermsYouBooKed (){
       setItemsYouBooked(prev =>!prev)
+      getBookedIterms("bookings")
     }
 
     const [yourBookedIterms , setYourBookedIterms] = React.useState(false)
     function toggleYourBookedIterms (){
       setYourBookedIterms(prev =>!prev)
+      getBookedIterms("bookings")
     }
+
+    const [itermsYouBidded , setItemsYouBidded] = React.useState(false)
+    function toggelItermsYouBidded (){
+      setItemsYouBidded(prev =>!prev)
+      getBookedIterms("biddings")
+    }
+
+    const [yourBiddedIterms , setYourBiddedIterms] = React.useState(false)
+    function toggleYourBiddedIterms (){
+      setYourBiddedIterms(prev =>!prev)
+      getBookedIterms("biddings")
+    }
+
+
+    let whenMyLoadBidded = (
+      <View>
+        <Text> panashe bidded sadza </Text>
+        <Text> The required rate is rate </Text>
+        <Text> Accept / Deny  required rate is rate </Text>
+        <Text> Message   required rate is rate </Text>
+        <Text> get in touch Now </Text>
+      </View>
+    )
       
   return(
     <View style={{alignItems :'center',paddingTop:80}}>     
@@ -168,7 +236,7 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300
     </View>
   )
 }
-export default React.memo(Bookings)
+export default React.memo(BookingsandBiddings)
 
 const styles = StyleSheet.create({
  slctView : {

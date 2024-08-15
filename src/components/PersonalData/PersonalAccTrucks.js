@@ -1,5 +1,5 @@
 import React,{useEffect} from "react";
-import { View ,Text,Image , ScrollView , TouchableOpacity} from "react-native";
+import { View ,Text,Image , ScrollView , TouchableOpacity , ActivityIndicator} from "react-native";
 import { auth, db } from '../config/fireBase'; 
 import { collection, onSnapshot,where ,query , doc , deleteDoc} from 'firebase/firestore';
  
@@ -9,9 +9,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 function PersonalAccTrucks(){
 const navigate = useNavigate()
 
+    const [spinnerItem, setSpinnerItem] = React.useState(false);
     const deleteLoad = async (id) => {
-    const loadsDocRef = doc(db, 'Loads' , id);
+
+      setSpinnerItem(true)
+    const loadsDocRef = doc(db, 'Trucks' , id);
     await deleteDoc(loadsDocRef);
+      setSpinnerItem(false)
   };
 
 //     const deleteLoad = async (id) => {
@@ -69,6 +73,7 @@ const navigate = useNavigate()
       <Text className="location"> From {item.fromLocation} to {item.toLocation} </Text>
       <Text>contact {item.contact}</Text>
 
+      { spinnerItem &&<ActivityIndicator size={36} />}
        <TouchableOpacity onPress={()=>deleteLoad(item.id)} >
 
               <DeleteIcon style={{color : 'red'} }/>

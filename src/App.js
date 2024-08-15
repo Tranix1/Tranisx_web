@@ -30,22 +30,26 @@ import PersonalAccTrucks from "./components/PersonalData/PersonalAccTrucks"
 import SelectChat from "./components/communcication/selectChat"
 import Messaging from "./components/communcication/Messaging"
 import MainGroup from "./components/communcication/MainGroup"
-import Bookings from "./components/communcication/Bookings"
+import BookingsandBiddings from "./components/communcication/BookingsandBiddings"
 
 import SelectedUserLoads from "./components/selectedUserIterms/userPersonalLoads"
 import SelectedUserTrucks from "./components/selectedUserIterms/userPersonalTrucls"
 
-// 'rgb(129,201,149)
-// '#6a0c0c'
-// '#6a0c0c'
+import ShopLocation from "./components/shop/shopHome"
+import DspShopIterms from "./components/shop/DspShopIterms"
+import SelectAddToShop from "./components/shop/SelectAddToShop"
+import AddToShop from "./components/shop/AddToShop"
+
 import MainStyle from "./components/styles/Main.css"
 
-import { BrowserRouter as Router ,Route, Routes, BrowserRouter, useNavigate , } from 'react-router-dom';
+import { BrowserRouter as Router ,Route, Routes, BrowserRouter, useNavigate, useParams , } from 'react-router-dom';
+import OneFirmsShop from "./components/shop/OneFirmsShop";
 
 
 function HomeScreen() {
   // const navigation = useNavigation();
 const navigate = useNavigate()
+const {page} = useParams()
   const [currentUser, setCurrentUser] = React.useState("");
 
   React.useEffect(() => {
@@ -89,22 +93,7 @@ const navigate = useNavigate()
   };
 }, [currentUser]);
 
-  const [dspLoads , setDspLoads] =React.useState(false)
-  function toggleDspLoads(){
-    setDspLoads(prev => !prev)
-    setDspTrckType(prev => false)
-  }
-
-
-  const [dspTruckType , setDspTrckType] =React.useState(false)
-  function toggleDspTrckType(){
-    setDspTrckType(prev => !prev)
-    setDspLoads(prev => false)
-  }
-  function toggleGoHome(){
-    setDspTrckType(prev => false)
-    setDspLoads(prev => false)
-  }
+ 
 
   function checkAuth(){
     if(!currentUser){
@@ -122,26 +111,27 @@ const navigate = useNavigate()
 
      if(!currentUser){
       navigate("/createUser/")
-    }else if(currentUser &&!username){
+    }else if(!currentUser ){
       navigate("/addPersnoalInfo/")
     }else {
     setSmallMenu(prev => !prev) 
+
     }
     }
   return (
     <View >  
-              <Header  toggleGoHome = {toggleGoHome} toggleDspLoads={toggleDspLoads} toggleDspTrckType={toggleDspTrckType} toggleSmallMenu={toggleSmallMenu}    />
+              <Header toggleSmallMenu={toggleSmallMenu}  />
 
      <View  style={{flexDirection:'row' , justifyContent : 'space-evenly' , paddingLeft : 20 , paddingRight: 20 , height : 40 , alignItems : 'center' , backgroundColor : '#6a0c0c' , paddingTop : 10 }}>
 
-               <TouchableOpacity onPress={toggleGoHome}> 
+               <TouchableOpacity onPress={()=>navigate("/")}> 
                     <Text style={{color : 'white'}} >Home</Text>
                 </TouchableOpacity>
 
-             <TouchableOpacity onPress={ toggleDspLoads  }>
+             <TouchableOpacity onPress={ ()=>navigate('/loads') }>
                     <Text style={{color : 'white'}} >Loads</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={toggleDspTrckType} >
+                <TouchableOpacity  onPress={ ()=>navigate('/trucks')} >
                     <Text  style={{color : 'white'}}>Trucks</Text>
 
                 </TouchableOpacity>
@@ -154,14 +144,14 @@ const navigate = useNavigate()
                 <Text style={{color : 'white'}} >Add</Text>
              </TouchableOpacity>
 
-   {!dspLoads && !dspTruckType && <View  >
+   {!page && <View >
 
      <MiniLoad/>
      <DspAllTrucks/>
     </View>}
 
-    {dspLoads && !dspTruckType&& <DspAllLoads  username = {username}/>}
-    {dspTruckType &&  <SelectOneTruckType  />}
+    {page === "loads"&& <DspAllLoads  username = {username}/>}
+    {page ==="trucks" &&  <SelectOneTruckType  />}
     </View>
   );
 }
@@ -251,6 +241,7 @@ function App(){
 
 
       <Route exact path="/" element={<HomeScreen/>} />
+      <Route exact path="/:page/" element={<HomeScreen/>} />
 
       <Route path="/searchElement/" element={<SearchIterms/>} />
 
@@ -273,7 +264,7 @@ function App(){
 
 
       <Route path="/message/:item"   element={<Messaging username={username}/>}/>
-      <Route path="/bookings/" element={<Bookings/>} />
+      <Route path="/bookings/" element={<BookingsandBiddings/>} />
 
 
       <Route path="/AddIterms/" element={<AddIterms/>}/>
@@ -287,12 +278,19 @@ function App(){
       <Route path="/selectedUserLoads/:userId" element={<DspAllLoads username={username} />} />
       <Route path="/selectedUserTrucks/:userId" element={<SelectedUserTrucks/>} />
 
+      <Route path="/location/:location" element={<DspAllLoads username={username} />} />
+
+      <Route path="/shopLocation/" element={<ShopLocation/>} />
+      <Route path="/DspShop/:location/:specproduct" element={<DspShopIterms/>} />
+      <Route path="/selectAddShop/:location" element={<SelectAddToShop/>} />
+      <Route path="/AddToShop/:location/:specproduct" element={<AddToShop  
+      username={ username}  contact = {contact}  isVerified ={ isVerified} />} />
+      <Route path="/AddToShop/:location/:specproduct/:truckType" element={<AddToShop
+      username={ username}  contact = {contact}  isVerified ={ isVerified} />} />
+      <Route path="/OneFirmsShop/:userId" element={<OneFirmsShop/>} />
+
     </Routes>
-
-           
-       
       </BrowserRouter>
-
     )
 }
 export default App

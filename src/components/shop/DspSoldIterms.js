@@ -1,43 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { collection, onSnapshot, } from 'firebase/firestore';
 import { db } from '../config/fireBase';
 import { View , Text , Image , ScrollView , TouchableOpacity , Linking} from 'react-native';
-import defaultImage from '../images/logo.png'
+import {onSnapshot ,  query ,collection,where } from "firebase/firestore"
 
-import VerifiedIcon from '@mui/icons-material/Verified';
-// import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {useNavigate,useParams} from 'react-router-dom';
-function DspAllTrucks(){      
-const navigate = useNavigate()
-  const trucksDB = collection(db , "Trucks")
-  const [allTrucks, setAllTrucks] = useState([]);
+import VerifiedIcon from '@mui/icons-material/Verified';
+
+function DspSoldIterms(){
+    const navigate = useNavigate()
+
+  const {location, specproduct ,truckType } = useParams()
+
+  const [allSoldIterms, setAllSoldIterms] = useState([]);
+
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(trucksDB, (querySnapshot) => {
-      const filteredData = [];
+    try {
 
-      querySnapshot.forEach((doc) => {
-        filteredData.push({
-          id: doc.id,
-          ...doc.data()
+        const  dataQuery = query(collection(db, "Shop"), 
+        where("specproduct" ,"==",   specproduct) , where("location","==", location));
+        
+        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
+          const loadedData = [];
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added' || change.type === 'modified') {
+              const dataWithId = { id: change.doc.id, ...change.doc.data() };
+              loadedData.push(dataWithId);
+            }
+          });
+
+          setAllSoldIterms(loadedData);
         });
-      });
-      const shuffleArray = (array) => {
-        for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-      };
-      const shuffledData = shuffleArray(filteredData);
-
-      setAllTrucks(shuffledData);
-    });
-
-    return () => {
-      unsubscribe(); // Unsubscribe the listener when the component unmounts
-    };
-  }, []);    
+        
+        // Clean up function to unsubscribe from the listener when the component unmounts
+        return () => unsubscribe();
+    } catch (err) {
+      console.error(err);
+    }
+  }, []); 
 
 
     
@@ -49,7 +49,7 @@ const navigate = useNavigate()
       }));
     };
 
-  const rendereIterms = allTrucks.map((item)=>{
+  const rendereIterms = allSoldIterms.map((item)=>{
 
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
@@ -67,23 +67,21 @@ const navigate = useNavigate()
 
           </View>)
     return(
-      <View  key={item.id}>
+      <TouchableOpacity  key={item.id}  onPress={()=>navigate(`/OneFirmsShop/${item.userId}`)}>
+      { item.trailerType && ( <Text> trailer type {item.trailerType}  </Text> ) }
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
       </View>}
       
-          {item.imageUrl &&<img src={item.imageUrl} style={{height : 250 , borderRadius : 10}}/>}
-          {!item.imageUrl && <img src={defaultImage}  style={{height : 250 , borderRadius : 10}}/>}
-        
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20}} >{item.CompanyName} </Text>
-      {item.fromLocation && (  <Text > From {item.fromLocation} to {item.toLocation} </Text>) }
-
-
+          {item.imageUrl &&<img src={item.imageUrl} style={{height : 200 , borderRadius : 10}}/>}
+        {item.productName &&<Text>{item.productName} </Text> }
+        {item.price &&<Text> {item.currency?"USD" : "Rand" }  {item.price} </Text> }
+        {item.shopLocation &&<Text>{item.shopLocation} </Text> }
 
        {!contactDisplay[item.id] && <View>
       { item.contact && ( <Text>contact {item.contact}</Text> )}
-      { item.trailerType && ( <Text> trailer type {item.trailerType}  </Text> ) }
       {item.additionalInfo && (<Text> additional Info {item.additionalInfo} </Text>)}
         </View>}
 
@@ -94,19 +92,19 @@ const navigate = useNavigate()
         </TouchableOpacity>
 
 
-    </View>
+    </TouchableOpacity>
         )
       })
   
- 
-return(
-        <ScrollView style={{padding : 10 }}>
-          <div className='Main-grid'>
-         {allTrucks.length > 0 ? rendereIterms   : <Text>Loading...</Text>}
-         <View style={{height : 550}} >
-           </View>
-            </div>
+
+    return(
+        <ScrollView >
+          
+
+            <Text>{ specproduct } </Text>
+            <Text>{location} </Text>
+            {rendereIterms}
         </ScrollView>
-)
+    )
 }
-export default DspAllTrucks 
+export default React.memo(DspSoldIterms)

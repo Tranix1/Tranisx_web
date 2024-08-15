@@ -1,5 +1,6 @@
 import React,{useEffect} from "react";
-import { View ,Text,Image, TouchableOpacity,ScrollView , StyleSheet } from "react-native";
+
+import { View ,Text,Image, TouchableOpacity,ScrollView , StyleSheet , ActivityIndicator } from "react-native";
 import { auth, db } from '../config/fireBase'; 
 import { collection, onSnapshot,where ,query , doc , deleteDoc} from 'firebase/firestore';
 // import AntDesign from '@expo/vector-icons/AntDesign';
@@ -13,9 +14,12 @@ function PersonalAccLoads(){
 
 const navigate = useNavigate()
 
+    const [spinnerItem, setSpinnerItem] = React.useState(false);
     const deleteLoad = async (id) => {
+      // setSpinnerItem(true)
     const loadsDocRef = doc(db, 'Loads' , id);
     await deleteDoc(loadsDocRef);
+      // setSpinnerItem(false)
   };
 
  const [loadIterms , setLoadedIterms ]= React.useState([])
@@ -23,10 +27,10 @@ const navigate = useNavigate()
     try {
       if (auth.currentUser) {
         const userId = auth.currentUser.uid;
-        const dataQuery = query(collection(db, "Trucks"), where("userId", "==", userId));
+        const dataQuery = query(collection(db, "Loads"), where("userId", "==", userId));
 
         const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
-          const loadedData = [];
+          let loadedData = [];
           snapshot.docChanges().forEach((change) => {
             if (change.type === 'added' || change.type === 'modified') {
               const dataWithId = { id: change.doc.id, ...change.doc.data() };
@@ -34,6 +38,7 @@ const navigate = useNavigate()
             }
           });
 
+          loadedData = loadedData.sort((a, b) => b.timeStamp - a.timeStamp);
           setLoadedIterms(loadedData);
         });
         
@@ -58,6 +63,7 @@ const navigate = useNavigate()
         <Text>Requirements {item.requirements} </Text>
         <Text>additional info {item.additionalInfo} </Text>        
 
+      {/* { spinnerItem &&<ActivityIndicator size={36} />} */}
             <TouchableOpacity onPress={()=>deleteLoad(item.id)} >
               {/* <AntDesign name="delete" size={24} color="red" />    */}
               <DeleteIcon style={{color : 'red'} }/>

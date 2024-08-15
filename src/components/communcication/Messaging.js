@@ -2,11 +2,16 @@ import React ,{useState, useEffect} from "react";
 import { View , Text , TouchableOpacity , ScrollView , Image , TextInput , Keyboard} from "react-native";
 import {addDoc , onSnapshot , orderBy , query ,doc , serverTimestamp , getDocs,collection,where } from "firebase/firestore"
 import { db  , auth} from "../config/fireBase";
+import { storage } from "../config/fireBase";
+import { getDownloadURL, ref, uploadBytes, uploadBytesResumable ,} from "firebase/storage";
+
+
 
 import { useParams , useNavigate} from 'react-router-dom';
 // import { Ionicons } from "@expo/vector-icons";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SendIcon from '@mui/icons-material/Send';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 function Messaging ({username}){
   
 
@@ -123,12 +128,44 @@ const chatQuery = query(chatsRef, where('chatId', '==', chatId)); // Query for m
 
 const [messages, setMessages] = useState([]);
 const [message, setMessage] = useState("");
+ 
+  const [image, setImage] = useState(null);  
+  const [ imageUpload, setImageUpload] = React.useState(null)    
 
+
+    const handleFileInputChange = (e) => {
+    // Handle file input change here
+    setImageUpload(e.target.files[0])
+    const file = e.target.files[0];
+
+     if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+
+    const uploadImage = ()=>{
+      if(imageUpload === null) return
+      const imageRef = ref(storage , `Trucks/${imageUpload.name + new Date().getTime()  }`)
+      uploadBytes(imageRef , imageUpload).then(()=>{
+      })
+    }
 
 
 const handleSubmit = async () => {
-
-  const userId = auth.currentUser.uid
+    let imageUrl
+    if(image){
+       uploadImage()
+       const imageRef = ref(storage , `Trucks/${imageUpload.name}`)
+       await uploadBytes(imageRef , imageUpload)
+       // get image  url 
+       let imageUrl = await getDownloadURL(imageRef)
+ }
+const userId = auth.currentUser.uid
 try {
   let addChatId 
   
@@ -145,6 +182,7 @@ try {
     timestamp : serverTimestamp() ,
       currentDate: currentDateTime,
       currentTime: currentTime,
+      addedImage: imageUrl 
     });  
   addChatId = chatId
 }else{
@@ -208,10 +246,20 @@ if (!existingChat) {
          const userId = auth.currentUser.uid
           if (item.msgReceiverId === userId) {
             return (
-              <View key={item.id} style={{ padding: 7, marginBottom: 6, backgroundColor: "green", marginRight: 80 }}>
-                {showMessageDate && <Text>{messageDate}</Text>}
-                <Text>{item.message}</Text>
-              </View>
+            <View key={item.id}>
+            {showMessageDate && <Text>{messageDate}</Text>}
+            <View style={{marginBottom: 2,backgroundColor: 'lightGay',marginLeft: 70,justifyContent:'center' ,paddingLeft:5 ,paddingBottom: 6 ,paddingTop:7}}>
+
+              {item.addedImage && (
+                   <img src={item.addedImage} style={{height : 200 , marginBottom : 10}}/>
+              )}
+              <Text style={{color:'white'}} >{item.message}</Text>
+              <Text style={{ fontSize: 12, position: 'absolute', right: 8, bottom: 0 }}>
+                {item.currentTime}
+                
+              </Text>
+            </View>
+          </View>
             );
           } else {
             return (
@@ -220,10 +268,7 @@ if (!existingChat) {
             <View style={{marginBottom: 2,backgroundColor: 'rgb(129,201,149)',marginLeft: 70,justifyContent:'center' ,paddingLeft:5 ,paddingBottom: 6 ,paddingTop:7}}>
 
               {item.addedImage && (
-                <Image
-                  source={{ uri: item.addedImage }}
-                  style={{ width: '100%', height: 200, resizeMode: 'cover', marginBottom: 10 }}
-                />
+                   <img src={item.addedImage} style={{height : 200 , marginBottom : 10}}/>
               )}
               <Text style={{color:'white'}} >{item.message}</Text>
               <Text style={{ fontSize: 12, position: 'absolute', right: 8, bottom: 0 }}>
@@ -273,11 +318,13 @@ return (<View style={{ position : 'absolute' , top :0 , bottom : 0, width : 420 
 
     </ScrollView>
 
+      {image && <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />}
 
   <View>
   <View style={{ position: 'absolute', bottom: keyboardHeight, left: 0, right: 0 , flexDirection : 'row' , backgroundColor : '#e8e6e3' , height : 45 , }}>
+    <View style={{paddingLeft : 17 , maxHeight : 40, borderColor: 'black', borderWidth: 2, borderRadius: 20, flex: 1 }}> 
   <TextInput
-    style={{paddingLeft : 17 , maxHeight : 40, borderColor: 'black', borderWidth: 2, borderRadius: 20, flex: 1 }}
+    style={{flex:1}}
     placeholderTextColor="#6a0c0c"
     placeholder="Type your message"
     type="text"
@@ -286,6 +333,20 @@ return (<View style={{ position : 'absolute' , top :0 , bottom : 0, width : 420 
     multiline={true}
   />
 
+       {!image&&<div>
+    <label for="fileInput" >     
+        <CameraAltIcon style={{color : '#6a0c0c' , fontSize : 33}} />
+
+    </label>
+    <input
+      style={{display: 'none'}}
+      id="fileInput"
+      type="file"
+      onChange={handleFileInputChange}
+    />
+
+    </div>}
+ </View>
      <TouchableOpacity onPress={handleSubmit} style={{ width : 50 , backgroundColor : '#9d1e1e', borderRadius : 6  ,  alignItems : 'center' , justifyContent: 'center' , height : 35, marginLeft : 4 , marginRight : 6}}  >
       <SendIcon style={{color : 'white'}}/>
     </TouchableOpacity>

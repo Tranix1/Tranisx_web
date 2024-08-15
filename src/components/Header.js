@@ -31,10 +31,6 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 
              </View>
 
-             <View>
-
-             </View>
-
         </View>
     )
 }
