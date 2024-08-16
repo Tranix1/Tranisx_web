@@ -285,8 +285,9 @@ function App(){
        username={ username}  contact = {contact}  isVerified ={ isVerified} />} />
 
       <Route path="/dspOneTrckType/:truckType" element={<DspOneTruckType/>} initialParams={{username : username , contact : contact , isVerified : isVerified}} />
-      <Route path="/selectedUserLoads/:userId" element={<DspAllLoads username={username} />} />
       <Route path="/selectedUserTrucks/:userId" element={<SelectedUserTrucks/>} />
+      <Route path="/selectedUserLoads/:userId" element={<DspAllLoads username={username} />} />
+      <Route path="/searchedLoads/:userId/:itemId" element={<DspAllLoads username={username} />} />
 
       <Route path="/location/:location" element={<DspAllLoads username={username} />} />
 

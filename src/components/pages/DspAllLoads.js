@@ -14,7 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 function DspAllLoads({username}){  
 
 const navigate = useNavigate()
-const {userId ,  location} = useParams()
+const {userId ,  location ,itemId} = useParams()
 
   const deleteLoad = async (id) => {
   try {
@@ -26,6 +26,12 @@ const {userId ,  location} = useParams()
     console.error('Error deleting item:', error);
   }
 };
+
+
+
+
+
+
 
 
   const [localLoads , setLocalLoads]=React.useState(false)
@@ -43,6 +49,30 @@ const {userId ,  location} = useParams()
   //  DRC , ZIM , MOZA , BOTSWA , SOUTH , NAMIB , TANZAN , MALAWI , Zambia
  
       const [loadsList, setLoadsList] = useState([]);
+
+
+
+
+
+   function handleClick(id){
+        setLoadsList(prevLoad => {
+          return prevLoad.map( oneLoad =>{
+            return oneLoad.id === itemId? { ...oneLoad ,  backgroundColor: "green" }  :  oneLoad         
+        })
+        })
+      }
+
+
+      function handleClick() {
+      }
+
+
+
+
+
+
+
+
      const checkAndDeleteExpiredItems = () => {
   loadsList.forEach((item) => {
     const deletionTime = item.deletionTime;
@@ -65,19 +95,32 @@ setTimeout(() => {
       if (userId) {
         const dataQuery = query(collection(db, "Loads"), where("userId", "==", userId));
 
-        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
-          let loadedData = [];
-          snapshot.docChanges().forEach((change) => {
-            if (change.type === 'added' || change.type === 'modified') {
-              const dataWithId = { id: change.doc.id, ...change.doc.data() };
-              loadedData.push(dataWithId);
-            }
-          });
+       const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
+      let loadedData = [];
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'added' || change.type === 'modified') {
+          const dataWithId = { id: change.doc.id, ...change.doc.data() };
+          loadedData.push(dataWithId);
+        }
+      });
 
-          loadedData = loadedData.sort((a, b) => b.timeStamp - a.timeStamp);
-          setLoadsList(loadedData);
-        });
-        return unsubscribe;
+      loadedData = loadedData.sort((a, b) => b.timeStamp - a.timeStamp);
+
+      if (itemId) {
+        const updatedLoadList = loadedData.map(oneLoad => ({
+          ...oneLoad,
+          backgroundColor: oneLoad.id === itemId ? "#F2F2F2" : "#EDEDED"
+        }));
+
+        const sortedLoadList = updatedLoadList.sort((a, b) => a.backgroundColor === "#F2F2F2" ? -1 : b.backgroundColor === "#F2F2F2" ? 1 : 0);
+
+        setLoadsList(sortedLoadList);
+      } else {
+        setLoadsList(loadedData);
+      }
+    });
+
+        return unsubscribe  
       }else if(location){
         const dataQuery = query(collection(db, "Loads"), where("location", "==", location));
 
@@ -93,7 +136,7 @@ setTimeout(() => {
           loadedData = loadedData.sort((a, b) => b.timeStamp - a.timeStamp);
           setLoadsList(loadedData);
         });
-        return unsubscribe;
+        return unsubscribe 
       }    
       else {
         const loadsCollection = collection(db, "Loads");
@@ -138,6 +181,7 @@ setTimeout(() => {
 
 
     const [spinnerItem, setSpinnerItem] = React.useState(null);
+    const [processResult , setProcessReuslt ] = React.useState('')
     const [ bookingError , setBookingError] =React.useState("")
 
     const checkExistiDoc = async (docId) => {
@@ -178,7 +222,10 @@ setTimeout(() => {
           
           let docId = `${userId}${item.typeofLoad}${item.ratePerTonne}${item.userId}`
           const existingChat = await checkExistiDoc(docId);
-          
+           let theRate 
+
+              bidDisplay[item.id] ? theRate= bidRate : theRate = item.ratePerTonne
+
           if(!existingChat){
         const docRef = await addDoc(bookingCollection, {
         itemName : item.typeofLoad ,
@@ -189,19 +236,22 @@ setTimeout(() => {
         Accept : null ,
         msgReceiverId : userId ,
         docId : docId,
-        rate : bidDisplay ? bidRate :  item.ratePerTonne,
+        rate :  theRate ,
         deletionTime :Date.now() + 5 * 24 * 60 * 60 * 1000 ,
         timestamp : serverTimestamp() ,
       });
       
-      alert("Booking successful!")    
+      setBidRate("")
+      toggleBid(item.id) 
+      setProcessReuslt(`${bidDisplay[item.id] ? "booking": "bidding"} was succeful`)    
         }else {
-          alert("Already Booked this Item!")    
+          setProcessReuslt("Already Booked this Item!")    
 
         }
       setSpinnerItem(null)      
     } catch (err) {
       setBookingError(err.toString());
+      setSpinnerItem(null)      
     }
   };
 
@@ -224,9 +274,11 @@ setTimeout(() => {
 
 
       let bidNow = (
-        <View>
+        <View style={{position:'absolute' , bottom:15 , backgroundColor:'#DDDDDD'}}>
 
-      <View style={{flexDirection:'row', alignItems : 'center'}}>
+    {spinnerItem === item ? (
+        <ActivityIndicator size={34} />
+      ) :    <View style={{flexDirection:'row', alignItems : 'center' ,}}>
 
         <TouchableOpacity onPress={toggleCurrencyBid}>
             {currencyBid ? <Text style={styles.buttonIsFalse} >USD</Text> :
@@ -246,17 +298,17 @@ setTimeout(() => {
             {perTonneBid ? <Text style={styles.bttonIsTrue} >Per tonne</Text> : 
               <Text style={styles.buttonIsFalse}>Per tonne</Text>}
           </TouchableOpacity>
-   </View>
+   </View>}
 
 
-          <View style={{flexDirection:'row'}}>
+          <View style={{flexDirection:'row' , justifyContent: 'space-evenly'}}>
 
-            <TouchableOpacity onPress={()=>handleSubmit(item , "biddings")} >
-              <Text>Send</Text>
+            <TouchableOpacity onPress={()=>toggleBid(item.id) } style={{ backgroundColor:'#6a0c0c',padding:1 ,paddingLeft :7 , paddingRight:7 ,borderRadius:3}} > 
+              <Text style={{color:'white'}}>Cancel </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={()=>toggleBid(item.id) }> 
-              <Text>Cancel </Text>
+            <TouchableOpacity onPress={()=>handleSubmit(item , "biddings")} style={{ backgroundColor:'rgb(129,201,149)',padding:1 ,paddingLeft :7 , paddingRight:7 ,borderRadius:3}} >
+              <Text style={{color:'white'}}> Send</Text>
             </TouchableOpacity>
 
           </View>
@@ -265,12 +317,13 @@ setTimeout(() => {
       )
 
   return(
-    <View  key={item.id} style={{ backgroundColor:  "#DDDDDD", marginBottom : 8, padding :6  }} >
+    <View  key={item.id} style={{ backgroundColor:  "#DDDDDD", marginBottom : 8, padding :6  , }} >
 
             { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white',zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
             </View>}
         <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}  >{item.companyName} </Text>
+            {processResult && <Text>{processResult} </Text>}
         <Text>Commodity : {item.typeofLoad} </Text>
         <Text> Route : from{item.fromLocation} to {item.toLocation} </Text>
 
@@ -281,25 +334,25 @@ setTimeout(() => {
          {item.perTonne ? <Text> Per tonne</Text> : null}
         </View>
 
-       {   !contactDisplay[item.id] && !bidDisplay[item.id]? <View>
+       {   !contactDisplay[item.id] && <View>
         <Text>Contact : {item.contact}</Text>
         <Text> payment terms : {item.paymentTerms} </Text>
         <Text>Requirements : {item.requirements} </Text>
         <Text>additional info : {item.additionalInfo} </Text> 
         {item.activeLoading&& <Text>Active Loading </Text> }
-        </View> : null}
+        </View> }
 
 
         {contactDisplay[item.id] && contactMe}
 
          {bidDisplay[item.id]&& bidNow}
 
-        <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
+        {!bidDisplay[item.id]&&<TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
           <Text style={{textDecorationLine:'underline'}} > get In Touch now</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>}
         
         
-       { auth.currentUser ? <View style={{flexDirection : 'row', justifyContent : 'space-evenly' }} >  
+       { auth.currentUser ? !bidDisplay[item.id]&& <View style={{flexDirection : 'row', justifyContent : 'space-evenly' }} >  
       {bookingError&&<Text>{bookingError}</Text>}
           {spinnerItem === item ? (
         <ActivityIndicator size={34} />
