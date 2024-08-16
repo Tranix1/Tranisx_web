@@ -4,28 +4,20 @@ import { onSnapshot ,  query ,doc , collection,where ,updateDoc , deleteDoc ,} f
 import { auth , db } from "../config/fireBase";
 
 
-import {useNavigate} from 'react-router-dom';
+import {useNavigate , useParams} from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function BookingsandBiddings(){
 
     const navigate = useNavigate()
+    const {dspRoute , dbName} = useParams()
 
   const [getAllIterms , setAllIterms]=React.useState([])
 
-  const deleteLoad = async (id) => {
-  try {
-    const loadsDocRef = doc(db, 'Loads', id);
-    await deleteDoc(loadsDocRef);
-    console.log(`Item with ID ${id} deleted successfully from the database.`);
+ 
 
-    // Remove the deleted item from loadsList
-    setAllIterms((prevLoadsList) => prevLoadsList.filter(item => item.id !== id));
-  } catch (error) {
-    console.error('Error deleting item:', error);
-  }
-};
-const getBookedIterms = (dbName) => {
+     
+const getAlltermsF = () => {
   try {
     if (auth.currentUser) {
       const userId = auth.currentUser.uid;
@@ -39,8 +31,7 @@ const getBookedIterms = (dbName) => {
           sendedMsgs.push(dataWithId);
         });
         
-        const combineBoth = [ ...sendedMsgs];
-        setAllIterms(combineBoth);
+
       });
       
       const unsubscribe2 = onSnapshot(whenReceivingABook, (querySnapshot) => {
@@ -61,29 +52,6 @@ const getBookedIterms = (dbName) => {
     }
 
 
-        const checkAndDeleteExpiredItems = () => {
-          getAllIterms.forEach((item) => {
-            const deletionTime = item.deletionTime;
-            const timeRemaining = deletionTime - Date.now();
-            if (timeRemaining <= 0) {
-              deleteLoad(item.id);
-            } else {
-              setTimeout(() => {
-                deleteLoad(item.id);
-              }, timeRemaining);
-            }
-          });
-        };
-
-        checkAndDeleteExpiredItems();
-
-        const interval = setInterval(() => {
-          checkAndDeleteExpiredItems();
-        }, 1000); // Check every second for expired items
-
-        return () => {
-          clearInterval(interval);
-        };
     
   } catch (error) {
     console.error(error);
@@ -91,6 +59,9 @@ const getBookedIterms = (dbName) => {
 };
 
 
+  React.useEffect(() => {
+    getAlltermsF()
+    },[dspRoute]);
 
 
 
@@ -102,16 +73,15 @@ const getBookedIterms = (dbName) => {
 
 
 
-
-
-
-    const toggleAcceptOrDeny = async (id) => {
-   
+    const toggleAcceptOrDeny = async (id ,decision ) => {
       try {
-        if (auth.currentUser) {
-
+        if (decision === "Accept") {
           const docRef = doc(db, 'bookings', id);
           await updateDoc(docRef, { Accept : true ,  });
+          alert("Username updated successfully!");
+        }else{
+          const docRef = doc(db, 'bookings', id);
+          await updateDoc(docRef, { Accept : false ,  });
           alert("Username updated successfully!");
         }
       } catch (err) {
@@ -130,7 +100,7 @@ let whnBookAload = getAllIterms.map((item) => {
     return (
       <View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300}}>
         <Text>You booked {item.ownerName} load</Text>
-        <Text>He accepted / denied</Text>
+          <Text>{  item.Accept === true ? "accepted" :  "denied"} </Text>
 
         <TouchableOpacity onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)}>
           <Text>Message</Text>
@@ -145,15 +115,18 @@ let whnBookAload = getAllIterms.map((item) => {
 
  let whenMyLoadBooked = getAllIterms.map((item)=>{
 const userId = auth.currentUser.uid;
-
         const serializedItem = JSON.stringify(item);
 if(!item.ownerId !== userId ){ 
 return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300}} key = {item.id}>
 
           <Text> {item.ownerName} booked ur load </Text>
           
-           <TouchableOpacity onPress={()=> toggleAcceptOrDeny(item.id)} >
-            <Text>Accept or deny </Text>
+           <TouchableOpacity onPress={()=> toggleAcceptOrDeny(item.id  , "Accept")} >
+            <Text>Accept </Text>
+          </TouchableOpacity>
+          
+           <TouchableOpacity onPress={()=> toggleAcceptOrDeny(item.id  , "Deny")} >
+            <Text>Deny </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={()=>navigate(`/selectedUserTrucks/${item.bookerId}`)} >
@@ -170,30 +143,6 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300
 })
 
 
-    const [itermsYouBooked , setItemsYouBooked] = React.useState(false)
-    function toggelItermsYouBooKed (){
-      setItemsYouBooked(prev =>!prev)
-      getBookedIterms("bookings")
-    }
-
-    const [yourBookedIterms , setYourBookedIterms] = React.useState(false)
-    function toggleYourBookedIterms (){
-      setYourBookedIterms(prev =>!prev)
-      getBookedIterms("bookings")
-    }
-
-    const [itermsYouBidded , setItemsYouBidded] = React.useState(false)
-    function toggelItermsYouBidded (){
-      setItemsYouBidded(prev =>!prev)
-      getBookedIterms("biddings")
-    }
-
-    const [yourBiddedIterms , setYourBiddedIterms] = React.useState(false)
-    function toggleYourBiddedIterms (){
-      setYourBiddedIterms(prev =>!prev)
-      getBookedIterms("biddings")
-    }
-
 
     let whenMyLoadBidded = (
       <View>
@@ -204,6 +153,7 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300
         <Text> get in touch Now </Text>
       </View>
     )
+
       
   return(
     <View style={{alignItems :'center',paddingTop:80}}>     
@@ -214,22 +164,43 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300
                     <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
         
-        <Text style={{fontSize: 20 , color : 'white'}} > Bookings  </Text>
-       </View>
+        <Text style={{fontSize: 20 , color : 'white'}} > {dspRoute? dspRoute : "Bookings and Biddings"} </Text>
+         </View>
+    <View style={{flexDirection:'row' }}>
+          <View style={{marginRight:7}} >
+                  { !dspRoute &&<TouchableOpacity onPress={()=>navigate('/bookingsandBiddings/bookings/itemsYouBooked') } style={styles.slctView}>
+                        <Text>Iterms you booked</Text>
+                      </TouchableOpacity>}
 
-        { !yourBookedIterms&&   <TouchableOpacity onPress={toggelItermsYouBooKed} style={styles.slctView}>
-              <Text>Iterms you booked</Text>
+                    { !dspRoute&&<TouchableOpacity onPress={()=>navigate('/bookingsandBiddings/bookings/yourBookedItems') } style={styles.slctView}>
+                        <Text>Your booked Iterms</Text>
+                      </TouchableOpacity>}
+          </View>
+
+<View>
+        { !dspRoute&&<TouchableOpacity onPress={()=>navigate('/bookingsandBiddings/biddings/itermsYouBidded') } style={styles.slctView}>
+              <Text>Iterms you Bidded</Text>
             </TouchableOpacity>}
 
-          { !itermsYouBooked&& <TouchableOpacity onPress={toggleYourBookedIterms} style={styles.slctView}>
-              <Text>Your booked Iterms</Text>
+          { !dspRoute&& <TouchableOpacity onPress={()=>navigate('/bookingsandBiddings/biddings/yourBiddedItems') } style={styles.slctView}>
+              <Text>Your toggelItermsYouBidded Iterms</Text>
             </TouchableOpacity>}
-
-            {itermsYouBooked && <ScrollView>
+ </View>
+  </View> 
+  
+            {dspRoute=== "itermsYouBidded" && <ScrollView>
               {whnBookAload}
             </ScrollView> }
             
-            {yourBookedIterms&& <ScrollView> 
+            {dspRoute=== "yourBiddedItems" && <ScrollView> 
+              {whenMyLoadBidded}
+              </ScrollView>}
+              
+            {dspRoute=== "itemsYouBooked" && <ScrollView>
+              {whnBookAload}
+            </ScrollView> }
+            
+            {dspRoute===  "yourBookedItems" && <ScrollView> 
               {whenMyLoadBooked}
               </ScrollView>}
 

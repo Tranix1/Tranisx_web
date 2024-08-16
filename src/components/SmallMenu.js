@@ -21,7 +21,7 @@ return(
         <Text> Chats</Text>
     </TouchableOpacity>
     
-    <TouchableOpacity   onPress={()=>navigate('/bookings/') }  style={styles.buttonStyle}>
+    <TouchableOpacity   onPress={()=>navigate('/bookingsandBiddings/') }  style={styles.buttonStyle}>
         <Text>Bookings</Text>
     </TouchableOpacity>
     

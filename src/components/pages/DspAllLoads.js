@@ -168,7 +168,7 @@ setTimeout(() => {
   
         const serializedItem = JSON.stringify(item);
 
-      const handleSubmit = async ({clickedItem , dbName} ) => {
+      const handleSubmit = async (clickedItem , dbName) => {
 
         
         setSpinnerItem(clickedItem);
@@ -193,6 +193,7 @@ setTimeout(() => {
         deletionTime :Date.now() + 5 * 24 * 60 * 60 * 1000 ,
         timestamp : serverTimestamp() ,
       });
+      
       alert("Booking successful!")    
         }else {
           alert("Already Booked this Item!")    

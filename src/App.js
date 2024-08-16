@@ -272,7 +272,8 @@ function App(){
 
 
       <Route path="/message/:item"   element={<Messaging username={username}/>}/>
-      <Route path="/bookings/" element={<BookingsandBiddings/>} />
+      <Route path="/bookingsandBiddings/" element={<BookingsandBiddings/>} />
+      <Route path="/bookingsandBiddings/:dbName/:dspRoute" element={<BookingsandBiddings/>} />
 
 
       <Route path="/AddIterms/" element={<AddIterms/>}/>
