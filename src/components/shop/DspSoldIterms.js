@@ -67,7 +67,6 @@ function DspSoldIterms(){
           </View>)
     return(
       <TouchableOpacity  key={item.id}  onPress={()=>navigate(`/OneFirmsShop/${item.userId}`)} style={{padding :7}}>
-      { item.trailerType && ( <Text> trailer type {item.trailerType}  </Text> ) }
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />

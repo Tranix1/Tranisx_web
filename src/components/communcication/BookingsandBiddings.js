@@ -6,6 +6,8 @@ import { auth , db } from "../config/fireBase";
 
 import {useNavigate , useParams} from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import VerifiedIcon from '@mui/icons-material/Verified';
+import { Padding } from "@mui/icons-material";
 
 function BookingsandBiddings(){
 
@@ -17,6 +19,35 @@ function BookingsandBiddings(){
  
 
      
+  const deleteLoad = async (id) => {
+  try {
+    const loadsDocRef = doc(db, 'Loads', id);
+    await deleteDoc(loadsDocRef);
+    // Remove the deleted item from loadsList
+    setAllIterms((prevLoadsList) => prevLoadsList.filter(item => item.id !== id));
+  } catch (error) {
+    console.error('Error deleting item:', error);
+  }
+};
+
+     const checkAndDeleteExpiredItems = () => {
+  getAllIterms.forEach((item) => {
+    const deletionTime = item.deletionTime;
+    const timeRemaining = deletionTime - Date.now();
+    if (timeRemaining <= 0) {
+      deleteLoad(item.id);
+    } else {
+      setTimeout(() => {
+        deleteLoad(item.id);
+      }, timeRemaining); // This might not work as expected
+    }
+  });
+};
+setTimeout(() => {
+  checkAndDeleteExpiredItems();
+}, 1000);
+
+
 const getAlltermsF = () => {
   try {
     if (auth.currentUser) {
@@ -66,13 +97,6 @@ const getAlltermsF = () => {
 
 
 
-
-
-
-
-
-
-
     const toggleAcceptOrDeny = async (id ,decision ) => {
       try {
         if (decision === "Accept") {
@@ -95,12 +119,20 @@ const getAlltermsF = () => {
 let whnBookAload = getAllIterms.map((item) => {
   const userId = auth.currentUser.uid;
 
-        const serializedItem = JSON.stringify(item);
   if (item.bookerId === userId) {
     return (
-      <View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300}}>
-        <Text>You booked {item.ownerName} load</Text>
-          <Text>{  item.Accept === true ? "accepted" :  "denied"} </Text>
+      <View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350}}>
+
+            { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white',zIndex : 66}} >
+            <VerifiedIcon style={{color : 'green'}} />
+            </View>}
+        <Text> booked {item.ownerName} </Text>
+        <Text> You booked {item.itemName} </Text>
+        <Text>Its rate : {item.currencyB ? "USD" : "Rand"}  {item.rate} {item.perTonneB ? "per tonne": null} load </Text>
+
+          <Text>
+         Decision : {item.Accept === null ? "Pending" : item.Accept === true ? "Accepted" : item.Accept === false ? "Denied" : "Unknown"}
+           </Text>
 
           <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.companyName} `)}  >
           <Text>Message</Text>
@@ -117,8 +149,12 @@ let whnBookAload = getAllIterms.map((item) => {
 const userId = auth.currentUser.uid;
         const serializedItem = JSON.stringify(item);
 if(!item.ownerId !== userId ){ 
-return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300}} key = {item.id}>
+return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350}} key = {item.id}>
 
+
+            { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white',zIndex : 66}} >
+            <VerifiedIcon style={{color : 'green'}} />
+            </View>}
           <Text> {item.ownerName} booked ur load </Text>
           
            <TouchableOpacity onPress={()=> toggleAcceptOrDeny(item.id  , "Accept")} >
@@ -133,7 +169,7 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300
           <Text>Trucks owned by person</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.companyName} `)}  >
+          <TouchableOpacity  onPress={()=>navigate(`/message/${item.bookerName}/${item.bookerId} `)}  >
           <Text>Message </Text>
             </TouchableOpacity>
 
@@ -143,18 +179,76 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300
 })
 
 
+    let whenBidALoad =  getAllIterms.map((item) => {
+  const userId = auth.currentUser.uid;
 
-    let whenMyLoadBidded = (
-      <View>
-        <Text> panashe bidded sadza </Text>
-        <Text> The required rate is rate </Text>
-        <Text> Accept / Deny  required rate is rate </Text>
-        <Text> Message   required rate is rate </Text>
-        <Text> get in touch Now </Text>
+  if (item.bookerId === userId) {
+    return (
+      <View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 400 , paddingLeft :10 }}>
+
+            { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white',zIndex : 66}} >
+            <VerifiedIcon style={{color : 'green'}} />
+            </View>}
+        <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}> {item.ownerName} </Text>
+
+        <Text> You bidded {item.itemName} </Text>
+        <Text> Offer : {item.currencyB ? "USD" : "Rand"}  {item.rate} {item.perTonneB ? "per tonne": null}</Text>
+        <Text>Route : {item.fromLocation} TO {item.toLocation} </Text>
+
+        <Text>
+         Decision : {item.Accept === null ? "Pending" : item.Accept === true ? "Accepted" : item.Accept === false ? "Denied" : "Unknown"}
+        </Text>
+          <TouchableOpacity  onPress={()=>navigate(`/message/${item.ownerId}/${item.ownerName} `)}  >
+          <Text>Message</Text>
+        </TouchableOpacity>
       </View>
-    )
+    );
+  }
+
+  return null; // Return null for other items
+});
 
       
+      const whenMyLoadBidded = getAllIterms.map((item)=>{
+      const userId = auth.currentUser.uid;
+              const serializedItem = JSON.stringify(item);
+      if(!item.ownerId !== userId ){ 
+      return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350}} key = {item.id}>
+
+
+                  { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white',zIndex : 66}} >
+                  <VerifiedIcon style={{color : 'green'}} />
+                  </View>}
+                <Text> {item.ownerName}</Text>
+                
+                
+                  <Text> {item.ownerName} </Text>
+                  <Text> {item.itemName} was bidded</Text>
+                  <Text>The offered rate  {item.currencyB ? "USD" : "Rand"} {item.rate} {item.perTonneB ? "per tonne": null}</Text>
+                  <Text>Route : {item.fromLocation} TO {item.toLocation} </Text>
+
+                <TouchableOpacity onPress={()=> toggleAcceptOrDeny(item.id  , "Accept")} >
+                  <Text>Accept </Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity onPress={()=> toggleAcceptOrDeny(item.id  , "Deny")} >
+                  <Text>Deny </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={()=>navigate(`/selectedUserTrucks/${item.bookerId}`)} >
+                <Text>Trucks owned by person</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity  onPress={()=>navigate(`/message/${item.bookerName}/${item.bookerId} `)}  >
+                <Text>Message </Text>
+                  </TouchableOpacity>
+
+            </View>  ) 
+      
+      } 
+      })
+
+
   return(
     <View style={{alignItems :'center',paddingTop:80}}>     
 
@@ -189,8 +283,9 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300
   </View> 
   
             {dspRoute=== "itermsYouBidded" && <ScrollView>
-              {whnBookAload}
+              {whenBidALoad}
             </ScrollView> }
+
             
             {dspRoute=== "yourBiddedItems" && <ScrollView> 
               {whenMyLoadBidded}

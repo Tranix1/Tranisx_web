@@ -306,6 +306,7 @@ function App(){
       <Route path="/AddToShop/:location/:specproduct/:truckType" element={<AddToShop
       username={ username}  contact = {contact}  isVerified ={ isVerified} shopLocation={spechopLoc}/>} />
       <Route path="/OneFirmsShop/:userId" element={<OneFirmsShop/>} />
+      <Route path="/sSoldProducts/:userId/:itemId" element={<OneFirmsShop/>} />
       <Route path="/shosearchElement/" element={<SearchInshop/>} />
 
     </Routes>

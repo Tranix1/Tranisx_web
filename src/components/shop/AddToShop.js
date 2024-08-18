@@ -71,6 +71,10 @@ const [image, setImage] = useState(null);
     
  
   const handleSubmit = async () => {
+      if(!formData.productName  ||!formData.price){
+        alert("Add product name and the price to continue")
+        return
+      }
 
       setSpinnerItem(true)
         uploadImage()

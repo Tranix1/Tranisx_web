@@ -29,11 +29,6 @@ const {userId ,  location ,itemId} = useParams()
 
 
 
-
-
-
-
-
   const [localLoads , setLocalLoads]=React.useState(false)
 
   function toggleLocalLoads(){
@@ -49,28 +44,6 @@ const {userId ,  location ,itemId} = useParams()
   //  DRC , ZIM , MOZA , BOTSWA , SOUTH , NAMIB , TANZAN , MALAWI , Zambia
  
       const [loadsList, setLoadsList] = useState([]);
-
-
-
-
-
-   function handleClick(id){
-        setLoadsList(prevLoad => {
-          return prevLoad.map( oneLoad =>{
-            return oneLoad.id === itemId? { ...oneLoad ,  backgroundColor: "green" }  :  oneLoad         
-        })
-        })
-      }
-
-
-      function handleClick() {
-      }
-
-
-
-
-
-
 
 
      const checkAndDeleteExpiredItems = () => {
@@ -219,20 +192,36 @@ setTimeout(() => {
           let docId = `${userId}${item.typeofLoad}${item.ratePerTonne}${item.userId}`
           const existingChat = await checkExistiDoc(docId);
            let theRate 
+           let currencyB 
+           let perTonneB
 
-              bidDisplay[item.id] ? theRate= bidRate : theRate = item.ratePerTonne
+              if(bidDisplay[item.id]){ 
+              theRate= bidRate  
+               currencyB = currencyBid  
+               perTonneB = perTonneBid
+              }else{
+
+               currencyB = null
+               perTonneB = null
+                theRate = item.ratePerTonne
+              }
 
           if(!existingChat){
         const docRef = await addDoc(bookingCollection, {
         itemName : item.typeofLoad ,
+        fromLocation : item.fromLocation ,
+        toLocation : item.toLocation ,
         bookerId : userId ,
         bookerName : username ,
         ownerName: item.companyName ,
         ownerId : item.userId ,
         Accept : null ,
+        isVerified : item.isVerified ,
         msgReceiverId : userId ,
         docId : docId,
         rate :  theRate ,
+        currencyB : currencyB ,
+        perTonneB : perTonneB ,
         deletionTime :Date.now() + 5 * 24 * 60 * 60 * 1000 ,
         timestamp : serverTimestamp() ,
       });

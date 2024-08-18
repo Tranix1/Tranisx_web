@@ -26,7 +26,7 @@ function ShopHeader(){
         <View style={{flexDirection:'row' , justifyContent : 'space-evenly' , paddingLeft : 20 , paddingRight: 20 , height : 40 , alignItems : 'center' , backgroundColor : '#6a0c0c' , paddingTop : 10 }}>
 
             <TouchableOpacity onPress={()=> navigate(`/DspShop/${location}/vehicles`) }> 
-                <Text style={{color:'white'}} > Vehicle showroom</Text>
+                <Text style={{color:'white'}} > Showroom</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={()=> navigate(`/DspShop/${location}/trailers`) } >
