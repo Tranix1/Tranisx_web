@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { db } from '../config/fireBase';
+import { db , auth} from '../config/fireBase';
 import { View , Text , Image , ScrollView , TouchableOpacity , Linking} from 'react-native';
 import {onSnapshot ,  query ,collection,where } from "firebase/firestore"
 
@@ -17,8 +17,7 @@ function DspSoldIterms(){
   useEffect(() => {
     try {
 
-        const  dataQuery = query(collection(db, "Shop"), 
-        where("specproduct" ,"==",   specproduct) , where("location","==", location));
+        const  dataQuery = query(collection(db, "Shop"), where("specproduct" ,"==",   specproduct) , where("location" ,"==", location) );
         
         const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
           const loadedData = [];
@@ -37,7 +36,7 @@ function DspSoldIterms(){
     } catch (err) {
       console.error(err);
     }
-  }, []); 
+  }, [specproduct]); 
 
 
     
@@ -53,7 +52,7 @@ function DspSoldIterms(){
 
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-          <TouchableOpacity onPress={()=>navigate(`/message/${item} `) }>
+          <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)}  >
             <Text>Message now</Text>
           </TouchableOpacity>
 
@@ -67,18 +66,19 @@ function DspSoldIterms(){
 
           </View>)
     return(
-      <TouchableOpacity  key={item.id}  onPress={()=>navigate(`/OneFirmsShop/${item.userId}`)}>
+      <TouchableOpacity  key={item.id}  onPress={()=>navigate(`/OneFirmsShop/${item.userId}`)} style={{padding :7}}>
       { item.trailerType && ( <Text> trailer type {item.trailerType}  </Text> ) }
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
       </View>}
       
-      <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20}} >{item.CompanyName} </Text>
           {item.imageUrl &&<img src={item.imageUrl} style={{height : 200 , borderRadius : 10}}/>}
-        {item.productName &&<Text>{item.productName} </Text> }
-        {item.price &&<Text> {item.currency?"USD" : "Rand" }  {item.price} </Text> }
-        {item.shopLocation &&<Text>{item.shopLocation} </Text> }
+      <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} </Text>
+        {item.productName &&<Text>Product {item.productName} </Text> }
+        {item.price &&<Text>Price :  {item.currency?"USD" : "Rand" }  {item.price} </Text> }
+        {item.shopLocation &&<Text> Location : {item.shopLocation} </Text> }
+
 
        {!contactDisplay[item.id] && <View>
       { item.contact && ( <Text>contact {item.contact}</Text> )}
@@ -95,15 +95,16 @@ function DspSoldIterms(){
     </TouchableOpacity>
         )
       })
-  
+
 
     return(
         <ScrollView >
-          
 
-            <Text>{ specproduct } </Text>
-            <Text>{location} </Text>
-            {rendereIterms}
+
+      <div className="Main-grid">
+        { allSoldIterms.length>0? rendereIterms: <Text>Loading.....</Text> }
+        <View style={{height : 200}} ></View>
+        </div>
         </ScrollView>
     )
 }

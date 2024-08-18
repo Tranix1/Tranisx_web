@@ -45,6 +45,7 @@ import MainStyle from "./components/styles/Main.css"
 
 import { BrowserRouter as Router ,Route, Routes, BrowserRouter, useNavigate, useParams , } from 'react-router-dom';
 import OneFirmsShop from "./components/shop/OneFirmsShop";
+import SearchInshop from "./components/shop/SearchInshop";
 
 
 function HomeScreen() {
@@ -120,7 +121,7 @@ const {page} = useParams()
 
      if(!currentUser){
       navigate("/createUser/")
-    }else if(!currentUser ){
+    }else if(currentUser &&!username){
       navigate("/addPersnoalInfo/")
     }else {
     setSmallMenu(prev => !prev) 
@@ -187,6 +188,7 @@ function App(){
 
    const [ username , setUsername] = React.useState("");
    const [ contact , setContact] = React.useState('');
+   const [ spechopLoc , setShopLoc] = React.useState('');
 
        React.useEffect(() => {
   let unsubscribe;
@@ -200,6 +202,7 @@ function App(){
         if (doc.exists()) {
           setUsername(doc.data().username);
           setContact(doc.data().contact);
+          setShopLoc(doc.data().shopLocation);
         }
       });
     }
@@ -271,7 +274,11 @@ function App(){
       <Route path="/mainGroup" element={<MainGroup username={username}/>} style={{backgroundColor:'green'}} />
 
 
-      <Route path="/message/:item"   element={<Messaging username={username}/>}/>
+      <Route path="/message/:chatStarterId/:starterCompanyName"   element={<Messaging username={username}/>}/>
+      <Route path="/message/:gchatId/:senderName/:receiverName"   element={<Messaging username={username}/>}/>
+
+
+
       <Route path="/bookingsandBiddings/" element={<BookingsandBiddings/>} />
       <Route path="/bookingsandBiddings/:dbName/:dspRoute" element={<BookingsandBiddings/>} />
 
@@ -292,13 +299,14 @@ function App(){
       <Route path="/location/:location" element={<DspAllLoads username={username} />} />
 
       <Route path="/shopLocation/" element={<ShopLocation/>} />
-      <Route path="/DspShop/:location/:specproduct" element={<DspShopIterms/>} />
+      <Route path="/DspShop/:location/:specproduct" element={<DspShopIterms  spechopLoc={spechopLoc} />} />
       <Route path="/selectAddShop/:location" element={<SelectAddToShop/>} />
       <Route path="/AddToShop/:location/:specproduct" element={<AddToShop  
-      username={ username}  contact = {contact}  isVerified ={ isVerified} />} />
+      username={ username}  contact = {contact}  isVerified ={ isVerified}  shopLocation={spechopLoc}/>} />
       <Route path="/AddToShop/:location/:specproduct/:truckType" element={<AddToShop
-      username={ username}  contact = {contact}  isVerified ={ isVerified} />} />
+      username={ username}  contact = {contact}  isVerified ={ isVerified} shopLocation={spechopLoc}/>} />
       <Route path="/OneFirmsShop/:userId" element={<OneFirmsShop/>} />
+      <Route path="/shosearchElement/" element={<SearchInshop/>} />
 
     </Routes>
       </BrowserRouter>

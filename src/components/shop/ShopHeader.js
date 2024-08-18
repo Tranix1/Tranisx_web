@@ -11,9 +11,9 @@ function ShopHeader(){
         <View>
 
              <View style={{flexDirection : 'row' , height : 54 ,justifyContent : 'space-between' ,  paddingLeft : 15 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , }} >
-                <Text style={{color : 'white' , fontSize : 19 , zIndex : 50}} >Truckerz Store</Text>
+                <Text style={{color : 'white' , fontSize : 19 , zIndex : 50}} >{location} Truckerz Store  </Text>
                 <View style={{flexDirection: 'row'}} > 
-                    <TouchableOpacity onPress={()=> navigate('searchElement') }>
+                    <TouchableOpacity onPress={()=> navigate('/shosearchElement/') }>
 
                           <SearchIcon style={{color : 'white'}}/>
 
@@ -26,15 +26,15 @@ function ShopHeader(){
         <View style={{flexDirection:'row' , justifyContent : 'space-evenly' , paddingLeft : 20 , paddingRight: 20 , height : 40 , alignItems : 'center' , backgroundColor : '#6a0c0c' , paddingTop : 10 }}>
 
             <TouchableOpacity onPress={()=> navigate(`/DspShop/${location}/vehicles`) }> 
-                <Text> Vehicle showroom</Text>
+                <Text style={{color:'white'}} > Vehicle showroom</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={()=> navigate(`/DspShop/${location}/trailers`) } >
-                <Text> Trailer</Text>
+                <Text style={{color:'white'}} > Trailer</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={()=> navigate(`/DspShop/${location}/spares`) }>
-                <Text> Spares</Text>
+                <Text style={{color:'white'}} > Spares</Text>
             </TouchableOpacity>
 
         </View>

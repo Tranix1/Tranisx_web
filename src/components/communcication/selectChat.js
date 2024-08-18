@@ -3,11 +3,9 @@ import { View,TouchableOpacity ,  Text  } from "react-native";
 import { onSnapshot  , query ,collection,where } from "firebase/firestore"
 import { auth ,db} from "../config/fireBase";
 
-
 import {useNavigate} from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 function SelectChat(){
-
 
 const navigate = useNavigate()
 
@@ -25,9 +23,7 @@ React.useEffect(() => {
           const dataWithId = { id: doc.id, ...doc.data() };
           sendedMsgs.push(dataWithId);
         });
-
          sendedMsgs = [ ...sendedMsgs];
-
       });
 
       const unsubscribe2 = onSnapshot(whenReceiving, (querySnapshot) => {
@@ -56,16 +52,15 @@ React.useEffect(() => {
   let _ppleInTouch = ppleInTouch.map((item)=>{
     const userId = auth.currentUser.uid
 
-        const serializedItem = JSON.stringify(item);
     if(item.msgSenderId === userId){
     return(
-      <TouchableOpacity  key={item.id} style={{height : 30  , alignItems : 'center' , margin : 10 }} onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)}>
+      <TouchableOpacity  onPress={()=>navigate(`/message/${item.chatId}/${item.senderName}/${item.receiverName} `)}  >
         <Text>{item.receiverName} </Text>
       </TouchableOpacity>
     )
     }else{
       return(
-        <TouchableOpacity onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)} key={item.id}>
+          <TouchableOpacity  onPress={()=>navigate(`/message/${item.chatId}/ `)}  >
           <Text>{item.senderName} </Text>
         </TouchableOpacity>
       )
@@ -74,7 +69,7 @@ React.useEffect(() => {
 
 return(<View style={{padding : 10 , paddingTop : 80 , }} >
    <View  style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
-         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>          
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
                     <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 

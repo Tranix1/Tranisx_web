@@ -1,5 +1,5 @@
 import React from "react";
-import { View , Text  , TouchableOpacity , StatusBar} from "react-native";
+import { View , Text  , TouchableOpacity , StyleSheet} from "react-native";
 // shop Home 
 // Add to shop 
 //  iterms like trucks , trailer , spares , 
@@ -21,14 +21,54 @@ return(
         
         <Text style={{fontSize: 20 , color : 'white'}} > Welcome To Store  </Text>
        </View>
-        <TouchableOpacity onPress={()=> navigate('/DspShop/Zimbabwe/trucks') } >
-            <Text> Zimbabwe</Text>
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Zimbabwe/vehicles') } style={styles.buttonStyle} >
+            <Text style={{color:'#6a0c0c'}}> Zimbabwe</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={()=> navigate('/DspShop/SouthAfrica/trucks') }>
-            <Text> South Africa</Text>
+        <TouchableOpacity onPress={()=> navigate('/DspShop/SouthAfrica/vehicles') } style={styles.buttonStyle}>
+            <Text style={{color:'#6a0c0c'}}>  South Africa</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Namibia/vehicles') } style={styles.buttonStyle}>
+            <Text style={{color:'#6a0c0c'}}>Namibia </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Tanzania/vehicles') } style={styles.buttonStyle}>
+            <Text style={{color:'#6a0c0c'}}> Tanzania</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Mozambique/vehicles') } style={styles.buttonStyle}>
+            <Text style={{color:'#6a0c0c'}}>Mozambique </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Zambia/vehicles') } style={styles.buttonStyle}>
+            <Text style={{color:'#6a0c0c'}}> Zambia</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Botswana/vehicles') } style={styles.buttonStyle} >
+            <Text style={{color:'#6a0c0c'}}>Botswana </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Malawi/vehicles') }style={styles.buttonStyle} >
+            <Text style={{color:'#6a0c0c'}}>Malawi </Text>
+        </TouchableOpacity>
+
     </View>
 )
 }
 export default React.memo(ShopHome)
+
+
+const styles = StyleSheet.create({
+    buttonStyle : {
+        height : 40,
+        justifyContent : 'center' , 
+        alignItems : 'center' ,
+        width : 150 ,
+        marginBottom: 15 ,
+        borderWidth: 2 ,
+        borderColor:"#6a0c0c" ,
+        borderRadius: 3
+    } ,
+  
+});

@@ -1,6 +1,6 @@
 import React,{useState} from "react";
 import { storage } from "../config/fireBase";
-import { getDownloadURL, ref, uploadBytes, uploadBytesResumable ,} from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes, } from "firebase/storage";
 import { collection, addDoc } from 'firebase/firestore';
 import { db, auth } from "../config/fireBase";
 import {View, TextInput , Text ,    TouchableOpacity , Image , ActivityIndicator , StyleSheet} from "react-native"
@@ -74,23 +74,27 @@ const [image, setImage] = useState(null);
 
       setSpinnerItem(true)
         uploadImage()
+        let imageUrl
+        if(image){ 
        const imageRef = ref(storage , `Shop/${imageUpload.name}`)
        await uploadBytes(imageRef , imageUpload)
        // get image  url 
-       let imageUrl = await getDownloadURL(imageRef)
-
+        imageUrl = await getDownloadURL(imageRef)
+        }else{
+          imageUrl = null
+        }
     let userId = auth.currentUser.uid
+
     try {
       const docRef = await addDoc(shopDB, {
         CompanyName : username ,
         contact : contact ,
-        fromLocation: formData.productName,
-        toLocation: formData.price,
+        productName : formData.productName,
+        price: formData.price,
         imageUrl: imageUrl,
         userId : userId ,
         additionalInfo : formData.additionalInfo ,
         deliveryRange : formData.deliveryRange ,
-        truckType : truckType ,
         isVerified : isVerified ,
         location : location ,
         specproduct : specproduct ,
@@ -164,7 +168,7 @@ const [image, setImage] = useState(null);
           value={formData.price}
           placeholderTextColor="#6a0c0c"
           style={inputstyles.addIterms }
-          onChangeText={(text) => handlechange(text, 'Price')}
+          onChangeText={(text) => handlechange(text, 'price')}
         />
         
     </View>

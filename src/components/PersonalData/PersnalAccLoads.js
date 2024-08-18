@@ -16,10 +16,10 @@ const navigate = useNavigate()
 
     const [spinnerItem, setSpinnerItem] = React.useState(false);
     const deleteLoad = async (id) => {
-      // setSpinnerItem(true)
+      setSpinnerItem(true)
     const loadsDocRef = doc(db, 'Loads' , id);
     await deleteDoc(loadsDocRef);
-      // setSpinnerItem(false)
+      setSpinnerItem(false)
   };
 
  const [loadIterms , setLoadedIterms ]= React.useState([])
@@ -48,7 +48,7 @@ const navigate = useNavigate()
     } catch (err) {
       console.error(err);
     }
-  }, []); 
+  }, [spinnerItem]); 
 
 
    const rendereIterms =  loadIterms.map((item)=>{ 
@@ -63,9 +63,8 @@ const navigate = useNavigate()
         <Text>Requirements {item.requirements} </Text>
         <Text>additional info {item.additionalInfo} </Text>        
 
-      {/* { spinnerItem &&<ActivityIndicator size={36} />} */}
+      { spinnerItem &&<ActivityIndicator size={36} />}
             <TouchableOpacity onPress={()=>deleteLoad(item.id)} >
-              {/* <AntDesign name="delete" size={24} color="red" />    */}
               <DeleteIcon style={{color : 'red'} }/>
             </TouchableOpacity>
       </View>     

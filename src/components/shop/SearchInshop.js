@@ -12,10 +12,11 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 
 
 function SearchInShop({navigation}){
-
 const navigate = useNavigate()
-     const loadsCollection = collection(db, 'Shop');  
+
+  const loadsCollection = collection(db, "Shop");
       const [loadsList, setLoadsList] = useState([]);
+      console.log(loadsList)
 
     useEffect(() => {
       const unsubscribe = onSnapshot(loadsCollection, (querySnapshot) => {
@@ -34,23 +35,26 @@ const navigate = useNavigate()
       };
     }, []);
 
-  
+   
 
         const [filteredData, setFilteredData] = React.useState([]);
         const [wordEntered, setWordEntered] = React.useState("");
       
-        const handleFilter = (text) => {
-          const searchWord = text
-          const newFilter = loadsList.filter((value) => {
-            return ( value.productName ).toLowerCase().includes(searchWord.toLowerCase());
-          });
-      
-          if (searchWord === "") {
-            setFilteredData([]);
-          } else {
-            setFilteredData(newFilter);
-          }
-        };
+          const handleFilter = (text) => {
+        const searchWord = text;
+        const newFilter = loadsList.filter((value) => {
+          const productName = value.productName ? value.productName.toLowerCase() : '';
+          return ( productName.includes(searchWord.toLowerCase()));
+        });
+
+        if (searchWord === "") {
+          setFilteredData([]);
+        } else {
+          setFilteredData(newFilter);
+        }
+      };
+       
+
 
 
         const clearInput = () => {
@@ -59,19 +63,17 @@ const navigate = useNavigate()
         };
         
 
-       
-          
 
         const displaySearched =  filteredData.slice(0, 15).map((value , key)=>{
             return(
-              <TouchableOpacity  style={{flex : 1, marginBottom :6 , padding : 6}} key={value.id} onPress={()=> navigate(`/selectedUserLoads/${value.userId}` ) }>
+              <TouchableOpacity  style={{flex : 1, marginBottom :6 , padding : 6}} key={value.id} onPress={()=> navigate(`/searchedLoads/${value.userId}/${value.id}` ) }>
 
             {value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
             <VerifiedIcon style={{color : 'green'}} />
             </View>}
             <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}>{value.companyName} </Text>
-            <Text >Commodity {value.typeofLoad}  rate {value.ratePerTonne} </Text>
-            <Text >from {value.fromLocation } to {value.toLocation} </Text>
+            <Text >{value.specproduct} : {value.productName}</Text>
+            <Text > {value.location} store at {value.shopLocation} </Text>
               </TouchableOpacity>
             )
           })
@@ -85,7 +87,7 @@ const navigate = useNavigate()
                     <ArrowBackIcon style={{color : 'white'}} />
                 </TouchableOpacity>
                 <TextInput
-                    placeholder="Search  Product "
+                    placeholder="Search  Product"
                     onChangeText={(text) => handleFilter(text)}  
                     style={{height:40, flex : 1 ,fontSize : 17 , backgroundColor: '#6a0c0c' , color:'white'}}      
                     placeholderTextColor="white"    
@@ -101,6 +103,9 @@ const navigate = useNavigate()
 
               )
               } 
+
+                <View style={{ width: 2, backgroundColor: '#6a0c0c' }} >
+                  </View>
 
              </View>
 

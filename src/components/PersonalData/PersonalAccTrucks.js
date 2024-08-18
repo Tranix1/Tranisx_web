@@ -75,12 +75,8 @@ const navigate = useNavigate()
 
       { spinnerItem &&<ActivityIndicator size={36} />}
        <TouchableOpacity onPress={()=>deleteLoad(item.id)} >
-
               <DeleteIcon style={{color : 'red'} }/>
-
           {/* <AntDesign name="delete" size={24} color="black" /> */}
-
-
 
         </TouchableOpacity> 
     </View>

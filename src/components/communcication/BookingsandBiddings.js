@@ -102,7 +102,7 @@ let whnBookAload = getAllIterms.map((item) => {
         <Text>You booked {item.ownerName} load</Text>
           <Text>{  item.Accept === true ? "accepted" :  "denied"} </Text>
 
-        <TouchableOpacity onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)}>
+          <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.companyName} `)}  >
           <Text>Message</Text>
         </TouchableOpacity>
       </View>
@@ -133,7 +133,7 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 300
           <Text>Trucks owned by person</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)} >
+          <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.companyName} `)}  >
           <Text>Message </Text>
             </TouchableOpacity>
 

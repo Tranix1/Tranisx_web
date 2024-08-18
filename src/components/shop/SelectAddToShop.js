@@ -25,7 +25,7 @@ function SelectAddToShop(){
                 <Text style={{color:"white"}}>Add Vehicle</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/trailer`)} >
+            <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/trailers`)} >
                 <Text style={{color:"white"}}>Add Trailers </Text>
             </TouchableOpacity>
 

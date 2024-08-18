@@ -72,11 +72,15 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
 
       setSpinnerItem(true)
         uploadImage()
+        let imageUrl
+        if(image){
        const imageRef = ref(storage , `Trucks/${imageUpload.name}`)
        await uploadBytes(imageRef , imageUpload)
        // get image  url 
-       let imageUrl = await getDownloadURL(imageRef)
-
+        imageUrl = await getDownloadURL(imageRef)
+          }else{
+            imageUrl = null
+          }
     let userId = auth.currentUser.uid
     try {
       const docRef = await addDoc(trucksDB, {

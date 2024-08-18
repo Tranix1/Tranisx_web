@@ -54,7 +54,7 @@ const navigate = useNavigate()
 
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-       {auth.currentUser && <TouchableOpacity  onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)}  >
+        {auth.currentUser &&   <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)}  >
             <Text>Message now</Text>
           </TouchableOpacity>}
 

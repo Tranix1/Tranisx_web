@@ -33,8 +33,19 @@ const mainLoadsCollection = collection(db, 'Loads');
           userIds.add(userId);
         }
       });
-       filteredData = filteredData.sort((a, b) => b.timeStamp - a.timeStamp);
-      setMainLoadsList(filteredData);
+
+
+    const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      };
+      const shuffledData = shuffleArray(filteredData);
+
+
+      setMainLoadsList(shuffledData);
     });
 
     return () => {

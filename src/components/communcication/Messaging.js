@@ -69,23 +69,31 @@ const [currentDateTime, setCurrentDateTime] = useState(formatDateTime(new Date()
   }
 
 
-
-
-
     const navigate = useNavigate()
-    let {item } = useParams()
-      let messageData = JSON.parse(decodeURIComponent(item));
+    let {chatStarterId ,starterCompanyName , gchatId  , senderName , receiverName} = useParams()
 
-      
-      const contactId = messageData.msgReceiverId || messageData.userId
+      let chatId = gchatId
+
+      const contactId =chatStarterId
       
       useEffect(() => {
   const userId = auth.currentUser.uid
 
-  let chatRef 
-  if(messageData.chatId){
 
-    chatRef = doc(db, "Chats", messageData.chatId);
+    if(!chatId){ 
+    let addChatId = `${contactId}${userId}` ;
+    const existingChat =  checkExistingChat(addChatId);
+    if(existingChat){
+      chatId = addChatId
+    }
+    }
+
+
+
+  let chatRef 
+  if(chatId){
+
+    chatRef = doc(db, "Chats", chatId);
   }else{
     let chatId = `${userId}${contactId}`; 
     chatRef = doc(db, "Chats", chatId);
@@ -105,10 +113,6 @@ const [currentDateTime, setCurrentDateTime] = useState(formatDateTime(new Date()
     
     return () => unsubscribe(); // Cleanup the listener when the component unmounts
 }, [ contactId ]);
-
-
-
-
 
 
  const ppleInTouch = collection(db ,'ppleInTouch');
@@ -148,89 +152,85 @@ const [message, setMessage] = useState("");
 
     const uploadImage = ()=>{
       if(imageUpload === null) return
-      const imageRef = ref(storage , `Trucks/${imageUpload.name + new Date().getTime()  }`)
+      const imageRef = ref(storage , `chats/${imageUpload.name + new Date().getTime()  }`)
       uploadBytes(imageRef , imageUpload).then(()=>{
       })
     }
 
 
 const handleSubmit = async () => {
+
     let imageUrl
     if(image){
        uploadImage()
-       const imageRef = ref(storage , `Trucks/${imageUpload.name}`)
+       const imageRef = ref(storage , `chats/${imageUpload.name}`)
        await uploadBytes(imageRef , imageUpload)
        // get image  url 
-       let imageUrl = await getDownloadURL(imageRef)
+        imageUrl = await getDownloadURL(imageRef)
+ }else{
+  imageUrl = null
  }
+
+ let addChatId 
+
+const existingChat = await checkExistingChat(addChatId);
+
 const userId = auth.currentUser.uid
 try {
-  let addChatId 
   
-    if(!messageData.hatId){
+    if(!chatId){
     const chatId = `${userId}${contactId}` ;
     const chatRef = doc(db, "Chats", chatId);
   await addDoc(collection(chatRef, "messages"), {
     message: message,
     msgSenderId : userId,
     senderName : username ,
-    receiverName : messageData.companyName   || messageData.receiverName ,
+    receiverName : starterCompanyName ,
     msgReceiverId: contactId ,
     chatId : chatId ,
     timestamp : serverTimestamp() ,
-      currentDate: currentDateTime,
-      currentTime: currentTime,
-      addedImage: imageUrl 
+    currentDate: currentDateTime,
+    currentTime: currentTime,
+    addedImage: imageUrl, 
+
     });  
   addChatId = chatId
 }else{
-      
-  const chatId = messageData.chatId
+  const chatId = chatId
   const chatRef = doc(db, "Chats", chatId);
   await addDoc(collection(chatRef, "messages"), {
     message: message,
-    msgSenderId : userId,
     senderName : username ,
-    receiverName : messageData.companyName   || messageData.senderName ,
+    receiverName : senderName ,
     chatId : chatId ,
     timestamp : serverTimestamp() ,
-      currentDate: currentDateTime,
-      currentTime: currentTime,
+    currentDate: currentDateTime,
+    currentTime: currentTime,
    
   });  
   addChatId = chatId
 }
 
-const existingChat = await checkExistingChat(addChatId);
 
 if (!existingChat) {
   // Chat doesn't exist, add it to 'ppleInTouch'
   await addDoc(ppleInTouch, {
     msgSenderId : userId,
     msgReceiverId: contactId,
-    receiverName : messageData.companyName  ,
+    receiverName : starterCompanyName  ,
     senderName  : username  ,
     chatId : addChatId,
     timestamp : serverTimestamp() ,
   });
 }
-   
-
   setMessage("");
 } catch (err) {
   console.error(err);
 }
 };
 
-
-
-
-
-
         let previousDate = null;
-
         let dspMessages = messages.map((item, index) => {
-
           let messageDate = item.currentDate;
           const showMessageDate = previousDate !== messageDate;
           previousDate = messageDate;
@@ -300,7 +300,7 @@ return (<View style={{ position : 'absolute' , top :0 , bottom : 0, width : 420 
                     <ArrowBackIcon style={{color : 'white'}} />
 
         </TouchableOpacity>
-        <Text style={{fontSize: 20 , color : 'white'}} >{messageData.companyName}{ messageData.receiverName}{messageData.ownerName} </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} >{starterCompanyName}  </Text>
        </View>
 
 
@@ -320,9 +320,9 @@ return (<View style={{ position : 'absolute' , top :0 , bottom : 0, width : 420 
 
   <View>
   <View style={{ position: 'absolute', bottom: keyboardHeight, left: 0, right: 0 , flexDirection : 'row' , backgroundColor : '#e8e6e3' , height : 45 , }}>
-    <View style={{paddingLeft : 17 , maxHeight : 40, borderColor: 'black', borderWidth: 2, borderRadius: 20, flex: 1 }}> 
+    <View style={{paddingLeft : 17 , maxHeight : 40, borderColor: 'black', borderWidth: 2, borderRadius: 20, flex: 1 , flexDirection:'row', paddingRight:5}}> 
   <TextInput
-    style={{flex:1}}
+    style={{flex:1 , }}
     placeholderTextColor="#6a0c0c"
     placeholder="Type your message"
     type="text"
@@ -348,13 +348,10 @@ return (<View style={{ position : 'absolute' , top :0 , bottom : 0, width : 420 
      <TouchableOpacity onPress={handleSubmit} style={{ width : 50 , backgroundColor : '#9d1e1e', borderRadius : 6  ,  alignItems : 'center' , justifyContent: 'center' , height : 35, marginLeft : 4 , marginRight : 6}}  >
       <SendIcon style={{color : 'white'}}/>
     </TouchableOpacity>
+  </View>
    
   </View>
-  </View>
 </View>);
-
-
-
 
 }
 export default React.memo(Messaging)

@@ -1,6 +1,6 @@
 import React from "react";
 import { db, auth } from "../config/fireBase";
-import { collection, doc, getDoc, addDoc, serverTimestamp ,} from 'firebase/firestore';
+import { collection, doc, getDoc, addDoc, serverTimestamp ,query , where , getDocs} from 'firebase/firestore';
 
 import { View , TextInput , Text, Alert ,TouchableOpacity , ActivityIndicator, StyleSheet} from "react-native";
 
@@ -59,6 +59,10 @@ const navigate = useNavigate()
     }));
   };
   
+
+ 
+
+
     const [spinnerItem, setSpinnerItem] = React.useState(false);
   const handleSubmit = async () => {
      if(!formData.ratePerTonne || !formData.typeofLoad || !formData.toLocation || !formData.fromLocation || !formData.paymentTerms){
@@ -72,6 +76,7 @@ const navigate = useNavigate()
 
       const userId = auth.currentUser.uid
     
+
     try {
       const docRef = await addDoc(loadsCollection, {
         userId: userId, // Add the user ID to the document

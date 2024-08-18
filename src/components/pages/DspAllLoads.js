@@ -209,11 +209,7 @@ setTimeout(() => {
       
     const rendereIterms =  loadsList.map((item)=>{ 
       
-  
-        const serializedItem = JSON.stringify(item);
-
       const handleSubmit = async (clickedItem , dbName) => {
-
         
         setSpinnerItem(clickedItem);
         const bookingCollection = collection(db, `${dbName}`);
@@ -256,11 +252,12 @@ setTimeout(() => {
   };
 
         
+        const serializedItem = JSON.stringify(item);
   let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-        { auth.currentUser && <TouchableOpacity onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)} `) }>
+          <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.companyName} `)} style={styles.buttonStyle} >
             <Text>Message now</Text>
-          </TouchableOpacity>}
+          </TouchableOpacity>
           
           <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)}>
             <Text>Phone call</Text>
@@ -366,7 +363,7 @@ setTimeout(() => {
         <Text>Bid</Text>
       </TouchableOpacity>
 
-        <TouchableOpacity  onPress={()=>navigate(`/message/${encodeURIComponent(serializedItem)}`)} style={styles.buttonStyle} >
+        <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.companyName} `)} style={styles.buttonStyle} >
           <Text>Message</Text>
         </TouchableOpacity>       
         </View> : 
