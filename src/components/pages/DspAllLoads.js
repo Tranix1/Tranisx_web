@@ -154,7 +154,6 @@ setTimeout(() => {
 
 
     const [spinnerItem, setSpinnerItem] = React.useState(null);
-    const [processResult , setProcessReuslt ] = React.useState('')
     const [ bookingError , setBookingError] =React.useState("")
 
     const checkExistiDoc = async (docId) => {
@@ -228,9 +227,9 @@ setTimeout(() => {
       
       setBidRate("")
       toggleBid(item.id) 
-      setProcessReuslt(`${bidDisplay[item.id] ? "booking": "bidding"} was succeful`)    
+      alert(`${bidDisplay[item.id] ? "booking": "bidding"} was successfull`)    
         }else {
-          setProcessReuslt("Already Booked this Item!")    
+          alert("Already Booked this Item!")    
 
         }
       setSpinnerItem(null)      
@@ -303,11 +302,11 @@ setTimeout(() => {
   return(
     <View  key={item.id} style={{ backgroundColor:  "#DDDDDD", marginBottom : 8, padding :6  , }} >
 
+            
             { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white',zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
             </View>}
         <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}  >{item.companyName} </Text>
-            {processResult && <Text>{processResult} </Text>}
         <Text>Commodity : {item.typeofLoad} </Text>
         <Text> Route : from{item.fromLocation} to {item.toLocation} </Text>
 

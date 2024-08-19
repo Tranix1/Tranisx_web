@@ -97,16 +97,16 @@ const getAlltermsF = () => {
 
 
 
-    const toggleAcceptOrDeny = async (id ,decision ) => {
+    const toggleAcceptOrDeny = async (dbNameMin , id ,decision ) => {
       try {
         if (decision === "Accept") {
-          const docRef = doc(db, 'bookings', id);
+          const docRef = doc(db, `${dbNameMin}`, id);
           await updateDoc(docRef, { Accept : true ,  });
-          alert("Username updated successfully!");
+          alert("You Accepted the offer");
         }else{
-          const docRef = doc(db, 'bookings', id);
+          const docRef = doc(db, `${dbNameMin}`, id);
           await updateDoc(docRef, { Accept : false ,  });
-          alert("Username updated successfully!");
+          alert("Username denied the offer!");
         }
       } catch (err) {
         console.error(err);
@@ -157,11 +157,11 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350
             </View>}
           <Text> {item.ownerName} booked ur load </Text>
           
-           <TouchableOpacity onPress={()=> toggleAcceptOrDeny(item.id  , "Accept")} >
+           <TouchableOpacity onPress={()=> toggleAcceptOrDeny( "bookings" , item.id  , "Accept")} >
             <Text>Accept </Text>
           </TouchableOpacity>
           
-           <TouchableOpacity onPress={()=> toggleAcceptOrDeny(item.id  , "Deny")} >
+           <TouchableOpacity onPress={()=> toggleAcceptOrDeny("bookings", item.id  , "Deny")} >
             <Text>Deny </Text>
           </TouchableOpacity>
 
@@ -211,7 +211,6 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350
       
       const whenMyLoadBidded = getAllIterms.map((item)=>{
       const userId = auth.currentUser.uid;
-              const serializedItem = JSON.stringify(item);
       if(!item.ownerId !== userId ){ 
       return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350}} key = {item.id}>
 
@@ -227,11 +226,11 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350
                   <Text>The offered rate  {item.currencyB ? "USD" : "Rand"} {item.rate} {item.perTonneB ? "per tonne": null}</Text>
                   <Text>Route : {item.fromLocation} TO {item.toLocation} </Text>
 
-                <TouchableOpacity onPress={()=> toggleAcceptOrDeny(item.id  , "Accept")} >
+                <TouchableOpacity onPress={()=> toggleAcceptOrDeny('biddings' ,item.id  , "Accept")} >
                   <Text>Accept </Text>
                 </TouchableOpacity>
                 
-                <TouchableOpacity onPress={()=> toggleAcceptOrDeny(item.id  , "Deny")} >
+                <TouchableOpacity onPress={()=> toggleAcceptOrDeny('biddings' ,item.id  , "Deny")} >
                   <Text>Deny </Text>
                 </TouchableOpacity>
 
@@ -250,7 +249,7 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350
 
 
   return(
-    <View style={{alignItems :'center',paddingTop:80}}>     
+    <View style={{paddingTop:80}}>     
 
        <View style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
          <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
@@ -260,24 +259,24 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350
         
         <Text style={{fontSize: 20 , color : 'white'}} > {dspRoute? dspRoute : "Bookings and Biddings"} </Text>
          </View>
-    <View style={{flexDirection:'row' }}>
+    <View style={{flexDirection:'row', alignItems : 'center'  , justifyContent:'center'}}>
           <View style={{marginRight:7}} >
                   { !dspRoute &&<TouchableOpacity onPress={()=>navigate('/bookingsandBiddings/bookings/itemsYouBooked') } style={styles.slctView}>
-                        <Text>Iterms you booked</Text>
+                        <Text>Items you booked</Text>
                       </TouchableOpacity>}
 
                     { !dspRoute&&<TouchableOpacity onPress={()=>navigate('/bookingsandBiddings/bookings/yourBookedItems') } style={styles.slctView}>
-                        <Text>Your booked Iterms</Text>
+                        <Text>Your booked Items</Text>
                       </TouchableOpacity>}
           </View>
 
 <View>
         { !dspRoute&&<TouchableOpacity onPress={()=>navigate('/bookingsandBiddings/biddings/itermsYouBidded') } style={styles.slctView}>
-              <Text>Iterms you Bidded</Text>
+              <Text>Items you Bidded</Text>
             </TouchableOpacity>}
 
           { !dspRoute&& <TouchableOpacity onPress={()=>navigate('/bookingsandBiddings/biddings/yourBiddedItems') } style={styles.slctView}>
-              <Text>Your toggelItermsYouBidded Iterms</Text>
+              <Text>Your Bidded Items</Text>
             </TouchableOpacity>}
  </View>
   </View> 
@@ -307,7 +306,7 @@ export default React.memo(BookingsandBiddings)
 const styles = StyleSheet.create({
  slctView : {
   height : 45 ,
-  width : 250 ,
+  width : 200 ,
   borderColor : "#6a0c0c" ,
   borderWidth : 1 ,
   justifyContent : 'center',
