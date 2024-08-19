@@ -75,7 +75,10 @@ const [image, setImage] = useState(null);
         alert("Add product name and the price to continue")
         return
       }
-
+        if(!image){
+          alert('Add product Image')
+          return
+        }
       setSpinnerItem(true)
         uploadImage()
         let imageUrl

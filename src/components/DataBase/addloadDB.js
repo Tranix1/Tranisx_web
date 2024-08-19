@@ -124,6 +124,7 @@ const navigate = useNavigate()
         
         <Text style={{fontSize: 20 , color : 'white'}} > Add Load  </Text>
        </View>
+       { !localLoads &&   <View>
 
   <TextInput
     value={formData.typeofLoad}
@@ -166,7 +167,7 @@ const navigate = useNavigate()
         value={formData.ratePerTonne}
         keyboardType="numeric"
         placeholderTextColor="#6a0c0c"
-        style={inputstyles.addIterms }
+        style={ {   height : 40 , borderBottomWidth: 2 , borderBottomColor : "#6a0c0c" ,marginBottom : 10 , paddingLeft : 20 ,width : 180}}
         placeholder="Enter rate here"
       />
       <TouchableOpacity onPress={togglePerTonne} >
@@ -176,7 +177,6 @@ const navigate = useNavigate()
    </View>
       { spinnerItem &&<ActivityIndicator size={36} />}
 
- { !localLoads &&   <View>
   <TextInput
     value={formData.paymentTerms}
     placeholderTextColor="#6a0c0c"
@@ -204,25 +204,38 @@ const navigate = useNavigate()
   />
    </View>}
   {localLoads && <View>
-    <TouchableOpacity onPress={()=>specifyLocation('Zimbabwe')}> 
+    <TouchableOpacity onPress={()=>specifyLocation('Zimbabwe')} style={styles.buttonStyle} > 
       <Text>Zimbabwe </Text>
     </TouchableOpacity>
 
-    <TouchableOpacity>
-      <Text>South Africa </Text>  
-    </TouchableOpacity>
-    <TouchableOpacity>
-      
-      <Text>South Africa </Text>  
-    </TouchableOpacity>
-    <TouchableOpacity>
-      
-      <Text>South Africa </Text>  
-    </TouchableOpacity>
-    <TouchableOpacity>
-      
-      <Text>South Africa </Text>  
-    </TouchableOpacity>
+      <TouchableOpacity onPress={()=> specifyLocation('SouthAfrica') } style={styles.buttonStyle} >
+            <Text style={{color:'#6a0c0c'}}>  South Africa</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> specifyLocation('Namibia') } style={styles.buttonStyle}>
+            <Text style={{color:'#6a0c0c'}}>Namibia </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> specifyLocation('Tanzania') } style={styles.buttonStyle}>
+            <Text style={{color:'#6a0c0c'}}> Tanzania</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=>specifyLocation ('Mozambique') } style={styles.buttonStyle}>
+            <Text style={{color:'#6a0c0c'}}>Mozambique </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> specifyLocation('Zambia') } style={styles.buttonStyle}>
+            <Text style={{color:'#6a0c0c'}}> Zambia</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> specifyLocation('Botswana') } style={styles.buttonStyle} >
+            <Text style={{color:'#6a0c0c'}}>Botswana </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> specifyLocation('Malawi') }style={styles.buttonStyle} >
+            <Text style={{color:'#6a0c0c'}}>Malawi </Text>
+        </TouchableOpacity>
+
   </View>
   }
 

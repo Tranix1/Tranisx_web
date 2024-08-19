@@ -294,7 +294,7 @@ if (!existingChat) {
 
 
 const scrollViewRef = React.useRef();
-return (<View style={{ position : 'absolute' , top :0 , bottom : 0, width : 420 , }}>
+return (<View style={{ position : 'absolute' , top :0 , bottom : 0, width : 390 , }}>
         <View  style={{flexDirection : 'row' , height : 84  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
                     <ArrowBackIcon style={{color : 'white'}} />
@@ -316,7 +316,10 @@ return (<View style={{ position : 'absolute' , top :0 , bottom : 0, width : 420 
 
     </ScrollView>
 
-      {image && <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />}
+     { image &&<View style={{position:'absolute' , top :70 ,left : 1,  right : 1 , bottom :50   , alignItems :'center' , justifyContent : 'center' , backgroundColor : 'rgba(0, 0, 0, 0.7)'}} >
+             <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />
+
+        </View>}
 
   <View>
   <View style={{ position: 'absolute', bottom: keyboardHeight, left: 0, right: 0 , flexDirection : 'row' , backgroundColor : '#e8e6e3' , height : 45 , }}>

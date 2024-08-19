@@ -128,13 +128,18 @@ const [currentDateTime, setCurrentDateTime] = useState(formatDateTime(new Date()
 const [typedMsg , setTypedMsg] = React.useState('')
 
 const handleSubmit = async (event) => {
-      let imageUrl 
-      if(image)
-      uploadImage()
-       const imageRef = ref(storage , `Trucks/${imageUpload.name}`)
-       await uploadBytes(imageRef , imageUpload)
-       // get image  url 
-        imageUrl = await getDownloadURL(imageRef)
+
+          let imageUrl
+      if(image){
+        uploadImage()
+        const imageRef = ref(storage , `chats/${imageUpload.name}`)
+        await uploadBytes(imageRef , imageUpload)
+        // get image  url 
+          imageUrl = await getDownloadURL(imageRef)
+      }else{
+        imageUrl = null
+      }
+
 
   try {
     await addDoc(mainGroup, {
@@ -153,6 +158,7 @@ const handleSubmit = async (event) => {
   }
   // Reset form fields
   setTypedMsg('')
+  setImage(null)
   // setDownloadURL(null);
 };
 
@@ -221,7 +227,7 @@ const handleSubmit = async (event) => {
 
 const scrollViewRef = React.useRef();
     return(
-<View style={{ position : 'absolute' ,bottom : 0 , top : 0 , width:420 , }}>
+<View style={{ position : 'absolute' ,bottom : 0 , top : 0 , width:390 , }}>
  <View  style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
          <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
                     <ArrowBackIcon style={{color : 'white'}} />
@@ -241,12 +247,14 @@ const scrollViewRef = React.useRef();
             >
       {dspMessages}
     </ScrollView>
+     { image &&<View style={{position:'absolute' , top :70 ,left : 1,  right : 1 , bottom :50   , alignItems :'center' , justifyContent : 'center' , backgroundColor : 'rgba(0, 0, 0, 0.7)'}} >
+             <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />
 
-      {image && <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />}
+        </View>}
 
   <View>
   <View style={{ position: 'absolute', bottom: keyboardHeight, left: 0, right: 0 , flexDirection : 'row' , backgroundColor : '#e8e6e3' , height : 45 , }}>
-<View  style={{paddingLeft : 17 , maxHeight : 40, borderColor: 'black', borderWidth: 2, borderRadius: 20, flex: 1 }}>   
+    <View style={{paddingLeft : 17 , maxHeight : 40, borderColor: 'black', borderWidth: 2, borderRadius: 20, flex: 1 , flexDirection:'row', paddingRight:5}}> 
   <TextInput
     style={{flex:1}}
     placeholderTextColor="#6a0c0c"

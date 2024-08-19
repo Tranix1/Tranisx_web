@@ -240,13 +240,11 @@ setTimeout(() => {
     }
   };
 
-        
-        const serializedItem = JSON.stringify(item);
   let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-          <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.companyName} `)} style={styles.buttonStyle} >
+        {auth.currentUser &&  <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.companyName} `)} >
             <Text>Message now</Text>
-          </TouchableOpacity>
+          </TouchableOpacity>}
           
           <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)}>
             <Text>Phone call</Text>
@@ -348,7 +346,7 @@ setTimeout(() => {
         </TouchableOpacity>
       )}
 
-      <TouchableOpacity onPress={()=>toggleBid(item.id) }>
+      <TouchableOpacity onPress={()=>toggleBid(item.id) } style={{ height : 30,justifyContent : 'center' , alignItems : 'center' ,width : 90 ,marginBottom: 10 ,borderRadius: 10}} >
         <Text>Bid</Text>
       </TouchableOpacity>
 
@@ -412,14 +410,35 @@ setTimeout(() => {
 
 
        {localLoads && <View style={{alignItems : 'center' , paddingTop : 30}}>
-        <TouchableOpacity  onPress={()=>specifyLocation('Zimbabwe')} style={styles.buttonStyle} >
+        <TouchableOpacity  onPress={()=>specifyLocation('Zimbabwe')} style={styles.buttonStyleCounry}  >
           <Text> Zimbabwe </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>specifyLocation('South')}>
-          <Text> South </Text>
+          <TouchableOpacity onPress={()=> specifyLocation('SouthAfrica') } style={styles.buttonStyleCounry} >
+            <Text style={{color:'#6a0c0c'}}>  South Africa</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Text> Moza </Text>
+
+        <TouchableOpacity onPress={()=> specifyLocation('Namibia') } style={styles.buttonStyleCounry} >
+            <Text style={{color:'#6a0c0c'}}>Namibia </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> specifyLocation('Tanzania') } style={styles.buttonStyleCounry} >
+            <Text style={{color:'#6a0c0c'}}> Tanzania</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=>specifyLocation ('Mozambique') } style={styles.buttonStyleCounry} >
+            <Text style={{color:'#6a0c0c'}}>Mozambique </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> specifyLocation('Zambia') } style={styles.buttonStyleCounry} >
+            <Text style={{color:'#6a0c0c'}}> Zambia</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> specifyLocation('Botswana') } style={styles.buttonStyleCounry} >
+            <Text style={{color:'#6a0c0c'}}>Botswana </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=> specifyLocation('Malawi') }style={styles.buttonStyleCounry} >
+            <Text style={{color:'#6a0c0c'}}>Malawi </Text>
         </TouchableOpacity>
        </View> }
 
@@ -442,6 +461,16 @@ const styles = StyleSheet.create({
         borderColor:"#6a0c0c" ,
         borderRadius: 10
     } ,
+    buttonStyleCounry :{
+        height : 40,
+        justifyContent : 'center' , 
+        alignItems : 'center' ,
+        width : 150 ,
+        marginBottom: 15 ,
+        borderWidth: 2 ,
+        borderColor:"#6a0c0c" ,
+        borderRadius: 3
+    },
   
     buttonIsFalse : {
      borderWidth : 1 ,
