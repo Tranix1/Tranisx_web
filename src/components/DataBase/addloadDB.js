@@ -12,6 +12,7 @@ function AddLoadDB ({username ,contact , isVerified }) {
 
 
 const navigate = useNavigate()
+const [error , setError]= React.useState("")
 
   const loadsCollection = collection(db, "Loads");
   const [formData, setFormData] = React.useState({
@@ -76,7 +77,7 @@ const navigate = useNavigate()
 
       const userId = auth.currentUser.uid
     
-
+      setError('')
     try {
       const docRef = await addDoc(loadsCollection, {
         userId: userId, // Add the user ID to the document
@@ -108,8 +109,11 @@ const navigate = useNavigate()
         additionalInfo: "",
       });
       setSpinnerItem(false)
+      setPerTonne(false)
+      setActiveLoading(false)
     } catch (err) {
-      console.error(err);
+      setSpinnerItem(false)
+      setError(err.toString());
       }
   };
 
@@ -176,6 +180,7 @@ const navigate = useNavigate()
       </TouchableOpacity>
    </View>
       { spinnerItem &&<ActivityIndicator size={36} />}
+        {error &&<Text>{error} retry </Text>}
 
   <TextInput
     value={formData.paymentTerms}

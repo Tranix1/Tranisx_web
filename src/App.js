@@ -1,5 +1,5 @@
 import React,{useState} from "react";
-import { View , Text  , TouchableOpacity , StatusBar} from "react-native";
+import { View , Text  , TouchableOpacity , StatusBar , Share} from "react-native";
 
 import  { auth , db,  } from "./components/config/fireBase"
 import {doc , getDoc ,query ,collection , where,onSnapshot } from "firebase/firestore"
@@ -57,6 +57,16 @@ function HomeScreen() {
       console.error(err)
     }
   }
+ 
+
+
+
+
+
+
+
+
+
   // const navigation = useNavigation();
 const navigate = useNavigate()
 const {page} = useParams()
@@ -142,8 +152,15 @@ const {page} = useParams()
                 </TouchableOpacity>
                 <TouchableOpacity  onPress={ ()=>navigate('/trucks')} >
                     <Text  style={{color : 'white'}}>Trucks</Text>
-
                 </TouchableOpacity>
+                
+
+
+
+
+
+
+
              </View>
              {smallMenu && <SmallMenu   /> }
             

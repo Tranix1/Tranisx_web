@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { View , Text , ScrollView, TouchableOpacity , ActivityIndicator , StyleSheet , Linking, Alert , TextInput} from "react-native"
+import { View , Text , ScrollView, TouchableOpacity , ActivityIndicator , StyleSheet , Linking, Alert , TextInput , Share} from "react-native"
 import { auth, db } from '../config/fireBase';
 import { collection, onSnapshot , serverTimestamp ,addDoc, query , where , getDocs ,doc,deleteDoc} from 'firebase/firestore';
 import inputstyles from '../styles/inputElement';
@@ -257,7 +257,7 @@ setTimeout(() => {
 
 
       let bidNow = (
-        <View style={{position:'absolute' , bottom:15 , backgroundColor:'#DDDDDD'}}>
+        <View style={{position:'absolute' , bottom:0, backgroundColor:'#DDDDDD'}}>
 
     {spinnerItem === item ? (
         <ActivityIndicator size={34} />
@@ -299,6 +299,12 @@ setTimeout(() => {
         </View>
       )
 
+
+
+
+
+
+
   return(
     <View  key={item.id} style={{ backgroundColor:  "#DDDDDD", marginBottom : 8, padding :6  , }} >
 
@@ -308,10 +314,10 @@ setTimeout(() => {
             </View>}
         <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}  >{item.companyName} </Text>
         <Text>Commodity : {item.typeofLoad} </Text>
-        <Text> Route : from{item.fromLocation} to {item.toLocation} </Text>
+        <Text> Route : from  {item.fromLocation} to {item.toLocation} </Text>
 
         <View style={{flexDirection : 'row'}} >
-          <Text>Rate :</Text>
+          <Text>Rate : </Text>
         {item.currency ? <Text>USD</Text> : <Text>Rand </Text>}
         <Text> {item.ratePerTonne} </Text>
          {item.perTonne ? <Text> Per tonne</Text> : null}
@@ -319,9 +325,9 @@ setTimeout(() => {
 
        {   !contactDisplay[item.id] && <View>
         <Text>Contact : {item.contact}</Text>
-        <Text> payment terms : {item.paymentTerms} </Text>
+        <Text>Payment Terms : {item.paymentTerms} </Text>
         <Text>Requirements : {item.requirements} </Text>
-        <Text>additional info : {item.additionalInfo} </Text> 
+       {item.additionalInfo&&<Text>Additional info : {item.additionalInfo} </Text>} 
         {item.activeLoading&& <Text>Active Loading </Text> }
         </View> }
 
@@ -353,7 +359,7 @@ setTimeout(() => {
           <Text>Message</Text>
         </TouchableOpacity>       
         </View> : 
-        <Text> Sign In to Book Bid and Message </Text>
+        <Text style={{color:'red'}}> Sign In to Book Bid and Message </Text>
         }
 
       </View>     
@@ -361,6 +367,35 @@ setTimeout(() => {
 
 
         let comapnyName = null;
+
+
+ const handleShareLink = async (companyName) => {
+    try {
+      const url = `https://www.truckerz.net/selectedUserLoads/${userId}`; // Replace this with the URL you want to share
+      const message = `Check out ${companyName} loads on Truckerz: ${url}`;
+
+      const result = await Share.share({
+        message: message,
+      });
+
+      if (result) {
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            // Shared with activity type of result.activityType
+          } else {
+            // Shared
+          }
+        } else if (result.action === Share.dismissedAction) {
+          // Dismissed
+        }
+      } else {
+        // Handle the case where result is undefined or null
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return(
     <View>
         {  userId  && loadsList.map((item)=>{
@@ -377,8 +412,12 @@ setTimeout(() => {
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
                     <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
-        
-        <Text style={{fontSize: 20 , color : 'white'}} > { item.companyName}   Loads </Text>
+       
+                <Text style={{fontSize: 20 , color : 'white'}} > { item.companyName} Loads </Text>
+                <TouchableOpacity  onPress={()=>handleShareLink(item.companyName)} style={{position :'absolute' , right:30}}>
+                    <Text  style={{color : 'white'}}>Share loads </Text>
+                </TouchableOpacity>
+
        </View> )})
        }
 
@@ -410,10 +449,10 @@ setTimeout(() => {
 
        {localLoads && <View style={{alignItems : 'center' , paddingTop : 30}}>
         <TouchableOpacity  onPress={()=>specifyLocation('Zimbabwe')} style={styles.buttonStyleCounry}  >
-          <Text> Zimbabwe </Text>
+          <Text style={{color:'#6a0c0c'}}>Zimbabwe </Text>
         </TouchableOpacity>
           <TouchableOpacity onPress={()=> specifyLocation('SouthAfrica') } style={styles.buttonStyleCounry} >
-            <Text style={{color:'#6a0c0c'}}>  South Africa</Text>
+            <Text style={{color:'#6a0c0c'}}>South Africa</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={()=> specifyLocation('Namibia') } style={styles.buttonStyleCounry} >

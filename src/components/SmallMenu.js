@@ -22,7 +22,7 @@ return(
     </TouchableOpacity>
     
     <TouchableOpacity   onPress={()=>navigate('/bookingsandBiddings/') }  style={styles.buttonStyle}>
-        <Text>Bookings</Text>
+        <Text>B & B</Text>
     </TouchableOpacity>
     
     

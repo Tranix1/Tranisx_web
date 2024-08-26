@@ -44,18 +44,19 @@ return(
     <View> 
         <ShopHeader/>
 
-               {diplayEnterShopLoc && <View style={{position:'absolute' , alignSelf:'center' , backgroundColor:'white' , top : 160}} >
+               {diplayEnterShopLoc && <View style={{position:'absolute' , alignSelf:'center' , backgroundColor:'white' , top : 160 ,  zIndex:500}} >
+
                   <Text> Specify Adress of Shop In {location} </Text>
+
                <TextInput
                      placeholder="Shop Location "
                      type="text"
                      value={newShopAdress}
                      onChangeText={(text) => setNewShopAdress(text)}
-                     keyboardType="numeric"
                      style={inputstyles.inputElem}            
                   />
 
-        <View style={{flexDirection : 'row', paddingTop : 15 , justifyContent : 'space-evenly'}}>
+        <View style={{flexDirection : 'row', paddingTop : 10 , justifyContent : 'space-evenly'}}>
           <TouchableOpacity style={styles.cancelBtn}onPress={()=>setEnterSHopLoc(false)} >
             <Text>cancel</Text>
           </TouchableOpacity>
@@ -70,7 +71,7 @@ return(
                 <Text style={{color : 'white'}} >Add</Text>
              </TouchableOpacity>
 
-             <ScrollView>
+             <ScrollView style={{padding:10}}>
                 <DspSoldIterms  />
              </ScrollView>
 

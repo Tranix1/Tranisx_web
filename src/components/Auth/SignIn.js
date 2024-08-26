@@ -26,7 +26,7 @@ function SignIn(){
       await signInWithEmailAndPassword(auth, email, password);
       setEmail("")
       setPassword("")
-      navigate('/')
+      navigate('/AddIterms')
       setSpinnerItem(false)
     } catch (error) {
       setError(error.message.toString());

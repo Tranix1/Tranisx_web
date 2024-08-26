@@ -18,10 +18,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
              <View style={{flexDirection : 'row' , height : 54 ,justifyContent : 'space-between' ,  paddingLeft : 15 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , }} >
                 <Text style={{color : 'white' , fontSize : 19 , zIndex : 50}} >Truckerz</Text>
                 <View style={{flexDirection: 'row'}} > 
-                    <TouchableOpacity onPress={()=> navigate('searchElement') }>
-
-                          <SearchIcon style={{color : 'white'}}/>
-
+                    <TouchableOpacity onPress={()=> navigate('/searchElement') }>
+                        <SearchIcon style={{color : 'white'}}/>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={{marginLeft : 6}}  onPress={toggleSmallMenu}>

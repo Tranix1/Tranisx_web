@@ -76,10 +76,6 @@ const navigate = useNavigate()
           }
         };
 
-       
-
-
-
         const clearInput = () => {
           setFilteredData([]); 
           setWordEntered("");
