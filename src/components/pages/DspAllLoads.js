@@ -408,7 +408,7 @@ setTimeout(() => {
       return(     
         showUserName&&<View key={item.id} style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
       
-           <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+           <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate( '/' )}>
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
                     <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 

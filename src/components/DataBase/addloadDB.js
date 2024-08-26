@@ -120,7 +120,7 @@ const [error , setError]= React.useState("")
   return (
     <View   style={{alignItems :'center', paddingTop : 80}}>
  <View  style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
-         <TouchableOpacity style={{marginRight: 10}}  onPress={()=>navigate(-1)}>
+         <TouchableOpacity style={{marginRight: 10}}  onPress={()=>navigate('/')}>
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
                     <ArrowBackIcon style={{color : 'white'}} />
 
