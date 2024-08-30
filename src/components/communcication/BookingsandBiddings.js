@@ -7,7 +7,6 @@ import { auth , db } from "../config/fireBase";
 import {useNavigate , useParams} from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import VerifiedIcon from '@mui/icons-material/Verified';
-import { Padding } from "@mui/icons-material";
 
 function BookingsandBiddings(){
 
@@ -15,13 +14,10 @@ function BookingsandBiddings(){
     const {dspRoute , dbName} = useParams()
 
   const [getAllIterms , setAllIterms]=React.useState([])
-
- 
-
      
   const deleteLoad = async (id) => {
   try {
-    const loadsDocRef = doc(db, 'Loads', id);
+    const loadsDocRef = doc(db, `${dbName}`, id);
     await deleteDoc(loadsDocRef);
     // Remove the deleted item from loadsList
     setAllIterms((prevLoadsList) => prevLoadsList.filter(item => item.id !== id));
@@ -148,7 +144,7 @@ let whnBookAload = getAllIterms.map((item) => {
  let whenMyLoadBooked = getAllIterms.map((item)=>{
 const userId = auth.currentUser.uid;
         const serializedItem = JSON.stringify(item);
-if(!item.ownerId !== userId ){ 
+if(!item.ownerId === userId ){ 
 return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350}} key = {item.id}>
 
 
@@ -249,7 +245,7 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350
 
 
   return(
-    <View style={{paddingTop:80}}>     
+    <View style={{paddingTop:80 , alignItems:'center'}}>     
 
        <View style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
          <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>

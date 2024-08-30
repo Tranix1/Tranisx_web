@@ -16,8 +16,8 @@ const navigate = useNavigate()
 
   const loadsCollection = collection(db, "Shop");
       const [loadsList, setLoadsList] = useState([]);
-      console.log(loadsList)
 
+      
     useEffect(() => {
       const unsubscribe = onSnapshot(loadsCollection, (querySnapshot) => {
         let filteredData = querySnapshot.docs.map((doc) => ({
@@ -97,7 +97,7 @@ const navigate = useNavigate()
             <View style={{flexDirection :'row' , justifyContent:'space-evenly'}} >
              { filteredData.length > 0 && (
               <ScrollView  >
-              <Text style={{fontSize : 20 , textDecorationLine:'underline '}}> Available Loads  </Text>
+              <Text style={{fontSize : 20 , textDecorationLine:'underline '}}> Available products </Text>
               {displaySearched}
              </ScrollView>
 

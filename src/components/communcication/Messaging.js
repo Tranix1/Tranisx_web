@@ -79,17 +79,6 @@ const [currentDateTime, setCurrentDateTime] = useState(formatDateTime(new Date()
       useEffect(() => {
   const userId = auth.currentUser.uid
 
-
-    if(!chatId){ 
-    let addChatId = `${contactId}${userId}` ;
-    const existingChat =  checkExistingChat(addChatId);
-    if(existingChat){
-      chatId = addChatId
-    }
-    }
-
-
-
   let chatRef 
   if(chatId){
 
@@ -173,11 +162,10 @@ const handleSubmit = async () => {
 
  let addChatId 
 
-const existingChat = await checkExistingChat(addChatId);
-
-const userId = auth.currentUser.uid
-try {
-  
+ 
+ const userId = auth.currentUser.uid
+ try {
+   
     if(!chatId){
     const chatId = `${userId}${contactId}` ;
     const chatRef = doc(db, "Chats", chatId);
@@ -192,8 +180,8 @@ try {
     currentDate: currentDateTime,
     currentTime: currentTime,
     addedImage: imageUrl, 
-
-    });  
+    
+  });  
   addChatId = chatId
 }else{
   const chatId = chatId
@@ -206,11 +194,12 @@ try {
     timestamp : serverTimestamp() ,
     currentDate: currentDateTime,
     currentTime: currentTime,
-   
+    
   });  
   addChatId = chatId
 }
 
+const existingChat = await checkExistingChat(addChatId);
 
 if (!existingChat) {
   // Chat doesn't exist, add it to 'ppleInTouch'

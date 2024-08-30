@@ -55,7 +55,7 @@ const handleSubmitData = async (event) => {
       setSpinnerItem(false)
           setUsername("");
           setContact("");
-           navigate('/AddIterms')
+           navigate('/')
         } else {
           // Username already exists, handle the situation here
           setErrorOccur('Username already exists!');

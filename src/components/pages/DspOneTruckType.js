@@ -30,7 +30,16 @@ const navigate = useNavigate()
             }
           });
 
-          setAllTrucks(loadedData);
+                const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      };
+      const shuffledData = shuffleArray(loadedData);
+
+      setAllTrucks(shuffledData);
         });
         
         // Clean up function to unsubscribe from the listener when the component unmounts
@@ -74,7 +83,7 @@ return(
         
                     <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
-        <Text style={{fontSize: 20 , color : 'white'}} > Truckerz </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} > {truckType} </Text>
        </View>
         <ScrollView>
       <div className="Main-grid">

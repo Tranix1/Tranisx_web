@@ -36,8 +36,8 @@ const mainLoadsCollection = collection(db, 'Loads');
 
 
     const shuffleArray = (array) => {
-        for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
+        for (let i = array.length - 0; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 0));
           [array[i], array[j]] = [array[j], array[i]];
         }
         return array;

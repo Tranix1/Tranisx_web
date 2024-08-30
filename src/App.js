@@ -59,14 +59,6 @@ function HomeScreen() {
   }
  
 
-
-
-
-
-
-
-
-
   // const navigation = useNavigation();
 const navigate = useNavigate()
 const {page} = useParams()
@@ -154,12 +146,6 @@ const {page} = useParams()
                     <Text  style={{color : 'white'}}>Trucks</Text>
                 </TouchableOpacity>
                 
-
-
-
-
-
-
 
              </View>
              {smallMenu && <SmallMenu   /> }
@@ -267,7 +253,6 @@ function App(){
 
        <Routes>
 
-
       <Route exact path="/" element={<HomeScreen/>} />
       <Route exact path="/:page/" element={<HomeScreen/>} />
 
@@ -277,7 +262,6 @@ function App(){
       <Route path="/signInexistAcc/" element={<SignIn/>} />
 
       <Route path="/addPersnoalInfo/" element={<PersonalAccInfo/>} />
-      
 
       <Route path="/selectPeronalAcc/" element={<SelectPersnalAcc/>} />
       <Route path="/personalInfomation/" element={<PersnonalAccInfoEdit  
@@ -287,18 +271,13 @@ function App(){
 
       <Route path="/selectChat/" element={<SelectChat/>} />
 
-
       <Route path="/mainGroup" element={<MainGroup username={username}/>} style={{backgroundColor:'green'}} />
-
 
       <Route path="/message/:chatStarterId/:starterCompanyName"   element={<Messaging username={username}/>}/>
       <Route path="/message/:gchatId/:senderName/:receiverName"   element={<Messaging username={username}/>}/>
 
-
-
       <Route path="/bookingsandBiddings/" element={<BookingsandBiddings/>} />
       <Route path="/bookingsandBiddings/:dbName/:dspRoute" element={<BookingsandBiddings/>} />
-
 
       <Route path="/AddIterms/" element={<AddIterms/>}/>
       <Route path="/AddIterms/:addTrucks" element={<AddIterms/>}/>
@@ -319,7 +298,7 @@ function App(){
       <Route path="/DspShop/:location/:specproduct" element={<DspShopIterms  spechopLoc={spechopLoc} />} />
       <Route path="/selectAddShop/:location" element={<SelectAddToShop/>} />
       <Route path="/AddToShop/:location/:specproduct" element={<AddToShop  
-      username={ username}  contact = {contact}  isVerified ={ isVerified}  shopLocation={spechopLoc}/>} />
+      username={ username}  contact = {contact}  isVerified ={ isVerified}  shopLocation={spechopLoc}  /> } />
       <Route path="/AddToShop/:location/:specproduct/:truckType" element={<AddToShop
       username={ username}  contact = {contact}  isVerified ={ isVerified} shopLocation={spechopLoc}/>} />
       <Route path="/OneFirmsShop/:userId" element={<OneFirmsShop/>} />

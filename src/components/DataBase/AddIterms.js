@@ -49,7 +49,7 @@ const {addTrucks} = useParams()
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={()=> navigate('/addTrucksDB/tanker') } style={styles.buttonStyle} >
-                    <Text style={{color:"#6a0c0c"}}>Takers </Text>
+                    <Text style={{color:"#6a0c0c"}}>Tankers </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={()=> navigate('/addTrucksDB/Rigid') } style={styles.buttonStyle} >

@@ -115,7 +115,7 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
                     <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
         
-        <Text style={{fontSize: 20 , color : 'white'}} > Add Trucks  </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} > Add {truckType} </Text>
        </View>
 
 

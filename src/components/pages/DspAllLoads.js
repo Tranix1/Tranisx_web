@@ -226,8 +226,7 @@ setTimeout(() => {
       });
       
       setBidRate("")
-      toggleBid(item.id) 
-      alert(`${bidDisplay[item.id] ? "booking": "bidding"} was successfull`)    
+      alert(`${!bidDisplay[item.id] ? "booking": "bidding"} was successfull`)    
         }else {
           alert("Already Booked this Item!")    
 
@@ -324,9 +323,10 @@ setTimeout(() => {
         </View>
 
        {   !contactDisplay[item.id] && <View>
+        
         <Text>Contact : {item.contact}</Text>
         <Text>Payment Terms : {item.paymentTerms} </Text>
-        <Text>Requirements : {item.requirements} </Text>
+        { item.requirements && <Text>Requirements : {item.requirements} </Text>}
        {item.additionalInfo&&<Text>Additional info : {item.additionalInfo} </Text>} 
         {item.activeLoading&& <Text>Active Loading </Text> }
         </View> }
@@ -414,8 +414,8 @@ setTimeout(() => {
         </TouchableOpacity> 
        
                 <Text style={{fontSize: 20 , color : 'white'}} > { item.companyName} Loads </Text>
-                <TouchableOpacity  onPress={()=>handleShareLink(item.companyName)} style={{position :'absolute' , right:30}}>
-                    <Text  style={{color : 'white'}}>Share loads </Text>
+                <TouchableOpacity  onPress={()=>handleShareLink(item.companyName)} style={{position :'absolute' , right:30 ,  backgroundColor : 'rgb(129,201,149)' }} >
+                    <Text  >Share loads </Text>
                 </TouchableOpacity>
 
        </View> )})

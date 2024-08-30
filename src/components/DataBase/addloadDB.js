@@ -210,11 +210,11 @@ const [error , setError]= React.useState("")
    </View>}
   {localLoads && <View>
     <TouchableOpacity onPress={()=>specifyLocation('Zimbabwe')} style={styles.buttonStyle} > 
-      <Text>Zimbabwe </Text>
+      <Text style={{color:'#6a0c0c'}}>Zimbabwe </Text>
     </TouchableOpacity>
 
       <TouchableOpacity onPress={()=> specifyLocation('SouthAfrica') } style={styles.buttonStyle} >
-            <Text style={{color:'#6a0c0c'}}>  South Africa</Text>
+            <Text style={{color:'#6a0c0c'}} >  South Africa</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={()=> specifyLocation('Namibia') } style={styles.buttonStyle}>
