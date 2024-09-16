@@ -188,7 +188,7 @@ setTimeout(() => {
         const userId = auth.currentUser.uid
         try {
           
-          let docId = `${userId}${item.typeofLoad}${item.ratePerTonne}${item.userId}`
+          let docId = `${userId}${item.typeofLoad}${item.ratePerTonne}${item.userId}  `
           const existingChat = await checkExistiDoc(docId);
            let theRate 
            let currencyB 
@@ -254,7 +254,7 @@ setTimeout(() => {
       setSpinnerItem(null)      
     }
   };
-        const message =  `${item}` ; // Set your desired message here
+        const message =  ` Is this Load still available   ${item.typeofLoad} from  ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : null} from Truckerz ` ; // Set your desired message here
 
   let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
@@ -458,7 +458,6 @@ setTimeout(() => {
     </TouchableOpacity>
     </View>
 }
-<Text> Send the load on whatsaAoo </Text>
       <div className="Main-grid">
         { loadsList.length>0? rendereIterms: <Text>Loads Loading.....</Text> }
         <View style={{height : 200}} ></View>
