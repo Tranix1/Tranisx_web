@@ -15,35 +15,51 @@ function DspSoldIterms(){
 
       let [buyRent , setBuyRent] = React.useState(null)
 
-  useEffect(() => {
+ useEffect(() => {
     try {
-      let dataQuery
-      if(specproduct === "vehicles" || specproduct === "trailers"){
-        if(buyRent=== true || buyRent === false ) {
-          dataQuery = query(collection(db, "Shop"), where("specproduct" ,"==",   specproduct) , where("location" ,"==", location) , where("sellRent" ,"==", buyRent) );
-        }} else{
-          
-          dataQuery = query(collection(db, "Shop"), where("specproduct" ,"==",   specproduct) , where("location" ,"==", location) );
-        }
-        
-        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
-          const loadedData = [];
-          snapshot.docChanges().forEach((change) => {
-            if (change.type === 'added' || change.type === 'modified') {
-              const dataWithId = { id: change.doc.id, ...change.doc.data() };
-              loadedData.push(dataWithId);
-            }
-          });
+        let dataQuery;
 
-          setAllSoldIterms(loadedData);
+        if (specproduct === "vehicles" || specproduct === "trailers") {
+            if (buyRent === true || buyRent === false) {
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent));
+            } else {
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location));
+            }
+        } else {
+            dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location));
+        }
+
+        const loadedData = [];
+        const userItemsMap = new Map(); // Map to store user items
+
+        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === 'added' || change.type === 'modified') {
+                    const dataWithId = { id: change.doc.id, ...change.doc.data() };
+
+                    // Add or update the user's items
+                    if (!userItemsMap.has(dataWithId.userId)) {
+                        userItemsMap.set(dataWithId.userId, []);
+                    }
+                    userItemsMap.get(dataWithId.userId).push(dataWithId);
+                }
+            });
+
+            // Select 4 random items for each user
+            userItemsMap.forEach((userItems) => {
+                const randomItems = userItems.sort(() => 0.5 - Math.random()).slice(0, 4);
+                loadedData.push(...randomItems);
+            });
+
+            setAllSoldIterms(loadedData);
         });
-        
+
         // Clean up function to unsubscribe from the listener when the component unmounts
         return () => unsubscribe();
     } catch (err) {
-      console.error(err);
+        console.error(err);
     }
-  }, [specproduct , buyRent]); 
+}, [specproduct, buyRent]);
 
 
     
@@ -81,16 +97,16 @@ function DspSoldIterms(){
 
 
           <ScrollView  horizontal  showsHorizontalScrollIndicator={false}  >
-          {item.imageUrl &&<img src={item.imageUrl1} style={{height : 200 , borderRadius : 10}}/>}
-          {item.imageUrl &&<img src={item.imageUrl2} style={{height : 200 , borderRadius : 10}}/>}
-          {item.imageUrl &&<img src={item.imageUrl3} style={{height : 200 , borderRadius : 10}}/>}
-          {item.imageUrl &&<img src={item.imageUrl4} style={{height : 200 , borderRadius : 10}}/>}
-          {item.imageUrl &&<img src={item.imageUrl5} style={{height : 200 , borderRadius : 10}}/>}
+         
+        {item.imageUrl.map((image, index) => (
+            <img key={index} src={image} alt={`Image ${index}`}   style={{ width : 200 , height : 200 , margin : 7}} />
+        ))}
+
           </ScrollView>
 
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} </Text>
         {item.productName &&<Text>Product {item.productName} </Text> }
-        {item.price &&<Text>Price :  {item.currency?"USD" : "Rand" }  {item.price} </Text> }
+        {item.price &&<Text>Price:{item.currency?"USD" : "Rand" }  {item.price} {item.sellRent ? " for sell" : "For rental " } </Text> }
         {item.shopLocation &&<Text> Location : {item.shopLocation} </Text> }
 
 

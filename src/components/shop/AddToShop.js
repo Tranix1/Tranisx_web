@@ -46,35 +46,50 @@ function AddToShop( { username ,contact , isVerified , shopLocation} ) {
     setSellRent(prev=>!prev)
   }
 
-const [image, setImage] = useState(null);  
-  const [ imageUpload, setImageUpload] = React.useState(null)    
+const [images, setImages] = useState([]);
 
+const [ imageUpload, setImageUpload] = React.useState([])    
 
     const handleFileInputChange = (e) => {
-    // Handle file input change here
-    setImageUpload(e.target.files[0])
-    const file = e.target.files[0];
+        const files = Array.from(e.target.files);
 
-     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+        // Limit the number of images to 4
+        if (images.length + files.length > 4) {
+            alert('You can only add up to 4 images.');
+            return;
+        }
+        
+            setImageUpload(prevImages => [...prevImages, ...files]);
+
+        // Handle multiple file input change
+        files.forEach(file => {
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                setImages(prevImages => [...prevImages, reader.result]);
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
+    console.log(imageUpload , "ayayapapa")
+ const uploadImages = async () => {
+    try {
+        for (const image of imageUpload) {
+            const imageName = image.name + new Date().getTime();
+            const imageRef = ref(storage, `Shop/${imageName}`);
+            await uploadBytes(imageRef, image);
+            // Handle successful upload if needed
+        }
+    } catch (error) {
+        console.error('Error uploading images:', error);
     }
-  };
-
-
-    const uploadImage = ()=>{
-      if(imageUpload === null) return
-      const imageRef = ref(storage , `Shop/${imageUpload.name + new Date().getTime()  }`)
-      uploadBytes(imageRef , imageUpload).then(()=>{
-      })
-    }
+}
 
     const [spinnerItem, setSpinnerItem] = React.useState(false);
     
- 
+ let image ,uploadImage , setImage
+
   const handleSubmit = async () => {
       if(!formData.productName  ||!formData.price){
         alert("Add product name and the price to continue")
@@ -83,41 +98,53 @@ const [image, setImage] = useState(null);
         alert('add username')
         return
       }
-        if(!image){
-          alert('Add product Image')
-          return
-        }
+       
       setSpinnerItem(true)
-        uploadImage()
+
+
+        // uploadImages()
         let imageUrl
-        if(image){ 
-       const imageRef = ref(storage , `Shop/${imageUpload.name}`)
-       await uploadBytes(imageRef , imageUpload)
-       // get image  url 
-        imageUrl = await getDownloadURL(imageRef)
-        }else{
-          imageUrl = null
-        }
+
+    
+    const imageUrls = [];
+
+    // Upload each image and get the download URL
+
+
+
+
+
     let userId = auth.currentUser.uid
 
-    try {
-      const docRef = await addDoc(shopDB, {
-        CompanyName : username ,
-        contact : contact ,
-        productName : formData.productName,
-        price: formData.price,
-        imageUrl: imageUrl,
-        userId : userId ,
-        additionalInfo : formData.additionalInfo ,
-        deliveryRange : formData.deliveryRange ,
-        isVerified : isVerified ,
-        location : location ,
-        specproduct : specproduct ,
-        currency : currency ,
-        shopLocation : shopLocation ,
-        sellRent : sellRent
 
-      });
+    try {
+        // Upload each image and get the download URL
+        for (const image of imageUpload) {
+            const imageName = image.name + new Date().getTime();
+            const imageRef = ref(storage, `Shop/${imageName}`);
+            await uploadBytes(imageRef, image);
+            const imageUrl = await getDownloadURL(imageRef);
+            imageUrls.push(imageUrl);
+        }
+
+        // Add a document to Firestore with image URLs
+        const docRef = await addDoc(shopDB, {
+            CompanyName: username,
+            contact: contact,
+            productName: formData.productName,
+            price: formData.price,
+            imageUrl: imageUrls,
+            userId: userId,
+            additionalInfo: formData.additionalInfo,
+            deliveryRange: formData.deliveryRange,
+            isVerified: isVerified,
+            location: location,
+            specproduct: specproduct,
+            currency: currency,
+            shopLocation: shopLocation,
+            sellRent: sellRent
+        });
+
 
        setFormData({
         productName: "",
@@ -125,11 +152,16 @@ const [image, setImage] = useState(null);
         additionalInfo :"",
         deliveryRange : "" ,
       });
-      setImage(null);
+      setImages([])
       setSpinnerItem(false)
-    } catch (err) {
-      console.error(err);
+        console.log('Document added with image URLs:', docRef.id);
+    } catch (error) {
+        console.error('Error uploading images and adding document:', error);
     }
+
+
+
+
   };
   return (
       <View style={{alignItems :'center', paddingTop : 80}} >
@@ -146,21 +178,34 @@ const [image, setImage] = useState(null);
       {image && <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />}
 
 
-<Text>Add many Images </Text>
+<Text>Add @ least 4  Images </Text>
 
-      {!image&&<div>
-    <label for="fileInput" >     
-        <CameraAltIcon style={{color : '#6a0c0c' , fontSize : 33}} />
+         <div>
+            {images.length < 4 && (
+                <div>
+                    <label for="fileInput">
+                        <CameraAltIcon style={{ color: '#6a0c0c', fontSize: 33 }} />
+                    </label>
+                    <input
+                        style={{ display: 'none' }}
+                        id="fileInput"
+                        type="file"
+                        multiple
+                        onChange={handleFileInputChange}
+                    />
+                </div>
+            )}
 
-    </label>
-    <input
-      style={{display: 'none'}}
-      id="fileInput"
-      type="file"
-      onChange={handleFileInputChange}
-    />
+            {/* <Text>Add many Images</Text> */}
 
-    </div>}
+            {/* Display selected images */}
+          
+        {images.map((image, index) => (
+            <img key={index} src={image} alt={`Image ${index}`}   style={{ width : 200 , height : 200 , margin : 7}} />
+        ))}
+            {/* Button to upload images */}
+            {/* // <button onClick={uploadImages}>Upload Images</button> */}
+        </div>
 
       
         <TextInput

@@ -254,6 +254,7 @@ setTimeout(() => {
       setSpinnerItem(null)      
     }
   };
+        const message =  `${item}` ; // Set your desired message here
 
   let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
@@ -265,7 +266,7 @@ setTimeout(() => {
             <Text>Phone call</Text>
             </TouchableOpacity>
             
-            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}`)}>
+            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)}>
             <Text>WhatsApp</Text>
           </TouchableOpacity>
           
