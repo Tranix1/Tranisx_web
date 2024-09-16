@@ -161,6 +161,7 @@ const {page} = useParams()
                    }
                 </TouchableOpacity>
 
+                   
                  <TouchableOpacity   onPress={()=>navigate('/shopLocation/') }  >
                   <Text style={{color:'white'}} >Store</Text>
                 </TouchableOpacity>

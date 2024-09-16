@@ -51,7 +51,16 @@ function DspSoldIterms(){
                 loadedData.push(...randomItems);
             });
 
-            setAllSoldIterms(loadedData);
+             const shuffleArray = (array) => {
+              for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+              }
+              return array;
+            };
+            const shuffledData = shuffleArray(loadedData);
+
+            setAllSoldIterms(shuffledData);
         });
 
         // Clean up function to unsubscribe from the listener when the component unmounts
