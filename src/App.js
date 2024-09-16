@@ -11,7 +11,11 @@ import SearchIterms from "./components/pages/SearchElement"
 
 import CreateUser from "./components/Auth/LogIn"
 import SignIn from "./components/Auth/SignIn"
+
 import PersonalAccInfo from "./components/Auth/Personalnfo"
+
+import Updates from "./components/pages/Updates";
+import AddUpdate from "./components/DataBase/AddUpdate";
 
 import MiniLoad from  "./components/pages/MiniLoads"
 import DspAllTrucks from  "./components/pages/DspCombinedTrucks"
@@ -33,7 +37,6 @@ import Messaging from "./components/communcication/Messaging"
 import MainGroup from "./components/communcication/MainGroup"
 import BookingsandBiddings from "./components/communcication/BookingsandBiddings"
 
-import SelectedUserLoads from "./components/selectedUserIterms/userPersonalLoads"
 import SelectedUserTrucks from "./components/selectedUserIterms/userPersonalTrucls"
 
 import ShopLocation from "./components/shop/shopHome"
@@ -41,11 +44,19 @@ import DspShopIterms from "./components/shop/DspShopIterms"
 import SelectAddToShop from "./components/shop/SelectAddToShop"
 import AddToShop from "./components/shop/AddToShop"
 
+import HelpHome from "./components/HelpCentre/HelpHome";
+import MobileAppSD from "./components/MobileAppSD";
+
+import VerifyInfo from "./components/verify/verifyInfo";
+import VerifyNewUser from "./components/verify/verifyNewUser";
+
 import MainStyle from "./components/styles/Main.css"
 
 import { BrowserRouter as Router ,Route, Routes, BrowserRouter, useNavigate, useParams , } from 'react-router-dom';
 import OneFirmsShop from "./components/shop/OneFirmsShop";
 import SearchInshop from "./components/shop/SearchInshop";
+import ManageStock from "./components/shop/ManageStock";
+
 
 
 function HomeScreen() {
@@ -57,7 +68,6 @@ function HomeScreen() {
       console.error(err)
     }
   }
- 
 
   // const navigation = useNavigation();
 const navigate = useNavigate()
@@ -77,10 +87,8 @@ const {page} = useParams()
    const [ username , setUsername] = React.useState("");
    const [ contact , setContact] = React.useState('');
 
-          
-
        React.useEffect(() => {
-  let unsubscribe;
+  let unsubscribe;  
 
   try {
     if (auth.currentUser) {
@@ -105,8 +113,6 @@ const {page} = useParams()
   };
 }, [currentUser]);
 
- 
-
   function checkAuth(){
     if(!currentUser){
       navigate("/createUser/")
@@ -126,7 +132,7 @@ const {page} = useParams()
     }else if(currentUser &&!username){
       navigate("/addPersnoalInfo/")
     }else {
-    setSmallMenu(prev => !prev) 
+      setSmallMenu(prev => !prev) 
 
     }
     }
@@ -137,18 +143,30 @@ const {page} = useParams()
      <View  style={{flexDirection:'row' , justifyContent : 'space-evenly' , paddingLeft : 20 , paddingRight: 20 , height : 40 , alignItems : 'center' , backgroundColor : '#6a0c0c' , paddingTop : 10 }}>
 
                <TouchableOpacity onPress={()=>navigate("/")}> 
-                    <Text style={{color : 'white'}} >Home</Text>
+                   { !page  ? 
+                    <Text style={{color : 'white' , textDecorationLine :'underline' ,fontWeight:'600' , fontSize : 18 }} >Home</Text> :
+                    <Text style={{color : 'white' }} >Home</Text>
+                  }
                 </TouchableOpacity>
              <TouchableOpacity onPress={ ()=>navigate('/loads') }>
-                    <Text style={{color : 'white'}} >Loads</Text>
+                    {page === "loads" ?
+                     <Text style={{color : 'white' , textDecorationLine:'underline' ,fontWeight:'600' , fontSize : 18 }} >Loads</Text> :
+                     <Text style={{color : 'white'}} >Loads</Text> 
+                     }
                 </TouchableOpacity>
                 <TouchableOpacity  onPress={ ()=>navigate('/trucks')} >
-                    <Text  style={{color : 'white'}}>Trucks</Text>
+                   { page ==="trucks" ? 
+                   <Text  style={{color : 'white' , textDecorationLine:'underline',fontWeight:'600' , fontSize : 18  }}>Trucks</Text>  :
+                   <Text  style={{color : 'white'}}>Trucks</Text>  
+                   }
                 </TouchableOpacity>
-                
+
+                 <TouchableOpacity   onPress={()=>navigate('/shopLocation/') }  >
+                  <Text style={{color:'white'}} >Store</Text>
+                </TouchableOpacity>
 
              </View>
-             {smallMenu && <SmallMenu   /> }
+             {smallMenu && <SmallMenu  toggleSmallMenu={toggleSmallMenu}  /> }
             
          {/* { currentUser&& !username&& <PersonalAccInfo personalInfo={personalInfo} />}  */}
 
@@ -167,7 +185,6 @@ const {page} = useParams()
     </View>
   );
 }
-
 
 
 function App(){
@@ -246,8 +263,6 @@ function App(){
       }, []);
 
             
-// const Stack = createNativeStackNavigator();
-
     return(
           <BrowserRouter>
 
@@ -262,6 +277,9 @@ function App(){
       <Route path="/signInexistAcc/" element={<SignIn/>} />
 
       <Route path="/addPersnoalInfo/" element={<PersonalAccInfo/>} />
+
+      <Route path="/updates/" element={<Updates/>} />
+      <Route path="/addUpdate/" element={<AddUpdate/>} />
 
       <Route path="/selectPeronalAcc/" element={<SelectPersnalAcc/>} />
       <Route path="/personalInfomation/" element={<PersnonalAccInfoEdit  
@@ -302,9 +320,21 @@ function App(){
       <Route path="/AddToShop/:location/:specproduct/:truckType" element={<AddToShop
       username={ username}  contact = {contact}  isVerified ={ isVerified} shopLocation={spechopLoc}/>} />
       <Route path="/OneFirmsShop/:userId" element={<OneFirmsShop/>} />
+      <Route path="/manageStock/" element={<ManageStock/>} />
       <Route path="/sSoldProducts/:userId/:itemId" element={<OneFirmsShop/>} />
       <Route path="/shosearchElement/" element={<SearchInshop/>} />
 
+
+      <Route path="/helpHome/" element={<HelpHome/>} />
+      <Route path="/mobileAppSD/" element={<MobileAppSD/>} />
+
+      <Route path="/mobileAppSD/" element={<MobileAppSD/>} />
+      <Route path="/mobileAppSD/" element={<MobileAppSD/>} />
+
+      <Route path="/verifyInfo/" element={<VerifyInfo/>} />
+      <Route path="/verifyNewUser/" element={<VerifyNewUser/>} />
+
+      
     </Routes>
       </BrowserRouter>
     )

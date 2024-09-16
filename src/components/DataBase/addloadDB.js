@@ -65,6 +65,7 @@ const [error , setError]= React.useState("")
 
 
     const [spinnerItem, setSpinnerItem] = React.useState(false);
+    
   const handleSubmit = async () => {
      if(!formData.ratePerTonne || !formData.typeofLoad || !formData.toLocation || !formData.fromLocation || !formData.paymentTerms){
         alert('Enter Rate , Commodity,Routes and Payment terms' )
@@ -265,7 +266,7 @@ const [error , setError]= React.useState("")
   );
 }
 
-export default AddLoadDB;
+export default React.memo(AddLoadDB);
 
 const styles = StyleSheet.create({
     buttonStyle : {

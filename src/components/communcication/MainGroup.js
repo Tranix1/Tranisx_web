@@ -153,6 +153,12 @@ const handleSubmit = async (event) => {
       isViewed: false, // Set the initial value to indicate the message is not viewed
       addedImage: imageUrl 
     });
+        const newIterms = collection(db ,'newIterms');
+      // Chat doesn't exist, add it to 'ppleInTouch'
+      await addDoc(newIterms, {
+        newGrpMessage : true ,
+        timestamp : serverTimestamp() ,
+      });
   } catch (err) {
     console.error(err);
   }

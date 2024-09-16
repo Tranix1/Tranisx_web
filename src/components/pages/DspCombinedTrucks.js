@@ -103,7 +103,7 @@ const navigate = useNavigate()
 return(
         <ScrollView style={{padding : 10 }}>
           <div className='Main-grid'>
-         {allTrucks.length > 0 ? rendereIterms   : <Text>Loading...</Text>}
+         {allTrucks.length > 0 ? rendereIterms   : <Text>All Trucks Loading......</Text>}
          <View style={{height : 550}} >
            </View>
             </div>

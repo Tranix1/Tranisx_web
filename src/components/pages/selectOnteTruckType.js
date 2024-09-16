@@ -54,7 +54,7 @@ const navigate = useNavigate()
         </View>
     )
 }
-export default SelectOneTruckType
+export default React.memo(SelectOneTruckType)
 
 
 const styles = StyleSheet.create({

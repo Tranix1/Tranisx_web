@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { db , auth} from '../config/fireBase';
-import { View , Text , Image , ScrollView , TouchableOpacity , Linking} from 'react-native';
+import { db , } from '../config/fireBase';
+import { View , Text , ScrollView , TouchableOpacity , Linking ,StyleSheet} from 'react-native';
 import {onSnapshot ,  query ,collection,where } from "firebase/firestore"
 
 import {useNavigate,useParams} from 'react-router-dom';
@@ -9,15 +9,22 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 function DspSoldIterms(){
     const navigate = useNavigate()
 
-  const {location, specproduct ,truckType } = useParams()
+  const {location, specproduct } = useParams()
 
   const [allSoldIterms, setAllSoldIterms] = useState([]);
 
+      let [buyRent , setBuyRent] = React.useState(null)
 
   useEffect(() => {
     try {
-
-        const  dataQuery = query(collection(db, "Shop"), where("specproduct" ,"==",   specproduct) , where("location" ,"==", location) );
+      let dataQuery
+      if(specproduct === "vehicles" || specproduct === "trailers"){
+        if(buyRent=== true || buyRent === false ) {
+          dataQuery = query(collection(db, "Shop"), where("specproduct" ,"==",   specproduct) , where("location" ,"==", location) , where("sellRent" ,"==", buyRent) );
+        }} else{
+          
+          dataQuery = query(collection(db, "Shop"), where("specproduct" ,"==",   specproduct) , where("location" ,"==", location) );
+        }
         
         const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
           const loadedData = [];
@@ -36,7 +43,7 @@ function DspSoldIterms(){
     } catch (err) {
       console.error(err);
     }
-  }, [specproduct]); 
+  }, [specproduct , buyRent]); 
 
 
     
@@ -71,8 +78,16 @@ function DspSoldIterms(){
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
       </View>}
-      
-          {item.imageUrl &&<img src={item.imageUrl} style={{height : 200 , borderRadius : 10}}/>}
+
+
+          <ScrollView  horizontal  showsHorizontalScrollIndicator={false}  >
+          {item.imageUrl &&<img src={item.imageUrl1} style={{height : 200 , borderRadius : 10}}/>}
+          {item.imageUrl &&<img src={item.imageUrl2} style={{height : 200 , borderRadius : 10}}/>}
+          {item.imageUrl &&<img src={item.imageUrl3} style={{height : 200 , borderRadius : 10}}/>}
+          {item.imageUrl &&<img src={item.imageUrl4} style={{height : 200 , borderRadius : 10}}/>}
+          {item.imageUrl &&<img src={item.imageUrl5} style={{height : 200 , borderRadius : 10}}/>}
+          </ScrollView>
+
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} </Text>
         {item.productName &&<Text>Product {item.productName} </Text> }
         {item.price &&<Text>Price :  {item.currency?"USD" : "Rand" }  {item.price} </Text> }
@@ -95,16 +110,54 @@ function DspSoldIterms(){
         )
       })
 
-
     return(
         <ScrollView >
+            <Text> Dsp 4 images from each user</Text>
 
+     { specproduct ==="vehicles" || specproduct ==="trailers" ? <ScrollView  horizontal  showsHorizontalScrollIndicator={false}  >
+
+
+          <TouchableOpacity onPress={()=> setBuyRent(null)} style={buyRent === null ? styles.btnIsActive : styles.bynIsUnActive } >
+            <Text style={ buyRent=== null ? {color : 'white'}: {color : 'black'} } >All </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=> setBuyRent(true)} style={buyRent === true ? styles.btnIsActive : styles.bynIsUnActive } >
+            <Text style={ buyRent=== true ? {color : 'white'}: {color : 'black'} } >Buy </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={()=> setBuyRent(false)} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }>
+            <Text style={ buyRent=== false ? {color : 'white'}: {color : 'black'} } >Rent</Text>
+          </TouchableOpacity>
+
+        </ScrollView> : null }
 
       <div className="Main-grid">
-        { allSoldIterms.length>0? rendereIterms: <Text>Loading.....</Text> }
+        { allSoldIterms.length>0? rendereIterms: <Text> {specproduct} Loading.....</Text> }
         <View style={{height : 200}} ></View>
         </div>
         </ScrollView>
     )
 }
 export default React.memo(DspSoldIterms)
+
+
+const styles = StyleSheet.create({
+  bynIsUnActive : {
+    width : 50 ,
+    color :'white'  , 
+    borderWidth:1, 
+    alignItems :'center' ,
+     justifyContent :'center' ,
+      marginRight : 7 ,
+       borderRadius : 15
+  },
+  btnIsActive : {
+    width : 50 ,
+    color :'white'  , 
+    alignItems :'center' ,
+     justifyContent :'center' ,
+      marginRight : 7 ,
+       borderRadius : 15 ,
+       backgroundColor : 'rgb(129,201,149)'
+  }
+
+});

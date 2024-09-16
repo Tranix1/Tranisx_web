@@ -99,4 +99,4 @@ const navigate = useNavigate()
     </View>
   )
 }
-export default PersonalAccTrucks
+export default React.memo(PersonalAccTrucks)

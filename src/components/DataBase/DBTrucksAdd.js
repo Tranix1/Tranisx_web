@@ -189,4 +189,4 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
 }
 
 
-export default DBTrucksAdd;
+export default React.memo(DBTrucksAdd);

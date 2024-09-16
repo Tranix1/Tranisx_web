@@ -32,6 +32,10 @@ function SelectAddToShop(){
             <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/spares`)}>
                 <Text style={{color:"white"}}>Add Spares </Text>
             </TouchableOpacity>
+
+              <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/Sprovider`)}>
+                <Text style={{color:"white"}}>Service Provider </Text>
+            </TouchableOpacity>
             
             </View>    
         </View>

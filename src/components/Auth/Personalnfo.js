@@ -72,11 +72,6 @@ const handleSubmitData = async (event) => {
   }
 };
 
-
-
-
-  const [callingCode, setCallingCode] = React.useState('');
-  
   
   const getCallingCode = (countryCode) => {
     const countryData = countries[countryCode];
@@ -136,4 +131,4 @@ const handleSubmitData = async (event) => {
 
     )
 }
-export default PersonalAccInfo
+export default React.memo(PersonalAccInfo)

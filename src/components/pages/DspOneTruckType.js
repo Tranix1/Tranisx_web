@@ -87,7 +87,7 @@ return(
        </View>
         <ScrollView>
       <div className="Main-grid">
-         {allTrucks.length > 0 ? rendereIterms   : <Text>Loading...</Text>}
+         {allTrucks.length > 0 ? rendereIterms   : <Text>{truckType} Loading...</Text>}
          <View style={{height : 550}} >
            </View>
            </div>

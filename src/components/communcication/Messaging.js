@@ -212,6 +212,13 @@ if (!existingChat) {
     timestamp : serverTimestamp() ,
   });
 }
+        const newIterms = collection(db ,'newIterms');
+      await addDoc(newIterms, {
+        newMessage : true ,
+        timestamp : serverTimestamp() ,
+        receriverId : contactId ,
+      });
+      
   setMessage("");
 } catch (err) {
   console.error(err);

@@ -15,7 +15,7 @@ const MiniLoad = () => {
 const mainLoadsCollection = collection(db, 'Loads');
   const [mainLoadsList, setMainLoadsList] = useState([]);
 
-   useEffect(() => {
+     useEffect(() => {
     const unsubscribe = onSnapshot(mainLoadsCollection, (querySnapshot) => {
       const userIds = new Set(); // To keep track of unique user IDs
       let filteredData = [];
@@ -34,24 +34,26 @@ const mainLoadsCollection = collection(db, 'Loads');
         }
       });
 
-
-    const shuffleArray = (array) => {
-        for (let i = array.length - 0; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 0));
+ const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
           [array[i], array[j]] = [array[j], array[i]];
         }
         return array;
       };
-      const shuffledData = shuffleArray(filteredData);
-
-
+     const shuffledData = shuffleArray(filteredData);
       setMainLoadsList(shuffledData);
     });
+
 
     return () => {
       unsubscribe(); // Unsubscribe the listener when the component unmounts
     };
   }, []); // Empty dependency array to run this effect only once on mount
+
+
+
+
 
 const rendereIterms = mainLoadsList.map((item)=>{
   return( <TouchableOpacity style={{borderWidth : 2 , borderColor : "rgb(129,201,149)" , width : 230 , marginRight :16}} 
@@ -83,8 +85,8 @@ const rendereIterms = mainLoadsList.map((item)=>{
 })
  
   return (
-    <ScrollView style={{margin:10 , height : 110}} horizontal  showsHorizontalScrollIndicator={false}>
-      {mainLoadsList.length > 0 ? rendereIterms   : <Text>Loading...</Text>}
+    <ScrollView style={{margin:10 , height : 110}} horizontal  showsHorizontalScrollIndicator={false} >
+      {mainLoadsList.length > 0 ? rendereIterms   : <Text>Mini Loads Loading......</Text>}
 
     </ScrollView>
   );

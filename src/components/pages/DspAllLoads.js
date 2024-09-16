@@ -10,7 +10,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import {useNavigate,useParams} from 'react-router-dom';
 import VerifiedIcon from '@mui/icons-material/Verified';
-import DeleteIcon from '@mui/icons-material/Delete';
+
 function DspAllLoads({username}){  
 
 const navigate = useNavigate()
@@ -231,7 +231,24 @@ setTimeout(() => {
           alert("Already Booked this Item!")    
 
         }
+        
+        // const existingChat = await checkExistingChat(addChatId);
+        let newBiddedDoc = null
+        let newBOOKEDDoc = null
+
+        dbName === "bookings" ? newBOOKEDDoc = true  : newBiddedDoc = true
+
+        const newIterms = collection(db ,'newIterms');
+      // Chat doesn't exist, add it to 'ppleInTouch'
+      await addDoc(newIterms, {
+        bookingdocs : newBOOKEDDoc ,
+        biddingdocs : newBiddedDoc ,
+        timestamp : serverTimestamp() ,
+        receriverId : item.userId ,
+      });
+      
       setSpinnerItem(null)      
+
     } catch (err) {
       setBookingError(err.toString());
       setSpinnerItem(null)      
@@ -440,8 +457,9 @@ setTimeout(() => {
     </TouchableOpacity>
     </View>
 }
+<Text> Send the load on whatsaAoo </Text>
       <div className="Main-grid">
-        { loadsList.length>0? rendereIterms: <Text>Loading.....</Text> }
+        { loadsList.length>0? rendereIterms: <Text>Loads Loading.....</Text> }
         <View style={{height : 200}} ></View>
         </div>
     </ScrollView> }

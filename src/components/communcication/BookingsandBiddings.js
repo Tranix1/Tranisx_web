@@ -77,21 +77,15 @@ const getAlltermsF = () => {
         unsubscribe2(); // Clean up the listener when the component unmounts
       };
     }
-
-
     
   } catch (error) {
     console.error(error);
   }
 };
 
-
   React.useEffect(() => {
     getAlltermsF()
     },[dspRoute]);
-
-
-
 
     const toggleAcceptOrDeny = async (dbNameMin , id ,decision ) => {
       try {

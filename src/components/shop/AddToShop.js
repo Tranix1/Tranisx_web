@@ -41,6 +41,11 @@ function AddToShop( { username ,contact , isVerified , shopLocation} ) {
     setCurrency(prev=>!prev)
   }
 
+    const [sellRent , setSellRent] = React.useState(true)
+  function toggleSellRent(){
+    setSellRent(prev=>!prev)
+  }
+
 const [image, setImage] = useState(null);  
   const [ imageUpload, setImageUpload] = React.useState(null)    
 
@@ -73,6 +78,9 @@ const [image, setImage] = useState(null);
   const handleSubmit = async () => {
       if(!formData.productName  ||!formData.price){
         alert("Add product name and the price to continue")
+        return
+      }else if(!username){
+        alert('add username')
         return
       }
         if(!image){
@@ -107,6 +115,7 @@ const [image, setImage] = useState(null);
         specproduct : specproduct ,
         currency : currency ,
         shopLocation : shopLocation ,
+        sellRent : sellRent
 
       });
 
@@ -136,8 +145,10 @@ const [image, setImage] = useState(null);
      {/* {image && <Image source={{ uri: image.localUri }} style={{ width: 200, height: 200 }} />} */}
       {image && <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />}
 
-   
-       {!image&&<div>
+
+<Text>Add many Images </Text>
+
+      {!image&&<div>
     <label for="fileInput" >     
         <CameraAltIcon style={{color : '#6a0c0c' , fontSize : 33}} />
 
@@ -197,7 +208,16 @@ const [image, setImage] = useState(null);
             type="text"
             style={inputstyles.addIterms }
           />
-              
+              <View style={{flexDirection: 'row' , margin : 8 , }} >
+                <TouchableOpacity style={sellRent ? styles.bttonIsTrue : styles.buttonIsFalse} onPress={toggleSellRent} >
+                  <Text style={sellRent ? {color:'white'} : {color:'black'} } > Sell </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity  style={!sellRent ? styles.bttonIsTrue : styles.buttonIsFalse} onPress={toggleSellRent} >
+                  <Text style={!sellRent ? {color:'white'} : {color:'black'} } > Rent </Text>
+                </TouchableOpacity>
+              </View>
+
         <TouchableOpacity onPress={handleSubmit} style={{backgroundColor : '#6a0c0c' , width : 70 , height : 30 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center'}} >
 
         <Text style={{color:'white'}} >submit</Text>
