@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { View , Text , ScrollView , TouchableOpacity} from 'react-native';
 
 import { db,  } from "../config/fireBase";
@@ -10,29 +10,38 @@ function Updates(){
 
 const navigate = useNavigate()
 
-  const mainGroupDB = collection(db, "updates");
+  const updatesDB= collection(db, "updates");
 
   const [updates , setUpdates]=React.useState([])
-React.useEffect(() => {
-  try {
-    const q = query(mainGroupDB, orderBy('timestamp'));
 
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const messages = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setUpdates(messages);
+  useEffect(() => {
+    const unsubscribe = onSnapshot(updatesDB, (querySnapshot) => {
+      const filteredData = [];
+
+      querySnapshot.forEach((doc) => {
+        filteredData.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+      const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      };
+      const shuffledData = shuffleArray(filteredData);
+
+      setUpdates(shuffledData);
     });
 
-    return unsubscribe; // Return the unsubscribe function
-  } catch (error) {
-    console.error('Error fetching messages:', error);
-  }
+    return () => {
+      unsubscribe(); // Unsubscribe the listener when the component unmounts
+    };
+  }, []); 
 
-
-}, []);
-
+console.log(updates)
 const rendereIterms = updates.map((item)=>{ 
 return (
 
@@ -42,7 +51,7 @@ return (
 
                 <img/>
                 <Text>Date </Text>
-                <Text> e developed a MOBILE APP NOW Link to download at  </Text>
+                <Text> {item.detailOfUpdate}</Text>
                 <Text> Time </Text>
             </View>
         </View>

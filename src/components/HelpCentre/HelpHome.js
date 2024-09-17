@@ -1,8 +1,13 @@
 import React from "react"; 
-import { View , Text , ScrollView , TouchableOpacity} from 'react-native';
+import { View , Text , ScrollView , TouchableOpacity , Linking} from 'react-native';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {useNavigate} from 'react-router-dom';
+import defaultImage from '../images/logo.png'
+
+import { Facebook, WhatsApp, Email ,LinkedIn } from '@mui/icons-material';
+
+
 function HelpHome(){
 const navigate = useNavigate()
     const [dspHelpcenter , setHelpCntre] = React.useState(false)
@@ -39,14 +44,53 @@ const navigate = useNavigate()
         </TouchableOpacity>}
          </View>
 
-        {dspHelpcenter && <ScrollView>
-            <Text> Help centre</Text>
-        </ScrollView> }
+        {dspHelpcenter && <View style={{alignItems:'center',}} >
+            <View style={{width : 500 , backgroundColor:'#D3D3D3', marginBottom:10 , padding:10 , }} >
+            <Text style={{lineHeight:21.5 , color:'#9c2828' , fontWeight:'bold',fontSize:15}} > Your gateway to the future of logistics is here! Our innovative software solutions are tailor-made to fulfill your every need.</Text>
+            <Text style={{lineHeight:21.5 , fontWeight:'bold',fontSize:15}} >From finding loads to securing trucks, selling products to discovering work opportunities in your area, our cutting-edge technologies are designed to streamline and enhance your logistics experience</Text>
+             </View>
 
-        {softInfo && <ScrollView >
+            <View style={{width : 500 , backgroundColor:'#D3D3D3', marginBottom:10 , padding:10 , }}>
+            <Text style={{lineHeight:21.5,fontWeight:'bold',fontSize:15 }}>We believe in a seamless tomorrow, where efficiency and convenience meet your demands. Contact us today to embark on a journey towards a smarter logistics world</Text>
+            <Text style={{lineHeight:21.5 ,fontWeight:'bold',fontSize:15}} >We're here to transform the way you navigate the industry. Reach out now and let's revolutionize logistics together!</Text>
+            </View>
+            
+                <Text>
+                    For immediate help, please contact us via our social platforms. 
+                    </Text> 
 
-            <Text> software info</Text>
-        </ScrollView> }
+                    <View style={{flexDirection:'row' , justifyContent:'center', alignItems:'center'}} >
+                    <TouchableOpacity onPress={()=>Linking.openURL('mailto:truckerz2023@gmail.com')} >
+                     <Text style={{color :'#0000FF'}} >email  <Email /> </Text> 
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=+263786936437`)} >
+                       <Text style={{color:"#25D366"}} >WhatsApp <WhatsApp /> </Text> 
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={()=>Linking.openURL('https://www.facebook.com/TruckerzWeb/') } >
+                   <Text style={{color:"#1877F2"}} > facebook <Facebook />    </Text> 
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={()=>Linking.openURL('https://www.linkedin.com/in/truckerz-undefined-1277172a7/') } >
+                      <Text style={{color:'#0A66C2'}}> linkedIn <LinkedIn /> </Text>
+
+                    </TouchableOpacity>
+
+                    </View>
+                 We are here to assist you promptly!                 
+                  
+            
+        </View> }
+
+        {softInfo && <View  style={{alignItems : 'center'}}>
+
+            <Text style={{fontWeight :'bold', fontSize:17}} > Truckerz </Text>
+            <Text> We the future for transport and logistics </Text>
+           <img src={defaultImage}  style={{height : 85 , borderRadius : 10 , width: 170, margin :6}}/>
+            <Text style={{fontStyle:'italic'}} > From 2023 - 2024 </Text>
+            <Text style={{fontStyle:'italic'}} > © Parent company ARMAMENT VENTURES </Text>
+        </View> }
 
     </View> )
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import {View , TouchableOpacity , Text , StyleSheet , ScrollView , TextInput  } from "react-native"
-import {  doc , updateDoc} from "firebase/firestore"
 import {auth , db} from "../config/fireBase"
+import {doc , onSnapshot, updateDoc } from "firebase/firestore"
 import DspSoldIterms from "./DspSoldIterms";
 import ShopHeader from "./ShopHeader";
 import inputstyles from "../styles/inputElement";
@@ -13,13 +13,70 @@ function DspShopIterms({spechopLoc}){
   const {location} = useParams()
 
   const [diplayEnterShopLoc , setEnterSHopLoc]=React.useState(false)
-  function checkLoca(){
+  
+  const [currentUser, setCurrentUser] = React.useState("");
+
+  React.useEffect(() => {
+    // Check if user is already signed in
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setCurrentUser(user);
+    });
+
+    // Cleanup function
+    return () => unsubscribe();
+  }, [currentUser]);
+
+   const [ username , setUsername] = React.useState("");
+   const [ contact , setContact] = React.useState('');
+
+       React.useEffect(() => {
+  let unsubscribe;  
+
+  try {
+    if (auth.currentUser) {
+      const userId = auth.currentUser.uid;
+      const docRef = doc(db, 'personalData', userId);
+
+      unsubscribe = onSnapshot(docRef, (doc) => {
+        if (doc.exists()) {
+          setUsername(doc.data().username);
+          setContact(doc.data().contact);
+        }
+      });
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
+  return () => {
+    if (unsubscribe) {
+      unsubscribe();
+    }
+  };
+}, [currentUser]);
+
+  function checkAuth(){
+    if(!currentUser){
+      navigate("/createUser/")
+    }else if(currentUser &&!username){
+      navigate("/addPersnoalInfo/")
+    }else {
+
    if(!spechopLoc){
       setEnterSHopLoc(true)
    }else{
        navigate(`/selectAddShop/${location}/`) 
    }
+    }
   }
+
+
+
+
+
+
+
+  
 
   const [ newShopAdress , setNewShopAdress ] = React.useState('')
 
@@ -69,7 +126,7 @@ return(
                </View>}
 
 
-            {auth.currentUser ? <TouchableOpacity onPress={checkLoca}  style={{position :'absolute',top: 440 ,right:10 , width : 60 , height : 35 , alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' , zIndex :200 , borderRadius: 8}} >
+            {auth.currentUser ? <TouchableOpacity onPress={checkAuth}  style={{position :'absolute',top: 440 ,right:10 , width : 60 , height : 35 , alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' , zIndex :200 , borderRadius: 8}} >
                 <Text style={{color : 'white'}} >Add</Text>
              </TouchableOpacity>
 

@@ -40,7 +40,7 @@ const [error , setError]= React.useState("")
 
     const uploadImage = ()=>{
       if(imageUpload === null) return
-      const imageRef = ref(storage , `Trucks/${imageUpload.name + new Date().getTime()  }`)
+      const imageRef = ref(storage , `updates/${imageUpload.name + new Date().getTime()  }`)
       uploadBytes(imageRef , imageUpload).then(()=>{
       })
     }
@@ -49,10 +49,10 @@ const [error , setError]= React.useState("")
   const UpdatesCollection = collection(db, "updates");
       const handleSubmit = async () => {
       setSpinnerItem(true)
-        uploadImage()
+        // uploadImage()
         let imageUrl
         if(image){
-       const imageRef = ref(storage , `Trucks/${imageUpload.name}`)
+       const imageRef = ref(storage , `updates/${imageUpload.name}`)
        await uploadBytes(imageRef , imageUpload)
        // get image  url 
         imageUrl = await getDownloadURL(imageRef)
@@ -74,7 +74,7 @@ const [error , setError]= React.useState("")
         upatesdocs : true ,
         timestamp : serverTimestamp() ,
       });
-
+      setDeatilOfUpdate('')
       setSpinnerItem(false)
     } catch (err) {
       setSpinnerItem(false)

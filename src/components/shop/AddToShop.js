@@ -25,7 +25,12 @@ function AddToShop( { username ,contact , isVerified , shopLocation} ) {
     productName: "",
     price: "",
     additionalInfo :"" ,
-    deliveryRange : ''
+    deliveryRange : '' ,
+    mileage :'' ,
+    year :'' ,
+    engine : '' , 
+    trans :"" ,
+     fuel :''
   });
 
   const  handlechange  = (value, fieldName) => {
@@ -217,6 +222,54 @@ const [ imageUpload, setImageUpload] = React.useState([])
           style={inputstyles.addIterms }
         />
 
+            <Text>Milage Year Engine Trans Fuel    </Text>
+        {specproduct === "vehicles"&& <View>
+     <TextInput
+          value={formData.mileage}
+          placeholder="Mileage"
+          placeholderTextColor="#6a0c0c"
+          onChangeText={(text) => handlechange(text, 'mileage')}
+          type="text" 
+          style={inputstyles.addIterms }
+        />
+          <TextInput
+          value={formData.year}
+          placeholder="Year"
+          placeholderTextColor="#6a0c0c"
+          onChangeText={(text) => handlechange(text, 'year')}
+          type="text" 
+          style={inputstyles.addIterms }
+        />
+          <TextInput
+          value={formData.engine}
+          placeholder="Engine"
+          placeholderTextColor="#6a0c0c"
+          onChangeText={(text) => handlechange(text, 'engine')}
+          type="text" 
+          style={inputstyles.addIterms }
+        />
+          <TextInput
+          value={formData.trans}
+          placeholder="Trans"
+          placeholderTextColor="#6a0c0c"
+          onChangeText={(text) => handlechange(text, 'trans')}
+          type="text" 
+          style={inputstyles.addIterms }
+        />
+             <TextInput
+          value={formData.fuel}
+          placeholder="Fuel"
+          placeholderTextColor="#6a0c0c"
+          onChangeText={(text) => handlechange(text, 'fuel')}
+          type="text" 
+          style={inputstyles.addIterms }
+        />
+          
+        </View>}
+
+
+
+    
     <View style={{flexDirection:'row', alignItems : 'center'}}>   
      <TouchableOpacity onPress={toggleCurrency}>
         {currency ? <Text style={styles.buttonIsFalse} >USD</Text> :
