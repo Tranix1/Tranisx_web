@@ -16,7 +16,7 @@ const navigate = useNavigate()
 
   useEffect(() => {
     const unsubscribe = onSnapshot(updatesDB, (querySnapshot) => {
-      const filteredData = [];
+      let filteredData = [];
 
       querySnapshot.forEach((doc) => {
         filteredData.push({
@@ -24,16 +24,10 @@ const navigate = useNavigate()
           ...doc.data()
         });
       });
-      const shuffleArray = (array) => {
-        for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-      };
-      const shuffledData = shuffleArray(filteredData);
+     
+          filteredData = filteredData.sort((a, b) => b.timeStamp - a.timeStamp);
 
-      setUpdates(shuffledData);
+      setUpdates(filteredData);
     });
 
     return () => {
@@ -41,7 +35,6 @@ const navigate = useNavigate()
     };
   }, []); 
 
-console.log(updates)
 const rendereIterms = updates.map((item)=>{ 
 return (
 
@@ -49,10 +42,9 @@ return (
 
             <View>
 
-                <img/>
-                <Text>Date </Text>
+          {<img src={item.imageUrl} style={{height : 200 , borderRadius : 10}}/>}
                 <Text> {item.detailOfUpdate}</Text>
-                <Text> Time </Text>
+                <Text style={{fontSize:12 , fontStyle:'italic' , color:'green'}} >Date {item.currentDateTime} @ {item.currentTime}  </Text>
             </View>
         </View>
 )

@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState , useEffect} from "react";
 import { View , Text , ScrollView , TouchableOpacity, ActivityIndicator ,  TextInput} from 'react-native';
 import { db, auth } from "../config/fireBase";
 
@@ -46,6 +46,45 @@ const [error , setError]= React.useState("")
     }
 
 
+
+
+
+ const [currentTime, setCurrentTime] = useState(formatTime(new Date()));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(formatTime(new Date()));
+    }, 1000); // Update every minute
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, []); // Empty dependency array to run the effect only once
+
+  function formatTime(date) {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+
+const [currentDateTime, setCurrentDateTime] = useState(formatDateTime(new Date()));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentDateTime(formatDateTime(new Date()));
+    }, 5000); // Update every 5 seconds
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, []); // Empty dependency array to run the effect only once
+
+  function formatDateTime(date) {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  }
+
+
+
+
+
   const UpdatesCollection = collection(db, "updates");
       const handleSubmit = async () => {
       setSpinnerItem(true)
@@ -64,7 +103,10 @@ const [error , setError]= React.useState("")
       const docRef = await addDoc(UpdatesCollection, {
         deletionTime :Date.now() + 3 * 24 * 60 * 60 * 1000 ,
         timeStamp : serverTimestamp() ,
-        detailOfUpdate : detailOfUpdate 
+        detailOfUpdate : detailOfUpdate ,
+        imageUrl  : imageUrl ,
+        currentDateTime : currentDateTime ,
+        currentTime :currentTime 
       });
 
 
@@ -75,6 +117,7 @@ const [error , setError]= React.useState("")
         timestamp : serverTimestamp() ,
       });
       setDeatilOfUpdate('')
+      setImage(null)
       setSpinnerItem(false)
     } catch (err) {
       setSpinnerItem(false)

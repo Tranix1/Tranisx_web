@@ -23,7 +23,7 @@ const navigate = useNavigate()
     }
     return(
     <View style={{paddingTop: 74}} >
-         <View  style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
+         <View  style={{position:'absolute' , top : 0 , left: 0,right :0, flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
          <TouchableOpacity style={{marginRight: 10}}  onPress={()=>navigate(-1)}>
                     <ArrowBackIcon style={{color : 'white'}} />
 
@@ -45,12 +45,12 @@ const navigate = useNavigate()
          </View>
 
         {dspHelpcenter && <View style={{alignItems:'center',}} >
-            <View style={{width : 500 , backgroundColor:'#D3D3D3', marginBottom:10 , padding:10 , }} >
+            <View style={{width : 390 , backgroundColor:'#D3D3D3', marginBottom:10 , padding:10 , }} >
             <Text style={{lineHeight:21.5 , color:'#9c2828' , fontWeight:'bold',fontSize:15}} > Your gateway to the future of logistics is here! Our innovative software solutions are tailor-made to fulfill your every need.</Text>
             <Text style={{lineHeight:21.5 , fontWeight:'bold',fontSize:15}} >From finding loads to securing trucks, selling products to discovering work opportunities in your area, our cutting-edge technologies are designed to streamline and enhance your logistics experience</Text>
              </View>
 
-            <View style={{width : 500 , backgroundColor:'#D3D3D3', marginBottom:10 , padding:10 , }}>
+            <View style={{width : 390 , backgroundColor:'#D3D3D3', marginBottom:10 , padding:10 , }}>
             <Text style={{lineHeight:21.5,fontWeight:'bold',fontSize:15 }}>We believe in a seamless tomorrow, where efficiency and convenience meet your demands. Contact us today to embark on a journey towards a smarter logistics world</Text>
             <Text style={{lineHeight:21.5 ,fontWeight:'bold',fontSize:15}} >We're here to transform the way you navigate the industry. Reach out now and let's revolutionize logistics together!</Text>
             </View>

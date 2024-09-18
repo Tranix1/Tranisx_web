@@ -137,8 +137,6 @@ function DspSoldIterms(){
 
     return(
         <ScrollView >
-            <Text> Dsp 4 images from each user</Text>
-
      { specproduct ==="vehicles" || specproduct ==="trailers" ? <ScrollView  horizontal  showsHorizontalScrollIndicator={false}  >
 
 
