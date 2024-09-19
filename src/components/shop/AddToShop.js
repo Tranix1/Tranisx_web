@@ -3,7 +3,7 @@ import { storage } from "../config/fireBase";
 import { getDownloadURL, ref, uploadBytes, } from "firebase/storage";
 import { collection, addDoc } from 'firebase/firestore';
 import { db, auth } from "../config/fireBase";
-import {View, TextInput , Text ,    TouchableOpacity , Image , ActivityIndicator , StyleSheet} from "react-native"
+import {View, TextInput , Text ,    TouchableOpacity , Image , ActivityIndicator , StyleSheet , ScrollView} from "react-native"
 import inputstyles from "../styles/inputElement";
 
 // import * as ImagePicker from 'expo-image-picker';
@@ -77,7 +77,6 @@ const [ imageUpload, setImageUpload] = React.useState([])
         });
     };
 
-    console.log(imageUpload , "ayayapapa")
  const uploadImages = async () => {
     try {
         for (const image of imageUpload) {
@@ -93,31 +92,32 @@ const [ imageUpload, setImageUpload] = React.useState([])
 
     const [spinnerItem, setSpinnerItem] = React.useState(false);
     
- let image ,uploadImage , setImage
+ let image 
 
   const handleSubmit = async () => {
-      if(!formData.productName  ||!formData.price){
+    if( specproduct !== "Sprovider" ){ 
+      if(!formData.productName  || !formData.price  ){
         alert("Add product name and the price to continue")
         return
-      }else if(!username){
+      }}
+      else if(!username){
         alert('add username')
         return
+      }else if(images.length === 0){
+        alert("Add at least 4 images")
+        return
+      }else if(specproduct === "vehicles" && sellRent === true ){
+        if( !formData.mileage || !formData.year || !formData.trans || !formData.fuel || !formData.engine ){
+          alert('Enter mileage , year , trans , fuel ,engine')
+          return
+        }
+
       }
        
       setSpinnerItem(true)
 
-
-        // uploadImages()
-        let imageUrl
-
     
     const imageUrls = [];
-
-    // Upload each image and get the download URL
-
-
-
-
 
     let userId = auth.currentUser.uid
 
@@ -142,6 +142,11 @@ const [ imageUpload, setImageUpload] = React.useState([])
             userId: userId,
             additionalInfo: formData.additionalInfo,
             deliveryRange: formData.deliveryRange,
+            mileage : formData.mileage ,
+            year : formData.year ,
+            engine : formData.engine ,
+            trans : formData.trans ,
+            fuel : formData.fuel ,
             isVerified: isVerified,
             location: location,
             specproduct: specproduct,
@@ -156,6 +161,11 @@ const [ imageUpload, setImageUpload] = React.useState([])
         price: "",
         additionalInfo :"",
         deliveryRange : "" ,
+        mileage :'' ,
+        year :'' ,
+        engine : '' , 
+        trans :"" ,
+        fuel :''
       });
       setImages([])
       setSpinnerItem(false)
@@ -213,6 +223,52 @@ const [ imageUpload, setImageUpload] = React.useState([])
         </div>
 
       
+
+        {specproduct === "vehicles" && <ScrollView horizontal style={{ width : 240 , flexDirection: 'row' , height:40 , margin :10}} >
+     <TextInput
+          value={formData.mileage}
+          placeholder="Mileage"
+          placeholderTextColor="#6a0c0c"
+          onChangeText={(text) => handlechange(text, 'mileage')}
+          type="text" 
+          style={{width : 75 , borderWidth : 1 , borderColor : 'black' , marginRight:8 , } }
+        />
+          <TextInput
+          value={formData.year}
+          placeholder="Year"
+          placeholderTextColor="#6a0c0c"
+          onChangeText={(text) => handlechange(text, 'year')}
+          type="text" 
+          style={{width : 75 , borderWidth : 1 , borderColor : 'black' , marginRight:8 , } }
+        />
+          <TextInput
+          value={formData.engine}
+          placeholder="Engine"
+          placeholderTextColor="#6a0c0c"
+          onChangeText={(text) => handlechange(text, 'engine')}
+          type="text" 
+          style={{width : 75 , borderWidth : 1 , borderColor : 'black' , marginRight:8 , }}
+        />
+          <TextInput
+          value={formData.trans}
+          placeholder="Trans"
+          placeholderTextColor="#6a0c0c"
+          onChangeText={(text) => handlechange(text, 'trans')}
+          type="text" 
+          style={{width : 75 , borderWidth : 1 , borderColor : 'black' , marginRight:8 , } }
+        />
+             <TextInput
+          value={formData.fuel}
+          placeholder="Fuel"
+          placeholderTextColor="#6a0c0c"
+          onChangeText={(text) => handlechange(text, 'fuel')}
+          type="text" 
+          style={{width : 75 , borderWidth : 1 , borderColor : 'black' , marginRight:8 , } }
+        />
+          
+        </ScrollView>}
+
+
         <TextInput
           value={formData.productName}
           placeholder="Product Name"
@@ -222,55 +278,8 @@ const [ imageUpload, setImageUpload] = React.useState([])
           style={inputstyles.addIterms }
         />
 
-            <Text>Milage Year Engine Trans Fuel    </Text>
-        {specproduct === "vehicles"&& <View>
-     <TextInput
-          value={formData.mileage}
-          placeholder="Mileage"
-          placeholderTextColor="#6a0c0c"
-          onChangeText={(text) => handlechange(text, 'mileage')}
-          type="text" 
-          style={inputstyles.addIterms }
-        />
-          <TextInput
-          value={formData.year}
-          placeholder="Year"
-          placeholderTextColor="#6a0c0c"
-          onChangeText={(text) => handlechange(text, 'year')}
-          type="text" 
-          style={inputstyles.addIterms }
-        />
-          <TextInput
-          value={formData.engine}
-          placeholder="Engine"
-          placeholderTextColor="#6a0c0c"
-          onChangeText={(text) => handlechange(text, 'engine')}
-          type="text" 
-          style={inputstyles.addIterms }
-        />
-          <TextInput
-          value={formData.trans}
-          placeholder="Trans"
-          placeholderTextColor="#6a0c0c"
-          onChangeText={(text) => handlechange(text, 'trans')}
-          type="text" 
-          style={inputstyles.addIterms }
-        />
-             <TextInput
-          value={formData.fuel}
-          placeholder="Fuel"
-          placeholderTextColor="#6a0c0c"
-          onChangeText={(text) => handlechange(text, 'fuel')}
-          type="text" 
-          style={inputstyles.addIterms }
-        />
-          
-        </View>}
-
-
-
     
-    <View style={{flexDirection:'row', alignItems : 'center'}}>   
+   { specproduct !== "Sprovider" && <View style={{flexDirection:'row', alignItems : 'center'}}>   
      <TouchableOpacity onPress={toggleCurrency}>
         {currency ? <Text style={styles.buttonIsFalse} >USD</Text> :
          <Text style={styles.bttonIsTrue}>Rand </Text>}
@@ -287,7 +296,8 @@ const [ imageUpload, setImageUpload] = React.useState([])
           onChangeText={(text) => handlechange(text, 'price')}
         />
         
-    </View>
+    </View>}
+
       { spinnerItem &&<ActivityIndicator size={34} />}
           <TextInput 
             value={formData.deliveryRange}
@@ -306,7 +316,7 @@ const [ imageUpload, setImageUpload] = React.useState([])
             type="text"
             style={inputstyles.addIterms }
           />
-              <View style={{flexDirection: 'row' , margin : 8 , }} >
+             {specproduct ==="vehicles" || specproduct ==="trailers" ? <View style={{flexDirection: 'row' , margin : 8 , }} >
                 <TouchableOpacity style={sellRent ? styles.bttonIsTrue : styles.buttonIsFalse} onPress={toggleSellRent} >
                   <Text style={sellRent ? {color:'white'} : {color:'black'} } > Sell </Text>
                 </TouchableOpacity>
@@ -315,6 +325,7 @@ const [ imageUpload, setImageUpload] = React.useState([])
                   <Text style={!sellRent ? {color:'white'} : {color:'black'} } > Rent </Text>
                 </TouchableOpacity>
               </View>
+              :null}
 
         <TouchableOpacity onPress={handleSubmit} style={{backgroundColor : '#6a0c0c' , width : 70 , height : 30 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center'}} >
 

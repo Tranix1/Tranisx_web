@@ -6,24 +6,36 @@ import {onSnapshot ,  query ,collection,where ,} from "firebase/firestore"
 import { useParams , useNavigate} from 'react-router-dom';
 import VerifiedIcon from '@mui/icons-material/Verified';
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 function OneFirmsShop({route , navigation } ){ 
   
-    const {userId , itemId} = useParams()
+    const {userId , itemId } = useParams()
     const navigate = useNavigate()
   const [allTrucks, setAllTrucks] = useState([]);
 
+      const [specproduct , setSpecPrduct] = React.useState('')
 
       let [buyRent , setBuyRent] = React.useState(null)
   useEffect(() => {
     try {
         // const dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId) );
       let dataQuery
-        if(buyRent=== true || buyRent === false ) {
-          dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId), where("sellRent" ,"==", buyRent) );
-        }else{
-          setBuyRent(null)
+     
+
+       if (specproduct === "vehicles" || specproduct === "trailers") {
+            if (buyRent === true || buyRent === false) {
+                dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId),where("specproduct", "==", specproduct),  where("sellRent", "==", buyRent));
+            } else {
+                dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId),where("specproduct", "==", specproduct));
+            }
+        } else if(specproduct ) {
+            dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId),where("specproduct", "==", specproduct), );
+        }else {
+
           dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId));
         }
+
+
 
         const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
           const loadedData = [];
@@ -53,7 +65,7 @@ function OneFirmsShop({route , navigation } ){
     } catch (err) {
       console.error(err);
     }
-  }, [userId]); 
+  }, [userId , specproduct , buyRent]); 
 
     const [contactDisplay, setContactDisplay] = React.useState({ ['']: false });
     const toggleContact = (itemId) => {
@@ -81,19 +93,56 @@ function OneFirmsShop({route , navigation } ){
 
           </View>)
     return(
-      <View key={item.id} style={{padding :7}}>
+      <View key={item.id} style={{padding :7   , maxHeight : 350}}>
       { item.trailerType && ( <Text> trailer type {item.trailerType}  </Text> ) }
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
       </View>}
       
-          {item.imageUrl &&<img src={item.imageUrl} style={{height : 200 , borderRadius : 10}}/>}
-      <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} </Text>
-        {item.productName &&<Text>Product {item.productName} </Text> }
+
+          <ScrollView  horizontal  showsHorizontalScrollIndicator={false}  > 
+        {item.imageUrl.map((image, index) => (
+            <img key={index} src={image} alt={`Image ${index}`}   style={{ width : 200 , height : 200 , margin : 7}} />
+        ))}
+         </ScrollView>
+
+
+      <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} {item.specproduct}</Text>
+
+
+         {item.specproduct === "vehicles" && <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{height: 50 , margin : 5 , }} >
+
+            <View  style={{marginRight:12}}>
+              <Text>MILEAGE </Text>
+              <Text>{item.mileage} </Text>
+            </View>
+
+
+            <View  style={{marginRight:12}}>
+              <Text>Year</Text>
+              <Text>{item.year} </Text>
+            </View>
+
+            <View  style={{marginRight:12}}>
+              <Text>ENGINE </Text>
+              <Text>{item.engine}  </Text>
+            </View>
+
+            <View  style={{marginRight:12}} >
+              <Text> Trans </Text>
+          <Text>{item.trans} </Text>
+            </View>
+
+            <View style={{marginRight:12}} >
+              <Text> Fuel </Text>
+          <Text>{item.fuel} </Text>
+            </View>
+          </ScrollView>}
+
+        {item.productName &&<Text>Product {item.productName} {item.sellRent ? "for sell" :'for rental' }  </Text> }
         {item.price &&<Text>Price :  {item.currency?"USD" : "Rand" }  {item.price} </Text> }
         {item.shopLocation &&<Text>Country {item.location}  in {item.shopLocation} </Text> }
-
 
 
        {!contactDisplay[item.id] && <View>
@@ -116,7 +165,7 @@ function OneFirmsShop({route , navigation } ){
  const handleShareLink = async (companyName) => {
     try {
       const url = `https://www.truckerz.net/OneFirmsShop/${userId}`; // Replace this with the URL you want to share
-      const message = `Check out ${companyName} Store on Truckerz : ${url}`;
+      const message = `Explore ${companyName} store for top-notch services. Click the link now to be redirected to the store offering the finest services available  ${url} from Truckerz`;
 
       const result = await Share.share({
         message: message,
@@ -148,18 +197,56 @@ return(
           const showUserName = comapnyName !== companyName;
           comapnyName = companyName;
       return(     
-        showUserName&&<View  style={{flexDirection : 'row' , height : 84  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
-        <TouchableOpacity style={{marginRight: 10}} onPress={() => navigation.goBack()}>
+        showUserName&&<View  style={{}} >
+          <View style={{flexDirection : 'row' , height : 44  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} > 
+           <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate( '/shopLocation/' )}>
             {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
+                    <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity>
       <Text style={{fontSize: 20 , color : 'white'}} > {item.CompanyName} Store</Text>
-        <TouchableOpacity  onPress={()=>handleShareLink(item.CompanyName)} style={{position :'absolute' , right:30 ,  backgroundColor : 'rgb(129,201,149)' }} >
-                    <Text  >Share loads </Text>
+      </View>
+
+        <TouchableOpacity  onPress={()=>handleShareLink(item.CompanyName)} style={{position :'absolute' , right:30 , top : 20 ,backgroundColor : 'white' }} >
+                    <Text  >Share Store </Text>
                 </TouchableOpacity>
+
+
+
+  <View style={{flexDirection:'row' , justifyContent : 'space-evenly' , paddingLeft : 20 , paddingRight: 20 , height : 40 , alignItems : 'center' , backgroundColor : '#6a0c0c' , paddingTop : 10 }}>
+
+            <TouchableOpacity onPress={()=> setSpecPrduct("vehicles") } > 
+                {  specproduct === "vehicles" ?
+                 <Text style={{color:'white' , textDecorationLine:'underline' , fontWeight:'600' , fontSize : 18  }} > Showroom</Text> :
+                 <Text style={{color:'white', }} > Showroom</Text>
+                }
+            </TouchableOpacity>
+
+            <TouchableOpacity  onPress={()=> setSpecPrduct("trailers") } >
+                {specproduct === "trailers" ?
+                 <Text style={{color:'white' , textDecorationLine :'underline',fontWeight:'600' , fontSize : 18}} > Trailer</Text> :
+                 <Text style={{color:'white'}} > Trailer</Text>}
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={()=> setSpecPrduct("spares") } >
+               {specproduct === "spares" ?
+               <Text style={{color:'white' , textDecorationLine :'underline' ,fontWeight:'600' , fontSize : 18 }} > Spares</Text> :
+               <Text style={{color:'white'}} > Spares</Text>}
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={()=> setSpecPrduct("Sprovider") }>
+               {specproduct === "Sprovider" ?
+               <Text style={{color:'white' , textDecorationLine :'underline' ,fontWeight:'600' , fontSize : 18 }} > Service Provider</Text> :
+               <Text style={{color:'white'}} > Service Provider </Text>}
+
+            </TouchableOpacity>
+        </View>
+
+
+
        </View> )})
        }
         <ScrollView>
-     { <ScrollView  horizontal  showsHorizontalScrollIndicator={false}  >
+     {specproduct ==="vehicles" || specproduct ==="trailers" ? <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{margin : 10}} >
 
 
           <TouchableOpacity onPress={()=> setBuyRent(null)} style={buyRent === null ? styles.btnIsActive : styles.bynIsUnActive } >
@@ -173,10 +260,19 @@ return(
             <Text style={ buyRent=== false ? {color : 'white'}: {color : 'black'} } >Rent</Text>
           </TouchableOpacity>
 
-        </ScrollView>}
+        </ScrollView>
+        : null
+        }
 
       <div className="Main-grid">
-         {allTrucks.length > 0 ? rendereIterms   : <Text>Loading...</Text>}
+         {allTrucks.length > 0 ? rendereIterms
+            : <View style={{flexDirection:'row'}} >
+
+           <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate( '/shopLocation/' )}>
+                    <ArrowBackIcon style={{color : 'black'}} />
+                    <Text>Loading...</Text> 
+        </TouchableOpacity>
+            </View> }
          <View style={{height : 550}} >
            </View>
            </div>

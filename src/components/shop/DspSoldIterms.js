@@ -114,6 +114,37 @@ function DspSoldIterms(){
           </ScrollView>
 
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} </Text>
+
+   {item.specproduct === "vehicles" && <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{height: 50 , margin : 5 , }} >
+
+            <View  style={{marginRight:12}}>
+              <Text>MILEAGE </Text>
+              <Text>{item.mileage} </Text>
+            </View>
+
+
+            <View  style={{marginRight:12}}>
+              <Text>Year</Text>
+              <Text>{item.year} </Text>
+            </View>
+
+            <View  style={{marginRight:12}}>
+              <Text>ENGINE </Text>
+              <Text>{item.engine}  </Text>
+            </View>
+
+            <View  style={{marginRight:12}} >
+              <Text> Trans </Text>
+          <Text>{item.trans} </Text>
+            </View>
+
+            <View style={{marginRight:12}} >
+              <Text> Fuel </Text>
+          <Text>{item.fuel} </Text>
+            </View>
+          </ScrollView>}
+          
+
         {item.productName &&<Text>Product {item.productName} </Text> }
         {item.price &&<Text>Price:{item.currency?"USD" : "Rand" }  {item.price} {item.sellRent ? " for sell" : "For rental " } </Text> }
         {item.shopLocation &&<Text> Location : {item.shopLocation} </Text> }

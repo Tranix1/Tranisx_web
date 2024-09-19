@@ -11,7 +11,7 @@ function MobileAppSD(){
      const handleShareLink = async () => {
     try {
       const url = `https://www.truckerz.net/`; // Replace this with the URL you want to share
-      const message = `Check out  loads on Truckerz: ${url}`;
+      const message = `Increase your logistics efficiency with Truckerz! Join me by clicking this link to access a wide range of services tailored to your needs. : Website ${url}`;
 
       const result = await Share.share({
         message: message,

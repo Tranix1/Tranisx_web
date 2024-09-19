@@ -330,23 +330,45 @@ setTimeout(() => {
             <VerifiedIcon style={{color : 'green'}} />
             </View>}
         <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}  >{item.companyName} </Text>
-        <Text>Commodity : {item.typeofLoad} </Text>
-        <Text> Route : from  {item.fromLocation} to {item.toLocation} </Text>
 
-        <View style={{flexDirection : 'row'}} >
-          <Text>Rate : </Text>
-        {item.currency ? <Text>USD</Text> : <Text>Rand </Text>}
-        <Text> {item.ratePerTonne} </Text>
-         {item.perTonne ? <Text> Per tonne</Text> : null}
-        </View>
+      <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Commodity</Text>
+        <Text  >:  {item.typeofLoad} </Text>
+      </View>
+
+      <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Route</Text>
+        <Text>:  from  {item.fromLocation}  to  {item.toLocation} </Text>
+      </View>
+
+      <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Rate</Text>
+        <Text>:  {item.currency ? "USD" : "RAND"} {item.ratePerTonne} {item.perTonne ? "Per tonne" :null} </Text>
+      </View>
 
        {   !contactDisplay[item.id] && <View>
-        
-        <Text>Contact : {item.contact}</Text>
-        <Text>Payment Terms : {item.paymentTerms} </Text>
-        { item.requirements && <Text>Requirements : {item.requirements} </Text>}
-       {item.additionalInfo&&<Text>Additional info : {item.additionalInfo} </Text>} 
-        {item.activeLoading&& <Text>Active Loading </Text> }
+
+      <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Contact</Text>
+        <Text>:  {item.contact}</Text>
+      </View>
+
+      <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Payment Terms </Text>
+        <Text>:  {item.paymentTerms} </Text>
+      </View>
+
+    { item.requirements && <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Requirements</Text>
+         <Text>:  {item.requirements} </Text>
+      </View>}
+
+      {item.additionalInfo && <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Additional info </Text>
+       {<Text>:  {item.additionalInfo} </Text>} 
+      </View>}
+
+        {item.activeLoading&& <Text style={{fontSize:17 , fontStyle:'italic' , color:'green'}} >Active Loading </Text> }
         </View> }
 
 
@@ -432,7 +454,7 @@ setTimeout(() => {
         </TouchableOpacity> 
        
                 <Text style={{fontSize: 20 , color : 'white'}} > { item.companyName} Loads </Text>
-                <TouchableOpacity  onPress={()=>handleShareLink(item.companyName)} style={{position :'absolute' , right:30 ,  backgroundColor : 'rgb(129,201,149)' }} >
+                <TouchableOpacity  onPress={()=>handleShareLink(item.companyName)} style={{position :'absolute' , right:30 ,  backgroundColor : 'white' }} >
                     <Text  >Share loads </Text>
                 </TouchableOpacity>
 
