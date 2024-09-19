@@ -1,7 +1,7 @@
 import React, { useEffect, useState} from 'react';
 import { View , Text , ScrollView, TouchableOpacity , ActivityIndicator , StyleSheet , Linking, Alert , TextInput , Share} from "react-native"
 import { auth, db } from '../config/fireBase';
-import { collection, onSnapshot , serverTimestamp ,addDoc, query , where , getDocs ,doc,deleteDoc} from 'firebase/firestore';
+import { collection, onSnapshot , serverTimestamp ,addDoc, query , where , getDocs ,doc,deleteDoc , updateDoc, runTransaction , setDoc} from 'firebase/firestore';
 import inputstyles from '../styles/inputElement';
 
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -165,6 +165,15 @@ setTimeout(() => {
       return !querySnapshot.empty; // Returns true if a document exists, false otherwise
     };
 
+    const checkExistixtBBDoc = async (receriverId) => {
+    const chatsRef = collection(db, 'newIterms'); // Reference to the 'ppleInTouch' collection
+    const chatQuery = query(chatsRef, where('receriverId', '==', receriverId)); // Query for matching chat ID
+
+      const querySnapshot = await getDocs(chatQuery);  
+     // Check if any documents exist with the chat ID
+      return !querySnapshot.empty; // Returns true if a document exists, false otherwise
+    };
+    
 
             const [currencyBid , setCurrencyBid] = React.useState(true)
           function toggleCurrencyBid(){
@@ -189,7 +198,13 @@ setTimeout(() => {
         try {
           
           let docId = `${userId}${item.typeofLoad}${item.ratePerTonne}${item.userId}  `
-          const existingChat = await checkExistiDoc(docId);
+
+          let existingChat 
+            if(dbName === "bookings" ){
+
+               existingChat = await checkExistiDoc(docId);
+            }
+
            let theRate 
            let currencyB 
            let perTonneB
@@ -205,7 +220,7 @@ setTimeout(() => {
                 theRate = item.ratePerTonne
               }
 
-          if(!existingChat){
+          if(  !existingChat ){
         const docRef = await addDoc(bookingCollection, {
         itemName : item.typeofLoad ,
         fromLocation : item.fromLocation ,
@@ -226,26 +241,49 @@ setTimeout(() => {
       });
       
       setBidRate("")
+      setBidDisplay({ ['']: false });
       alert(`${!bidDisplay[item.id] ? "booking": "bidding"} was successfull`)    
         }else {
           alert("Already Booked this Item!")    
 
         }
         
+          const existingBBDoc = await checkExistixtBBDoc(userId);
         // const existingChat = await checkExistingChat(addChatId);
-        let newBiddedDoc = null
-        let newBOOKEDDoc = null
+        let newBiddedDoc = 0
+        let newBOOKEDDoc = 0
 
-        dbName === "bookings" ? newBOOKEDDoc = true  : newBiddedDoc = true
-
-        const newIterms = collection(db ,'newIterms');
+        dbName === "bookings" ? newBOOKEDDoc = 1  : newBiddedDoc = 1
       // Chat doesn't exist, add it to 'ppleInTouch'
-      await addDoc(newIterms, {
+      if(!existingBBDoc){
+      await setDoc( doc(db , "newIterms", userId), {
         bookingdocs : newBOOKEDDoc ,
         biddingdocs : newBiddedDoc ,
         timestamp : serverTimestamp() ,
         receriverId : item.userId ,
-      });
+      }); 
+    }
+    else{
+       
+       const docRef = doc(db, 'newIterms', userId);
+       await runTransaction(db, async (transaction) => {
+        const docSnap = await transaction.get(docRef);
+
+        if (docSnap.exists()) {
+            const currentBiddingDocs = docSnap.data().biddingdocs || 0;
+
+            const currentBookingsDocs = docSnap.data().biddingdocs || 0;
+            let updatedBiddingDocs = currentBiddingDocs
+            let updateBokingsDocs = currentBookingsDocs
+            dbName === "bookings" ?  updatedBiddingDocs = currentBiddingDocs + 1 : updateBokingsDocs = currentBookingsDocs + 1
+
+            transaction.update(docRef, {
+                biddingdocs : updatedBiddingDocs,
+                bookingdocs :  updateBokingsDocs ,
+            });
+        }
+    });
+    }
       
       setSpinnerItem(null)      
 

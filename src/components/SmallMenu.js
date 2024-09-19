@@ -1,6 +1,9 @@
 import React from "react";
 import {View , TouchableOpacity , Text , StyleSheet} from "react-native"
 
+import {query ,collection , where,onSnapshot } from "firebase/firestore"
+import  { auth , db,  } from "../components/config/fireBase"
+
 import {useNavigate} from 'react-router-dom';
 
 function SmallMenu({toggleSmallMenu}){
@@ -47,6 +50,37 @@ const navigate = useNavigate()
 
 
 
+
+  const [ newItermBooked, setNewBkedIterm] = React.useState(false);
+  const [ newItermBidded , setNewBiddedIterm] = React.useState(false);
+
+      React.useEffect(() => {
+        try {
+          if (auth.currentUser) {
+            const userId = auth.currentUser.uid;
+            const loadsQuery = query(collection(db, "newIterms"), where("receriverId", "==", userId));
+
+            const unsubscribe = onSnapshot(loadsQuery, (querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const newBokedIterms = data.bookingdocs || false;   // Assuming isVerified is a boolean field
+                const newBiiedIterms = data.biddingdocs || false;   // Assuming isVerified is a boolean field
+
+
+                setNewBkedIterm(newBokedIterms);
+                setNewBiddedIterm(newBiiedIterms)
+              });
+            });
+
+            return () => unsubscribe(); // Cleanup the listener when the component unmounts
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }, []);
+
+
+
 return(
     <TouchableOpacity  style={{position : 'absolute' , right : 0 ,top: 0, bottom : 0 , left : 0 ,zIndex : 400 , }} onPress={toggleSmallMenu} >
     <View style={{position : 'absolute' , right : 0  , borderBlockColor:"#6a0c0c",borderWidth:3 , backgroundColor :'white'  , width : 235 , borderRadius: 13}} >
@@ -57,6 +91,8 @@ return(
     
     <TouchableOpacity   onPress={()=>navigate('/bookingsandBiddings/') }  style={styles.buttonStyle}>
         <Text>B & B</Text>
+        { newItermBooked && <Text> {newItermBooked} </Text>}
+        { newItermBidded && <Text> {newItermBidded} </Text> }
     </TouchableOpacity>
     
     <TouchableOpacity onPress={()=>navigate('/selectChat/') } style={styles.buttonStyle}>
