@@ -295,6 +295,7 @@ function App(){
       <Route path="/message/:chatStarterId/:starterCompanyName"   element={<Messaging username={username}/>}/>
       <Route path="/message/:gchatId/:senderName/:receiverName"   element={<Messaging username={username}/>}/>
 
+      {/* <Route path="/bookingsandBiddings/" element={<BookingsandBiddings/>} /> */}
       <Route path="/bookingsandBiddings/" element={<BookingsandBiddings/>} />
       <Route path="/bookingsandBiddings/:dbName/:dspRoute" element={<BookingsandBiddings/>} />
 
@@ -329,8 +330,8 @@ function App(){
       <Route path="/helpHome/" element={<HelpHome/>} />
       <Route path="/mobileAppSD/" element={<MobileAppSD/>} />
 
-      <Route path="/mobileAppSD/" element={<MobileAppSD/>} />
-      <Route path="/mobileAppSD/" element={<MobileAppSD/>} />
+      {/* <Route path="/mobileAppSD/" element={<MobileAppSD/>} /> */}
+      {/* <Route path="/mobileAppSD/" element={<MobileAppSD/>} /> */}
 
       <Route path="/verifyInfo/" element={<VerifyInfo/>} />
       <Route path="/verifyNewUser/" element={<VerifyNewUser/>} />

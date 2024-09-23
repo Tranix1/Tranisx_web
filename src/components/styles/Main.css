@@ -222,7 +222,7 @@
 /* Large screens (greater than 992px) */
 @media only screen and (min-width: 992px) {
   .Main-grid {
-    grid-template-columns: repeat(3, 1fr); /* Change to four column grid layout */
+    grid-template-columns: repeat(4, 1fr); /* Change to four column grid layout */
     row-gap: 30px; /* Restore row gap */
     column-gap: 15px; /* Restore column gap */
   }

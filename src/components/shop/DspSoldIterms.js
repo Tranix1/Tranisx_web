@@ -79,6 +79,11 @@ function DspSoldIterms(){
         [itemId]: !prevState[itemId],
       }));
     };
+  const [dspMoreInfo , setDspMoreInfo] = React.useState(false)
+ 
+  function toggleDspMoreInfo(){
+    setDspMoreInfo(prev=>!prev)
+  }
 
   const rendereIterms = allSoldIterms.map((item)=>{
 
@@ -144,19 +149,41 @@ function DspSoldIterms(){
             </View>
           </ScrollView>}
           
+         { item.productName &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Product</Text>
+       {<Text>:  {item.productName} {item.sellRent ? "for sell" :'for rental' } </Text>} 
+      </View>}
 
-        {item.productName &&<Text>Product {item.productName} </Text> }
-        {item.price &&<Text>Price:{item.currency?"USD" : "Rand" }  {item.price} {item.sellRent ? " for sell" : "For rental " } </Text> }
-        {item.shopLocation &&<Text> Location : {item.shopLocation} </Text> }
+      { item.price &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Price</Text>
+       {<Text>:  {item.currency?"USD" : "Rand" }  {item.price}</Text>} 
+      </View>}
+
+      { item.shopLocation &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Location</Text>
+       {<Text>:  {item.shopLocation}  </Text>} 
+      </View>}
 
 
        {!contactDisplay[item.id] && <View>
-      { item.contact && ( <Text>contact {item.contact}</Text> )}
-      {item.additionalInfo && (<Text> additional Info {item.additionalInfo} </Text>)}
+
+      { item.contact && <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Contact</Text>
+       {<Text>:  {item.contact}</Text>} 
+      </View>}
+
+      {  dspMoreInfo && item.additionalInfo  &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Aditional Info</Text>
+      {<Text>:  {item.additionalInfo}</Text>} 
+      </View>}
+
         </View>}
 
         {contactDisplay[item.id] && contactMe}
 
+        <TouchableOpacity onPress={toggleDspMoreInfo} >
+          <Text style={{marginLeft :50 ,color :'green'}} >See more </Text>
+        </TouchableOpacity>
         <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
           <Text style={{textDecorationLine:'underline'}} > get In Touch now</Text>
         </TouchableOpacity>

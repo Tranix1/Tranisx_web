@@ -39,8 +39,14 @@ const navigate = useNavigate()
     };
   }, []);    
 
+   
+  const [dspMoreInfo , setDspMoreInfo] = React.useState(false)
 
-    
+ 
+  function toggleDspMoreInfo(){
+    setDspMoreInfo(prev=>!prev)
+  }
+
     const [contactDisplay, setContactDisplay] = React.useState({ ['']: false });
     const toggleContact = (itemId) => {
       setContactDisplay((prevState) => ({
@@ -50,7 +56,6 @@ const navigate = useNavigate()
     };
 
   const rendereIterms = allTrucks.map((item)=>{
-    const serializedItem = JSON.stringify(item);
 
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
@@ -78,18 +83,34 @@ const navigate = useNavigate()
           {!item.imageUrl && <img src={defaultImage}  style={{height : 250 , borderRadius : 10}}/>}
         
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20}} >{item.CompanyName} </Text>
-      {item.fromLocation && (  <Text > From {item.fromLocation} to {item.toLocation} </Text>) }
-
+      { item.fromLocation && <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Route</Text>
+        <Text>:  from  {item.fromLocation}  to  {item.toLocation} </Text>
+      </View>}
 
 
        {!contactDisplay[item.id] && <View>
-      { item.contact && ( <Text>contact {item.contact}</Text> )}
-      { item.trailerType && ( <Text> trailer type {item.trailerType}  </Text> ) }
-      {item.additionalInfo && (<Text> additional Info {item.additionalInfo} </Text>)}
+
+     <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Contact</Text>
+        <Text>:  {item.contact}</Text>
+      </View>
+
+    {item.trailerType &&  <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Trailer Type </Text>
+        <Text>:  {item.trailerType}</Text>
+      </View>}
+
+    { dspMoreInfo && item.additionalInfo &&  <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} > Additional Info</Text>
+        <Text>:  {item.additionalInfo}</Text>
+      </View>}
         </View>}
 
         {contactDisplay[item.id] && contactMe}
-
+        <TouchableOpacity onPress={toggleDspMoreInfo} >
+          <Text style={{color:'green'}} >See more </Text>
+        </TouchableOpacity>
         <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
           <Text style={{textDecorationLine:'underline'}} > get In Touch now</Text>
         </TouchableOpacity>

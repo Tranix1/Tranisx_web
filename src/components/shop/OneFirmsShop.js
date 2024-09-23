@@ -74,7 +74,11 @@ function OneFirmsShop({route , navigation } ){
         [itemId]: !prevState[itemId],
       }));
     };
-
+  const [dspMoreInfo , setDspMoreInfo] = React.useState(false)
+ 
+  function toggleDspMoreInfo(){
+    setDspMoreInfo(prev=>!prev)
+  }
   const rendereIterms = allTrucks.map((item)=>{
 
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
@@ -140,18 +144,40 @@ function OneFirmsShop({route , navigation } ){
             </View>
           </ScrollView>}
 
-        {item.productName &&<Text>Product {item.productName} {item.sellRent ? "for sell" :'for rental' }  </Text> }
-        {item.price &&<Text>Price :  {item.currency?"USD" : "Rand" }  {item.price} </Text> }
-        {item.shopLocation &&<Text>Country {item.location}  in {item.shopLocation} </Text> }
+         { item.productName &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Product</Text>
+       {<Text>:  {item.productName} {item.sellRent ? "for sell" :'for rental' } </Text>} 
+      </View>}
 
+      { item.price &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Price</Text>
+       {<Text>:  {item.currency?"USD" : "Rand" }  {item.price}</Text>} 
+      </View>}
+
+      { item.shopLocation &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Location</Text>
+       {<Text>:  {item.shopLocation}  </Text>} 
+      </View>}
 
        {!contactDisplay[item.id] && <View>
-      { item.contact && ( <Text>contact {item.contact}</Text> )}
-      {item.additionalInfo && (<Text> additional Info {item.additionalInfo} </Text>)}
+
+      { item.contact && <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Contact</Text>
+       {<Text>:  {item.contact}</Text>} 
+      </View>}
+
+      {  dspMoreInfo && item.additionalInfo  &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Aditional Info</Text>
+      {<Text>:  {item.additionalInfo}</Text>} 
+      </View>}
+
         </View>}
 
         {contactDisplay[item.id] && contactMe}
 
+        <TouchableOpacity onPress={toggleDspMoreInfo} >
+          <Text style={{marginLeft :50 , color :'green'}} >See more </Text>
+        </TouchableOpacity>
         <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
           <Text style={{textDecorationLine:'underline'}} > get In Touch now</Text>
         </TouchableOpacity>
@@ -207,8 +233,8 @@ return(
       </View>
 
         <TouchableOpacity  onPress={()=>handleShareLink(item.CompanyName)} style={{position :'absolute' , right:30 , top : 20 ,backgroundColor : 'white' }} >
-                    <Text  >Share Store </Text>
-                </TouchableOpacity>
+          <Text  >Share Store Link</Text>
+        </TouchableOpacity>
 
 
 
@@ -270,8 +296,8 @@ return(
 
            <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate( '/shopLocation/' )}>
                     <ArrowBackIcon style={{color : 'black'}} />
-                    <Text>Loading...</Text> 
         </TouchableOpacity>
+                    <Text>Loading...</Text> 
             </View> }
          <View style={{height : 550}} >
            </View>

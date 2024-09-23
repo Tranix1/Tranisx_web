@@ -55,8 +55,8 @@ const navigate = useNavigate()
   return(
     <View  style={{ backgroundColor:  "#DDDDDD", marginBottom : 8, padding :6  }} >
         <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}> {item.companyName} </Text>
-        <Text>Contact : {item.contact}</Text>
         <Text>type of load {item.typeofLoad} </Text>
+        <Text>Contact : {item.contact}</Text>
         <Text>from {item.fromLocation} to {item.toLocation} </Text>
         <Text>Rate {item.ratePerTonne} </Text>
         <Text> payment terms {item.paymentTerms} </Text>

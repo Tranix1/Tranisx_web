@@ -229,6 +229,7 @@ setTimeout(() => {
         bookerName : username ,
         ownerName: item.companyName ,
         ownerId : item.userId ,
+        contact : item.contact ,
         Accept : null ,
         isVerified : item.isVerified ,
         msgReceiverId : userId ,
@@ -236,6 +237,7 @@ setTimeout(() => {
         rate :  theRate ,
         currencyB : currencyB ,
         perTonneB : perTonneB ,
+        loadId : item.id ,
         deletionTime :Date.now() + 5 * 24 * 60 * 60 * 1000 ,
         timestamp : serverTimestamp() ,
       });
@@ -272,10 +274,10 @@ setTimeout(() => {
         if (docSnap.exists()) {
             const currentBiddingDocs = docSnap.data().biddingdocs || 0;
 
-            const currentBookingsDocs = docSnap.data().biddingdocs || 0;
+            const currentBookingsDocs = docSnap.data().bookingdocs || 0;
             let updatedBiddingDocs = currentBiddingDocs
             let updateBokingsDocs = currentBookingsDocs
-            dbName === "bookings" ?  updatedBiddingDocs = currentBiddingDocs + 1 : updateBokingsDocs = currentBookingsDocs + 1
+            dbName !== "bookings" ?  updatedBiddingDocs = currentBiddingDocs + 1 : updateBokingsDocs = currentBookingsDocs + 1
 
             transaction.update(docRef, {
                 biddingdocs : updatedBiddingDocs,
@@ -329,7 +331,7 @@ setTimeout(() => {
             value={bidRate}
             keyboardType="numeric"
             placeholderTextColor="#6a0c0c"
-            style={inputstyles.addIterms }
+            style={ {height : 30 , borderBottomWidth: 2 , borderBottomColor : "#6a0c0c" ,marginBottom : 10 , paddingLeft : 20 ,width : 180}}
             placeholder="Enter rate here"
           />
           <TouchableOpacity onPress={togglePerTonneBid} >
@@ -386,13 +388,13 @@ setTimeout(() => {
 
        {   !contactDisplay[item.id] && <View>
 
-      <View style={{flexDirection :'row'}} >
+     {!item.isVerified&&  <View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >Contact</Text>
         <Text>:  {item.contact}</Text>
-      </View>
+      </View>}
 
       <View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Payment Terms </Text>
+        <Text style={{width :100}} >Payment Terms</Text>
         <Text>:  {item.paymentTerms} </Text>
       </View>
 
@@ -414,7 +416,7 @@ setTimeout(() => {
 
          {bidDisplay[item.id]&& bidNow}
 
-        {!bidDisplay[item.id]&&<TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
+        { !item.isVerified&& !bidDisplay[item.id]&&<TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
           <Text style={{textDecorationLine:'underline'}} > get In Touch now</Text>
         </TouchableOpacity>}
         
@@ -493,7 +495,7 @@ setTimeout(() => {
        
                 <Text style={{fontSize: 20 , color : 'white'}} > { item.companyName} Loads </Text>
                 <TouchableOpacity  onPress={()=>handleShareLink(item.companyName)} style={{position :'absolute' , right:30 ,  backgroundColor : 'white' }} >
-                    <Text  >Share loads </Text>
+                    <Text  >Share loads Link</Text>
                 </TouchableOpacity>
 
        </View> )})

@@ -1,7 +1,7 @@
 import React from "react";
 import {View , TouchableOpacity , Text , StyleSheet} from "react-native"
 
-import {query ,collection , where,onSnapshot } from "firebase/firestore"
+import {query ,collection , where,onSnapshot, updateDoc } from "firebase/firestore"
 import  { auth , db,  } from "../components/config/fireBase"
 
 import {useNavigate} from 'react-router-dom';
@@ -51,8 +51,10 @@ const navigate = useNavigate()
 
 
 
-  const [ newItermBooked, setNewBkedIterm] = React.useState(false);
-  const [ newItermBidded , setNewBiddedIterm] = React.useState(false);
+  const [ newItermBooked, setNewBkedIterm] = React.useState(0);
+  const [ newItermBidded , setNewBiddedIterm] = React.useState(0);
+
+  // const [ valueOfUpdates , setVlueOfUpdates] = React.useState(null);
 
       React.useEffect(() => {
         try {
@@ -63,9 +65,8 @@ const navigate = useNavigate()
             const unsubscribe = onSnapshot(loadsQuery, (querySnapshot) => {
               querySnapshot.forEach((doc) => {
                 const data = doc.data();
-                const newBokedIterms = data.bookingdocs || false;   // Assuming isVerified is a boolean field
-                const newBiiedIterms = data.biddingdocs || false;   // Assuming isVerified is a boolean field
-
+                const newBokedIterms = data.bookingdocs || 0;   // Assuming isVerified is a boolean field
+                const newBiiedIterms = data.biddingdocs || 0;   // Assuming isVerified is a boolean field
 
                 setNewBkedIterm(newBokedIterms);
                 setNewBiddedIterm(newBiiedIterms)
@@ -74,6 +75,21 @@ const navigate = useNavigate()
 
             return () => unsubscribe(); // Cleanup the listener when the component unmounts
           }
+
+
+            // const loadsQueryAll = query(collection(db, "newIterms"), where("docExist", "==", "docExist" ));
+
+            // const unsubscribe = onSnapshot(loadsQueryAll, (querySnapshot) => {
+            //   querySnapshot.forEach((doc) => {
+            //     const data = doc.data();
+            //     const newAllIterms = data.updatesDocs || false;   // Assuming isVerified is a boolean field
+
+            //     setVlueOfUpdates(newAllIterms);
+            //   });
+            // });
+
+            // return () => unsubscribe(); // Cleanup the listener when the component unmounts
+
         } catch (error) {
           console.error(error);
         }
@@ -89,10 +105,12 @@ return(
         <Text>Personal Acc</Text>
     </TouchableOpacity>
     
-    <TouchableOpacity   onPress={()=>navigate('/bookingsandBiddings/') }  style={styles.buttonStyle}>
+    <TouchableOpacity   onPress={()=>navigate(`/bookingsandBiddings/` ) }  style={styles.buttonStyle}>
         <Text>B & B</Text>
-        { newItermBooked && <Text> {newItermBooked} </Text>}
-        { newItermBidded && <Text> {newItermBidded} </Text> }
+        <View style={{flexDirection:'row'}} > 
+        { <Text style={{backgroundColor :'#6a0c0c' , color:'white' , paddingLeft :5, paddingRight:5, marginRight :6 , borderRadius :10 , justifyContent:'center' }} >{newItermBooked} </Text>}
+        {  <Text style={{backgroundColor :'rgb(129,201,149)', color:'white' , paddingLeft :5, paddingRight:5, marginRight :6 , borderRadius :10 , justifyContent:'center'  }} > {newItermBidded} </Text> }
+         </View>
     </TouchableOpacity>
     
     <TouchableOpacity onPress={()=>navigate('/selectChat/') } style={styles.buttonStyle}>
@@ -109,6 +127,7 @@ return(
 
     <TouchableOpacity style={styles.buttonStyle} onPress={()=>navigate('/updates/') }  >
         <Text>Updates</Text>
+        {/* <Text>{valueOfUpdates} </Text> */}
     </TouchableOpacity>
 
     <TouchableOpacity   onPress={()=>navigate('/helpHome/') }  style={styles.buttonStyle}>
@@ -146,6 +165,7 @@ const styles = StyleSheet.create({
         height : 47,
         justifyContent : 'center' , 
         alignItems : 'center',  
-        // backgroundColor:'red'       
+        // backgroundColor:'red'       ,
     }
 });
+

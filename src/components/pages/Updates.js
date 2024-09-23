@@ -1,14 +1,15 @@
 import React,{useEffect} from "react";
 import { View , Text , ScrollView , TouchableOpacity} from 'react-native';
 
-import { db,  } from "../config/fireBase";
-import {onSnapshot , orderBy , query , collection, } from "firebase/firestore"
+import { auth, db,  } from "../config/fireBase";
+import {onSnapshot , orderBy , query , collection,  doc, runTransaction, getDoc, updateDoc } from "firebase/firestore"
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {useNavigate} from 'react-router-dom';
 function Updates(){
 
 const navigate = useNavigate()
+
 
   const updatesDB= collection(db, "updates");
 

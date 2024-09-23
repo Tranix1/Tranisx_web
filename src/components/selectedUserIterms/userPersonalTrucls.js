@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { db } from '../config/fireBase';
-import { View , Text , Image , ScrollView ,TouchableOpacity} from 'react-native';
+import { db , auth} from '../config/fireBase';
+import { View , Text , Image , ScrollView ,TouchableOpacity,Linking} from 'react-native';
 import {onSnapshot ,  query ,collection,where ,} from "firebase/firestore"
 
-import { useParams } from 'react-router-dom';
+import { useParams , useNavigate } from 'react-router-dom';
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 function SelectedUserTrucks ({route , navigation } ){ 
   
     const {userId} = useParams()
   const [allTrucks, setAllTrucks] = useState([]);
 
+const navigate = useNavigate()
 
   useEffect(() => {
     try {
@@ -33,8 +34,35 @@ function SelectedUserTrucks ({route , navigation } ){
       console.error(err);
     }
   }, []); 
+ const [dspMoreInfo , setDspMoreInfo] = React.useState(false)
 
+  function toggleDspMoreInfo(){
+    setDspMoreInfo(prev=>!prev)
+  }
+
+    const [contactDisplay, setContactDisplay] = React.useState({ ['']: false });
+    const toggleContact = (itemId) => {
+      setContactDisplay((prevState) => ({
+        ...prevState,
+        [itemId]: !prevState[itemId],
+      }));
+    };
   const rendereIterms = allTrucks.map((item)=>{
+      let contactMe = ( <View style={{ paddingLeft: 30 }}>
+
+        {auth.currentUser &&   <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)}  >
+            <Text>Message now</Text>
+          </TouchableOpacity>}
+
+          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)}>
+            <Text>Phone call</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}`)}>
+            <Text>WhatsApp</Text>
+          </TouchableOpacity>
+
+          </View>)
     return(
       <View  key={item.id}>
 
@@ -46,13 +74,39 @@ function SelectedUserTrucks ({route , navigation } ){
         {!item.imageUrl &&<Image source={{uri: item.imageUrl }} style={{flex : 1 , height : 250}} /> }
         
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20}} >{item.CompanyName} </Text>
-      {item.fromLocation && (  <Text > From {item.fromLocation} to {item.toLocation} </Text>) }
+        { item.fromLocation && <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Route</Text>
+        <Text>:  from  {item.fromLocation}  to  {item.toLocation} </Text>
+      </View>}
 
-      { item.contact && ( <Text>contact {item.contact}</Text> )}
 
-      { item.trailerType && ( <Text> trailer type {item.trailerType}  </Text> ) }
+       {!contactDisplay[item.id] && <View>
 
-      {item.additionalInfo && (<Text> additional Info {item.additionalInfo} </Text>)}
+     <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Contact</Text>
+        <Text>:  {item.contact}</Text>
+      </View>
+
+    {item.trailerType &&  <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Trailer Type </Text>
+        <Text>:  {item.trailerType}</Text>
+      </View>}
+
+    { dspMoreInfo && item.additionalInfo &&  <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} > Additional Info</Text>
+        <Text>:  {item.additionalInfo}</Text>
+      </View>}
+        </View>}
+
+        {contactDisplay[item.id] && contactMe}
+        <TouchableOpacity onPress={toggleDspMoreInfo} >
+          <Text>See more </Text>
+        </TouchableOpacity>
+        {contactDisplay[item.id] && contactMe}
+
+        <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
+          <Text style={{textDecorationLine:'underline'}} > get In Touch now</Text>
+        </TouchableOpacity>
 
     </View>
         )

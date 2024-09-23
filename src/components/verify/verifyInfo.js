@@ -37,7 +37,13 @@ function VerifyInfo(){
                 <Text style={{lineHeight:21.5 ,fontWeight:'bold', fontSize:14.5 , marginBottom: 8 }} > If the $5 subscription isn't for you, 
                 <Text style={{color:'green'}} > refer three businesses  </Text> for verification and watch your company thrive alongside them for two free months</Text>
 
-                <Text style={{lineHeight:21.5 ,fontWeight:'bold',marginTop:6}} > Benefits: "Safeguard communities by reducing unauthorized firms, boost job opportunities, and ensure swift emergency response with clear firm identification."</Text>
+                <Text style={{lineHeight:21.5 ,fontWeight:'bold',marginTop:6}} > Benefits: </Text>
+                <Text>Safeguard businesses by reducing unauthorized firms</Text> 
+                <Text>Boost job opportunities</Text>
+                <Text>Less time wasters</Text>
+                <Text>improve overral services</Text>
+                <Text>Ensure swift emergency response with clear firm identification.</Text>
+                   
             </TouchableOpacity>
 
         </View>

@@ -1,6 +1,6 @@
 
 import React from "react";
-import {View , TouchableOpacity , Text , StyleSheet , Linking , Share} from "react-native"
+import {View , TouchableOpacity , Text , Linking , Share} from "react-native"
 
 import {useNavigate} from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';

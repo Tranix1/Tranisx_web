@@ -4,7 +4,7 @@ import { db, auth } from "../config/fireBase";
 
 import { storage } from "../config/fireBase";
 import { getDownloadURL, ref, uploadBytes, uploadBytesResumable ,} from "firebase/storage";
-import { collection, addDoc, serverTimestamp ,} from 'firebase/firestore';
+import { collection, onSnapshot , serverTimestamp ,addDoc, query , where , getDocs ,doc,deleteDoc , updateDoc, runTransaction , setDoc} from 'firebase/firestore';
 import inputstyles from "../styles/inputElement";
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
@@ -86,6 +86,17 @@ const [currentDateTime, setCurrentDateTime] = useState(formatDateTime(new Date()
 
 
   const UpdatesCollection = collection(db, "updates");
+
+  const checkExistixtDoc = async (receriverId) => {
+    const chatsRef = collection(db, 'newIterms'); // Reference to the 'ppleInTouch' collection
+    const chatQuery = query(chatsRef, where('docNowExist', '==', receriverId)); // Query for matching chat ID
+
+      const querySnapshot = await getDocs(chatQuery);  
+     // Check if any documents exist with the chat ID
+      return !querySnapshot.empty; // Returns true if a document exists, false otherwise
+    };
+    
+
       const handleSubmit = async () => {
       setSpinnerItem(true)
         // uploadImage()
@@ -110,12 +121,89 @@ const [currentDateTime, setCurrentDateTime] = useState(formatDateTime(new Date()
       });
 
 
-        const newIterms = collection(db ,'newIterms');
-      //  Chat doesn't exist, add it to 'ppleInTouch'
-      await addDoc(newIterms, {
-        upatesdocs : true ,
-        timestamp : serverTimestamp() ,
-      });
+
+
+
+
+
+
+  
+       
+    //    const docRe = doc(db, 'newIterms', "changeOneByOne" );
+    //    await runTransaction(db, async (transaction) => {
+    //     const docSnap = await transaction.get(docRe);
+
+    //     if (docSnap.exists()) {
+    //         const currentUpdatesDocs = docSnap.data().updatesDocs || 0;
+    //         let updateUpdatesDocs = currentUpdatesDocs + 1 
+
+    //         transaction.update(docRe, {
+    //             updatesDocs : updateUpdatesDocs,
+    //         });
+    //     }
+    // });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       setDeatilOfUpdate('')
       setImage(null)
       setSpinnerItem(false)
