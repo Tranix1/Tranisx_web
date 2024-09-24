@@ -210,6 +210,7 @@ function App(){
    const [ username , setUsername] = React.useState("");
    const [ contact , setContact] = React.useState('');
    const [ spechopLoc , setShopLoc] = React.useState('');
+   const [ deliveryR , setDeliveryR] = React.useState('');
 
        React.useEffect(() => {
   let unsubscribe;
@@ -224,6 +225,7 @@ function App(){
           setUsername(doc.data().username);
           setContact(doc.data().contact);
           setShopLoc(doc.data().shopLocation);
+         setDeliveryR(doc.data().deliveryRange);
         }
       });
     }
@@ -318,9 +320,9 @@ function App(){
       <Route path="/DspShop/:location/:specproduct" element={<DspShopIterms  spechopLoc={spechopLoc} />} />
       <Route path="/selectAddShop/:location" element={<SelectAddToShop/>} />
       <Route path="/AddToShop/:location/:specproduct" element={<AddToShop  
-      username={ username}  contact = {contact}  isVerified ={ isVerified}  shopLocation={spechopLoc}  /> } />
+      username={ username}  contact = {contact}  isVerified ={ isVerified}  shopLocation={spechopLoc}   deliveryR ={deliveryR} /> } />
       <Route path="/AddToShop/:location/:specproduct/:truckType" element={<AddToShop
-      username={ username}  contact = {contact}  isVerified ={ isVerified} shopLocation={spechopLoc}/>} />
+      username={ username}  contact = {contact}  isVerified ={ isVerified} shopLocation={spechopLoc}/>} deliveryR ={deliveryR} />
       <Route path="/OneFirmsShop/:userId" element={<OneFirmsShop/>} />
       <Route path="/manageStock/" element={<ManageStock/>} />
       <Route path="/sSoldProducts/:userId/:itemId" element={<OneFirmsShop/>} />

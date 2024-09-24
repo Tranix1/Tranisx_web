@@ -71,14 +71,8 @@ function DspShopIterms({spechopLoc}){
   }
 
 
-
-
-
-
-
-  
-
   const [ newShopAdress , setNewShopAdress ] = React.useState('')
+  const [ newDeliverR , setNewDeliveryR] = React.useState('')
 
     const handleUpdateShopAddress = async () => {
       try {
@@ -86,9 +80,10 @@ function DspShopIterms({spechopLoc}){
           const userId = auth.currentUser.uid;
 
           const docRef = doc(db, 'personalData', userId);
-          await updateDoc(docRef, { shopLocation: newShopAdress,  });
+          await updateDoc(docRef, { shopLocation: newShopAdress, deliveryRange : newDeliverR });
           alert("Shop Adress updated successfully!");
           setNewShopAdress("")
+          setNewDeliveryR("")
           setEnterSHopLoc(false)
         }
       } catch (err) {
@@ -113,6 +108,15 @@ return(
                      style={inputstyles.inputElem}            
                   />
 
+                  <Text>Do you deliver and for what range </Text>
+               <TextInput
+                     placeholder="Delivery Range"
+                     type="text"
+                     value={newDeliverR}
+                     onChangeText={(text) => setNewDeliveryR(text)}
+                     style={inputstyles.inputElem}            
+                  />
+
         <View style={{flexDirection : 'row', paddingTop : 10 , justifyContent : 'space-evenly'}}>
           <TouchableOpacity style={styles.cancelBtn}onPress={()=>setEnterSHopLoc(false)} >
             <Text>cancel</Text>
@@ -129,7 +133,6 @@ return(
             {auth.currentUser ? <TouchableOpacity onPress={checkAuth}  style={{position :'absolute',top: 440 ,right:10 , width : 60 , height : 35 , alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' , zIndex :200 , borderRadius: 8}} >
                 <Text style={{color : 'white'}} >Add</Text>
              </TouchableOpacity>
-
             :
             
           <TouchableOpacity onPress={()=> navigate("/createUser/")} style={{position :'absolute',top: 440 ,right:10 ,  alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' , zIndex :200 , borderRadius: 8}} >

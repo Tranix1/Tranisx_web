@@ -74,13 +74,17 @@ function OneFirmsShop({route , navigation } ){
         [itemId]: !prevState[itemId],
       }));
     };
-  const [dspMoreInfo , setDspMoreInfo] = React.useState(false)
- 
-  function toggleDspMoreInfo(){
-    setDspMoreInfo(prev=>!prev)
+
+  const [dspMoreInfo , setDspMoreInfo] = React.useState({ ['']: false })
+  function toggleDspMoreInfo(itemId){
+          setDspMoreInfo((prevState) => ({
+        ...prevState,
+        [itemId]: !prevState[itemId],
+      }));
   }
   const rendereIterms = allTrucks.map((item)=>{
 
+        const message =  `Is this Product still available ${item.productName} ${item.sellRent ? "for sell" :'for rental' } from Truckerz ` ; // Set your desired message here
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
           <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)}  >
@@ -91,7 +95,7 @@ function OneFirmsShop({route , navigation } ){
             <Text>Phone call</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}`)}>
+            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)}>
             <Text>WhatsApp</Text>
           </TouchableOpacity>
 
@@ -166,7 +170,13 @@ function OneFirmsShop({route , navigation } ){
        {<Text>:  {item.contact}</Text>} 
       </View>}
 
-      {  dspMoreInfo && item.additionalInfo  &&<View style={{flexDirection :'row'}} >
+
+      { item.deliveryR && <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >deliveryR</Text>
+       {<Text>:  {item.newDeliverR}</Text>} 
+      </View>}
+      
+      {  dspMoreInfo[item.id]  && item.additionalInfo  &&<View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >Aditional Info</Text>
       {<Text>:  {item.additionalInfo}</Text>} 
       </View>}
@@ -175,7 +185,7 @@ function OneFirmsShop({route , navigation } ){
 
         {contactDisplay[item.id] && contactMe}
 
-        <TouchableOpacity onPress={toggleDspMoreInfo} >
+        <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
           <Text style={{marginLeft :50 , color :'green'}} >See more </Text>
         </TouchableOpacity>
         <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >

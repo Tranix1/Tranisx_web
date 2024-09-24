@@ -186,7 +186,17 @@ setTimeout(() => {
           }
 
           const [bidRate, setBidRate] = React.useState("");
-     
+
+    
+  const [dspMoreInfo , setDspMoreInfo] = React.useState({ ['']: false })
+  function toggleDspMoreInfo(itemId){
+          setDspMoreInfo((prevState) => ({
+        ...prevState,
+        [itemId]: !prevState[itemId],
+      }));
+  }
+
+
       
     const rendereIterms =  loadsList.map((item)=>{ 
       
@@ -398,19 +408,22 @@ setTimeout(() => {
         <Text>:  {item.paymentTerms} </Text>
       </View>
 
-    { item.requirements && <View style={{flexDirection :'row'}} >
+    { dspMoreInfo[item.id] && item.requirements && <View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >Requirements</Text>
          <Text>:  {item.requirements} </Text>
       </View>}
 
-      {item.additionalInfo && <View style={{flexDirection :'row'}} >
+      { dspMoreInfo[item.id] && item.additionalInfo && <View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >Additional info </Text>
        {<Text>:  {item.additionalInfo} </Text>} 
       </View>}
 
-        {item.activeLoading&& <Text style={{fontSize:17 , fontStyle:'italic' , color:'green'}} >Active Loading </Text> }
         </View> }
 
+        <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
+          <Text style={{marginLeft :50 ,color :'green'}} >See more </Text>
+        </TouchableOpacity>
+        {item.activeLoading&& <Text style={{fontSize:17 , fontStyle:'italic' , }} >Active Loading </Text> }
 
         {contactDisplay[item.id] && contactMe}
 

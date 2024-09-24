@@ -14,7 +14,7 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useParams , useNavigate } from 'react-router-dom';
 
-function AddToShop( { username ,contact , isVerified , shopLocation} ) {
+function AddToShop( { username ,contact , isVerified , shopLocation ,deliveryR} ) {
 
     const {location , specproduct ,truckType} = useParams()
 
@@ -25,7 +25,6 @@ function AddToShop( { username ,contact , isVerified , shopLocation} ) {
     productName: "",
     price: "",
     additionalInfo :"" ,
-    deliveryRange : '' ,
     mileage :'' ,
     year :'' ,
     engine : '' , 
@@ -106,18 +105,11 @@ const [ imageUpload, setImageUpload] = React.useState([])
       }else if(images.length === 0){
         alert("Add at least 4 images")
         return
-      }else if(specproduct === "vehicles" && sellRent === true ){
-        if( !formData.mileage || !formData.year || !formData.trans || !formData.fuel || !formData.engine ){
-          alert('Enter mileage , year , trans , fuel ,engine')
-          return
-        }
-
       }
-       
       setSpinnerItem(true)
 
     
-    const imageUrls = [];
+    let imageUrls = [];
 
     let userId = auth.currentUser.uid
 
@@ -141,7 +133,6 @@ const [ imageUpload, setImageUpload] = React.useState([])
             imageUrl: imageUrls,
             userId: userId,
             additionalInfo: formData.additionalInfo,
-            deliveryRange: formData.deliveryRange,
             mileage : formData.mileage ,
             year : formData.year ,
             engine : formData.engine ,
@@ -152,6 +143,7 @@ const [ imageUpload, setImageUpload] = React.useState([])
             specproduct: specproduct,
             currency: currency,
             shopLocation: shopLocation,
+            deliveryR : deliveryR ,
             sellRent: sellRent
         });
 
@@ -160,17 +152,19 @@ const [ imageUpload, setImageUpload] = React.useState([])
         productName: "",
         price: "",
         additionalInfo :"",
-        deliveryRange : "" ,
         mileage :'' ,
         year :'' ,
         engine : '' , 
         trans :"" ,
         fuel :''
       });
+      imageUrls = []
       setImages([])
+      setImageUpload([])
       setSpinnerItem(false)
         console.log('Document added with image URLs:', docRef.id);
     } catch (error) {
+      setSpinnerItem(false)
         console.error('Error uploading images and adding document:', error);
     }
 
@@ -215,11 +209,12 @@ const [ imageUpload, setImageUpload] = React.useState([])
 
             {/* Display selected images */}
           
+          <ScrollView  horizontal  showsHorizontalScrollIndicator={false}  >
+
         {images.map((image, index) => (
             <img key={index} src={image} alt={`Image ${index}`}   style={{ width : 200 , height : 200 , margin : 7}} />
         ))}
-            {/* Button to upload images */}
-            {/* // <button onClick={uploadImages}>Upload Images</button> */}
+          </ScrollView>
         </div>
 
       
@@ -299,14 +294,7 @@ const [ imageUpload, setImageUpload] = React.useState([])
     </View>}
 
       { spinnerItem &&<ActivityIndicator size={34} />}
-          <TextInput 
-            value={formData.deliveryRange}
-            placeholderTextColor="#6a0c0c"
-            placeholder="Delivery Range"
-            onChangeText={(text) => handlechange(text, 'deliveryRange')}
-            type="text"
-          style={inputstyles.addIterms }
-          />
+       
 
           <TextInput 
             value={formData.additionalInfo}

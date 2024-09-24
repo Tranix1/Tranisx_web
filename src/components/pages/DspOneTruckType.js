@@ -49,10 +49,12 @@ const navigate = useNavigate()
     }
   }, []); 
 
-   const [dspMoreInfo , setDspMoreInfo] = React.useState(false)
-
-  function toggleDspMoreInfo(){
-    setDspMoreInfo(prev=>!prev)
+  const [dspMoreInfo , setDspMoreInfo] = React.useState({ ['']: false })
+  function toggleDspMoreInfo(itemId){
+          setDspMoreInfo((prevState) => ({
+        ...prevState,
+        [itemId]: !prevState[itemId],
+      }));
   }
 
 
@@ -110,14 +112,14 @@ const navigate = useNavigate()
         <Text>:  {item.trailerType}</Text>
       </View>}
 
-    { dspMoreInfo && item.additionalInfo &&  <View style={{flexDirection :'row'}} >
+    { dspMoreInfo[item.id]  && item.additionalInfo &&  <View style={{flexDirection :'row'}} >
         <Text style={{width :100}} > Additional Info</Text>
         <Text>:  {item.additionalInfo}</Text>
       </View>}
         </View>}
 
         {contactDisplay[item.id] && contactMe}
-        <TouchableOpacity onPress={toggleDspMoreInfo} >
+        <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
           <Text style={{color:'green'}} > See more </Text>
         </TouchableOpacity>
         {contactDisplay[item.id] && contactMe}

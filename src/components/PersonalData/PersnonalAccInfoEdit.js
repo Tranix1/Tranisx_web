@@ -4,6 +4,7 @@ import { View , TouchableOpacity , Text , TextInput, StyleSheet} from "react-nat
 
 import { db , auth } from "../config/fireBase";
 
+import { signOut} from  'firebase/auth'
 import {  updateDoc , doc } from 'firebase/firestore';
 import inputstyles from "../styles/inputElement";
 
@@ -91,16 +92,30 @@ const [countryCode, setCountryCode] = React.useState('');
   setEditContact(prev => !prev)
   setintrstUsername(orev => false)
   }
+  const logout = async ()=>{
+    
+    try{
+    await signOut(auth)
+     navigate('/')
+    }catch (err){
+      console.error(err)
+    }
+  }
 
 
 
 return(
   <View style={{alignItems :'center' , paddingTop: 80}} >
-   <View style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
+   <View style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , justifyContent :'space-between'}} >
+    <View style={{flexDirection:'row'}} >
          <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
            <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
         <Text style={{fontSize: 20 , color : 'white'}} > Personal Information </Text>
+      </View>
+        <TouchableOpacity onPress={logout}style={{backgroundColor:'white'}} >
+          <Text>logout </Text>
+        </TouchableOpacity>
        </View>
   { !editContact && !editUsername &&<View>
       <TouchableOpacity onPress={toggleIntrstUserName}  style={styles.selectToEdit} >

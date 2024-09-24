@@ -114,7 +114,7 @@ function ShopHeader(){
             <TouchableOpacity onPress={()=> navigate(`/DspShop/${location}/Sprovider`) }>
                {specproduct === "Sprovider" ?
                <Text style={{color:'white' , textDecorationLine :'underline' ,fontWeight:'600' , fontSize : 18 }} > Service Provider</Text> :
-               <Text style={{color:'white'}} > Service Provider </Text>}
+               <Text style={{color:'white'}} > SProvider </Text>}
 
             </TouchableOpacity>
         </View>

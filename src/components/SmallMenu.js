@@ -162,7 +162,7 @@ export default React.memo(SmallMenu)
 
 const styles = StyleSheet.create({
     buttonStyle : {
-        height : 47,
+        height : 53,
         justifyContent : 'center' , 
         alignItems : 'center',  
         // backgroundColor:'red'       ,

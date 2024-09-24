@@ -23,7 +23,6 @@ function ManageStock(){
     const navigate = useNavigate()
   const [allTrucks, setAllTrucks] = useState([]);
 
-
       let [buyRent , setBuyRent] = React.useState(null)
   useEffect(() => {
     try {
@@ -54,7 +53,7 @@ function ManageStock(){
     } catch (err) {
       console.error(err);
     }
-  }, []); 
+  }, [allTrucks]); 
 
    
 
