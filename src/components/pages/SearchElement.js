@@ -131,7 +131,7 @@ const navigate = useNavigate()
              { filteredData.length > 0 && (
               <ScrollView  >
               <Text style={{fontSize : 20 , textDecorationLine:'underline '}}> Available Loads  </Text>
-              {displaySearched}
+              { loadsList.length ? displaySearched:"Loading loads ......" }
              </ScrollView>
 
               )
@@ -142,7 +142,7 @@ const navigate = useNavigate()
 
             { filteredDataTrucks.length > 0 && <ScrollView >
               <Text style={{fontSize : 20 , textDecorationLine:'underline '}}> Available Trucks  </Text>
-              {displaySearchedTrucks}
+                {allTrucks ? displaySearchedTrucks :'Loading loads ......' }
              </ScrollView>}
              </View>
 

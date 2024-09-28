@@ -242,11 +242,11 @@ function App(){
             
 
       const [isVerified, setIsVerified] = React.useState(false);
-
       React.useEffect(() => {
         try {
           if (auth.currentUser) {
             const userId = auth.currentUser.uid;
+
             const loadsQuery = query(collection(db, "verifiedUsers"), where("userId", "==", userId));
 
             const unsubscribe = onSnapshot(loadsQuery, (querySnapshot) => {
@@ -263,7 +263,7 @@ function App(){
         } catch (error) {
           console.error(error);
         }
-      }, []);
+      }, [currentUser]);
 
             
     return(

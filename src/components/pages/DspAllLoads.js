@@ -3,9 +3,6 @@ import { View , Text , ScrollView, TouchableOpacity , ActivityIndicator , StyleS
 import { auth, db } from '../config/fireBase';
 import { collection, onSnapshot , serverTimestamp ,addDoc, query , where , getDocs ,doc,deleteDoc , updateDoc, runTransaction , setDoc} from 'firebase/firestore';
 import inputstyles from '../styles/inputElement';
-
-// import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import {useNavigate,useParams} from 'react-router-dom';
@@ -13,9 +10,9 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 
 function DspAllLoads({username}){  
 
-const navigate = useNavigate()
-const {userId ,  location ,itemId} = useParams()
-
+  const navigate = useNavigate()
+  const {userId ,  location ,itemId} = useParams()
+  
   const deleteLoad = async (id) => {
   try {
     const loadsDocRef = doc(db, 'Loads', id);
@@ -27,21 +24,17 @@ const {userId ,  location ,itemId} = useParams()
   }
 };
 
-
-
   const [localLoads , setLocalLoads]=React.useState(false)
 
   function toggleLocalLoads(){
     setLocalLoads(prevState => !prevState)
   }
 
-
   function specifyLocation(loc){
     navigate(`/location/${loc}`) 
     setLocalLoads(prev => false)
   }
 
-  //  DRC , ZIM , MOZA , BOTSWA , SOUTH , NAMIB , TANZAN , MALAWI , Zambia
  
       const [loadsList, setLoadsList] = useState([]);
 
@@ -107,31 +100,38 @@ setTimeout(() => {
           });
 
           loadedData = loadedData.sort((a, b) => b.timeStamp - a.timeStamp);
+
+
           setLoadsList(loadedData);
         });
         return unsubscribe 
       }    
       else {
-        const loadsCollection = collection(db, "Loads");
+       const loadsCollection = collection(db, "Loads");
 
         const unsubscribe = onSnapshot(loadsCollection, (querySnapshot) => {
           let filteredData = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data()
           }));
-          filteredData = filteredData.sort((a, b) => b.timeStamp - a.timeStamp);
+
+          // Separate verified and non-verified users
+          const verifiedUsers = filteredData.filter(user => user.isVerified);
+          const nonVerifiedUsers = filteredData.filter(user => !user.isVerified);
+
+         let  shuffledDataUnV = nonVerifiedUsers.sort((a, b) => b.timeStamp - a.timeStamp);
+
+          filteredData = verifiedUsers.concat(shuffledDataUnV);
 
           setLoadsList(filteredData);
         });
-
-
         
-       return  unsubscribe
-       
-    };
-
-      }
-
+        return  unsubscribe
+        
+      };
+      
+    }
+    
     loadData();
   }, []); 
 
@@ -304,7 +304,7 @@ setTimeout(() => {
       setSpinnerItem(null)      
     }
   };
-        const message =  ` Is this Load still available   ${item.typeofLoad} from  ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : null} from Truckerz ` ; // Set your desired message here
+        const message =  `${item.companyName} is this Load still available ${item.typeofLoad} from ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : ''} from https://www.truckerz.net/selectedUserLoads/${item.userId}` ; // Set your desired message here
 
   let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
@@ -423,7 +423,7 @@ setTimeout(() => {
         <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
           <Text style={{marginLeft :50 ,color :'green'}} >See more </Text>
         </TouchableOpacity>
-        {item.activeLoading&& <Text style={{fontSize:17 , fontStyle:'italic' , }} >Active Loading </Text> }
+        {item.activeLoading&& <Text style={{fontSize:17 , fontStyle:'italic',color:"#FF8C00" }} >Active Loading </Text> }
 
         {contactDisplay[item.id] && contactMe}
 

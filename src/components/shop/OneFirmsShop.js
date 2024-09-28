@@ -84,7 +84,7 @@ function OneFirmsShop({route , navigation } ){
   }
   const rendereIterms = allTrucks.map((item)=>{
 
-        const message =  `Is this Product still available ${item.productName} ${item.sellRent ? "for sell" :'for rental' } from Truckerz ` ; // Set your desired message here
+        const message =  ` ${item.CompanyName} is this Product still available ${item.productName} ${item.sellRent ? "for sell" :'for rental' } from https://www.truckerz.net/OneFirmsShop/${item.userId}` ; // Set your desired message here
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
           <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)}  >
@@ -101,7 +101,7 @@ function OneFirmsShop({route , navigation } ){
 
           </View>)
     return(
-      <View key={item.id} style={{padding :7   , maxHeight : 350}}>
+      <View key={item.id} style={{padding :7  }}>
       { item.trailerType && ( <Text> trailer type {item.trailerType}  </Text> ) }
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >

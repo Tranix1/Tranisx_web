@@ -236,7 +236,7 @@ let whnBookBiddAload = getAllIterms.map((item) => {
           <Text style={{textDecorationLine:'underline'}} > get In Touch now</Text>
         </TouchableOpacity>}
 
-          <TouchableOpacity onPress={()=>loadTaken(  item.loadId ,  item.id ) } style={{backgroundColor :'red' , width : 100 , alignItems :'center' , borderRadius :50 , position :'absolute', right :7 , bottom :7}}>
+          <TouchableOpacity onPress={()=>loadTaken(  null ,   item.id ) } style={{backgroundColor :'red' , width : 100 , alignItems :'center' , borderRadius :50 , position :'absolute', right :7 , bottom :7}}>
             <Text style={{color:'white'}} > Not intrested </Text>
           </TouchableOpacity>
       </View>

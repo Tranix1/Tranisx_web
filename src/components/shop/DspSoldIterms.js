@@ -51,6 +51,9 @@ function DspSoldIterms(){
                 loadedData.push(...randomItems);
             });
 
+          const verifiedUsers = loadedData.filter(user => user.isVerified);
+          const nonVerifiedUsers = loadedData.filter(user => !user.isVerified);
+
              const shuffleArray = (array) => {
               for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -58,9 +61,10 @@ function DspSoldIterms(){
               }
               return array;
             };
-            const shuffledData = shuffleArray(loadedData);
+            const shuffledData = shuffleArray(nonVerifiedUsers);
+            loadedData = verifiedUsers.concat(shuffledData);
 
-            setAllSoldIterms(shuffledData);
+            setAllSoldIterms( );
         });
 
         // Clean up function to unsubscribe from the listener when the component unmounts
@@ -92,7 +96,7 @@ function DspSoldIterms(){
 
   const rendereIterms = allSoldIterms.map((item)=>{
 
-        const message =  `Is this Product still available ${item.productName} ${item.sellRent ? "for sell" :'for rental' } from Truckerz ` ; // Set your desired message here
+        const message =  ` ${item.CompanyName} is this Product still available ${item.productName} ${item.sellRent ? "for sell" :'for rental' } from https://www.truckerz.net/OneFirmsShop/${item.userId}` ; // Set your desired message here
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
           <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)}  >

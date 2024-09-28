@@ -34,6 +34,8 @@ const mainLoadsCollection = collection(db, 'Loads');
         }
       });
 
+          const verifiedUsers = filteredData.filter(user => user.isVerified);
+          const nonVerifiedUsers = filteredData.filter(user => !user.isVerified);
  const shuffleArray = (array) => {
         for (let i = array.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
@@ -41,8 +43,11 @@ const mainLoadsCollection = collection(db, 'Loads');
         }
         return array;
       };
-     const shuffledData = shuffleArray(filteredData);
-      setMainLoadsList(shuffledData);
+  const shuffledDataUnV = shuffleArray(nonVerifiedUsers);
+
+          filteredData = verifiedUsers.concat(shuffledDataUnV);
+
+      setMainLoadsList(filteredData);
     });
 
 
