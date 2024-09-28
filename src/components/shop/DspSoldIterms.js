@@ -29,7 +29,7 @@ function DspSoldIterms(){
             dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location));
         }
 
-        const loadedData = [];
+        let loadedData = [];
         const userItemsMap = new Map(); // Map to store user items
 
         const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
@@ -64,7 +64,7 @@ function DspSoldIterms(){
             const shuffledData = shuffleArray(nonVerifiedUsers);
             loadedData = verifiedUsers.concat(shuffledData);
 
-            setAllSoldIterms( );
+            setAllSoldIterms(loadedData);
         });
 
         // Clean up function to unsubscribe from the listener when the component unmounts

@@ -423,7 +423,7 @@ setTimeout(() => {
         <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
           <Text style={{marginLeft :50 ,color :'green'}} >See more </Text>
         </TouchableOpacity>
-        {item.activeLoading&& <Text style={{fontSize:17 , fontStyle:'italic',color:"#FF8C00" }} >Active Loading </Text> }
+        {item.activeLoading&& <Text style={{fontSize:17 , color:"#FF8C00" }} >Active Loading </Text> }
 
         {contactDisplay[item.id] && contactMe}
 
