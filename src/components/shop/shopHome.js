@@ -21,7 +21,7 @@ return(
         
         <Text style={{fontSize: 20 , color : 'white'}} > Welcome To Store  </Text>
        </View>
-        <TouchableOpacity onPress={()=> navigate('/DspShop/Zimbabwe/vehicles') } style={styles.buttonStyle} >
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Zimbabwe/vehicles/forSell') } style={styles.buttonStyle} >
             <Text style={{color:'#6a0c0c'}}> Zimbabwe</Text>
         </TouchableOpacity>
 

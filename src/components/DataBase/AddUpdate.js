@@ -82,9 +82,6 @@ const [currentDateTime, setCurrentDateTime] = useState(formatDateTime(new Date()
   }
 
 
-
-
-
   const UpdatesCollection = collection(db, "updates");
 
   const checkExistixtDoc = async (receriverId) => {
@@ -119,90 +116,6 @@ const [currentDateTime, setCurrentDateTime] = useState(formatDateTime(new Date()
         currentDateTime : currentDateTime ,
         currentTime :currentTime 
       });
-
-
-
-
-
-
-
-
-  
-       
-    //    const docRe = doc(db, 'newIterms', "changeOneByOne" );
-    //    await runTransaction(db, async (transaction) => {
-    //     const docSnap = await transaction.get(docRe);
-
-    //     if (docSnap.exists()) {
-    //         const currentUpdatesDocs = docSnap.data().updatesDocs || 0;
-    //         let updateUpdatesDocs = currentUpdatesDocs + 1 
-
-    //         transaction.update(docRe, {
-    //             updatesDocs : updateUpdatesDocs,
-    //         });
-    //     }
-    // });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       setDeatilOfUpdate('')
       setImage(null)

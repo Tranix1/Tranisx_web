@@ -34,9 +34,6 @@ function DBTrucksAdd( { username ,contact , isVerified } ) {
       [fieldName]: value,
     }));
   };
-
-
-
   
   
   const [image, setImage] = useState(null);  

@@ -121,6 +121,10 @@ return(
         <Text>Verification</Text>
         </TouchableOpacity>
 
+       <TouchableOpacity   onPress={()=>navigate('/blacklist/') }  style={styles.buttonStyle}>
+        <Text>Blacklisted</Text>
+        </TouchableOpacity>
+
     <TouchableOpacity   onPress={()=>navigate('/mobileAppSD/') }  style={styles.buttonStyle}>
         <Text>Mobile App </Text>
     </TouchableOpacity>
@@ -133,13 +137,10 @@ return(
     <TouchableOpacity   onPress={()=>navigate('/helpHome/') }  style={styles.buttonStyle}>
         <Text> Help </Text>
     </TouchableOpacity>
-
-  
    
 </View>
 
   {window.location.hostname === 'localhost' ? <View style={{ position : 'absolute' , right : 0 ,top : 360  , borderBlockColor:"#6a0c0c",borderWidth:3 , backgroundColor :'white'  , width : 235 , borderRadius: 13}} >
-
 
     <TouchableOpacity   onPress={()=>navigate('/addUpdate/')  }  style={styles.buttonStyle}>
         <Text> Add update </Text>

@@ -9,33 +9,30 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 function OneFirmsShop({route , navigation } ){ 
   
-    const {userId , itemId } = useParams()
+    const {userId , itemId , agCont ,sellOBuyG } = useParams()
     const navigate = useNavigate()
-  const [allTrucks, setAllTrucks] = useState([]);
-
+    const [allTrucks, setAllTrucks] = useState([]);
       const [specproduct , setSpecPrduct] = React.useState('')
 
       let [buyRent , setBuyRent] = React.useState(null)
+      let [sellOBuy , setSellOBuy] = React.useState(sellOBuyG)
+
   useEffect(() => {
     try {
-        // const dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId) );
       let dataQuery
-     
 
        if (specproduct === "vehicles" || specproduct === "trailers") {
             if (buyRent === true || buyRent === false) {
-                dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId),where("specproduct", "==", specproduct),  where("sellRent", "==", buyRent));
+                dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId),where("specproduct", "==", specproduct),  where("sellRent", "==", buyRent), where("sellOBuy", "==", sellOBuy) );
             } else {
-                dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId),where("specproduct", "==", specproduct));
+                dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId),where("specproduct", "==", specproduct), where("sellOBuy", "==", sellOBuy) );
             }
         } else if(specproduct ) {
-            dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId),where("specproduct", "==", specproduct), );
+            dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId),where("specproduct", "==", specproduct), where("sellOBuy", "==", sellOBuy) );
         }else {
 
-          dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId));
+          dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId), where("sellOBuy", "==", sellOBuy) );
         }
-
-
 
         const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
           const loadedData = [];
@@ -65,7 +62,7 @@ function OneFirmsShop({route , navigation } ){
     } catch (err) {
       console.error(err);
     }
-  }, [userId , specproduct , buyRent]); 
+  }, [userId , specproduct , buyRent , sellOBuy]); 
 
     const [contactDisplay, setContactDisplay] = React.useState({ ['']: false });
     const toggleContact = (itemId) => {
@@ -84,36 +81,35 @@ function OneFirmsShop({route , navigation } ){
   }
   const rendereIterms = allTrucks.map((item)=>{
 
-        const message =  ` ${item.CompanyName} is this Product still available ${item.productName} ${item.sellRent ? "for sell" :'for rental' } from https://www.truckerz.net/OneFirmsShop/${item.userId}` ; // Set your desired message here
+        const message =  `${item.CompanyName} is this Product still ${ item.sellOBuy === "forSell"? "available":"wanted" } ${item.productName} ${item.sellRent ? "for sell" :'for rental' }   ${item.currency?"USD" : "Rand" }  ${item.price}  from ${agCont ?`https://www.truckerz.net/OneFirmsShopA/${item.userId}/${item.id}/${sellOBuy}/${agCont}` :  `https://www.truckerz.net/OneFirmsShop/${item.userId}/${item.id}/${sellOBuy}`  }` ;
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
           <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)}  >
             <Text>Message now</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)}>
+          <TouchableOpacity onPress={() => Linking.openURL(`tel:${agCont?agCont: item.contact}`)}>
             <Text>Phone call</Text>
           </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)}>
+            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${agCont?agCont: item.contact}&text=${encodeURIComponent(message)}`)}>
             <Text>WhatsApp</Text>
           </TouchableOpacity>
 
           </View>)
     return(
       <View key={item.id} style={{padding :7  }}>
-      { item.trailerType && ( <Text> trailer type {item.trailerType}  </Text> ) }
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
       </View>}
       
 
-          <ScrollView  horizontal  showsHorizontalScrollIndicator={false}  > 
+        {sellOBuy ==="forSell"  &&  <ScrollView  horizontal  showsHorizontalScrollIndicator={false}  > 
         {item.imageUrl.map((image, index) => (
             <img key={index} src={image} alt={`Image ${index}`}   style={{ width : 200 , height : 200 , margin : 7}} />
         ))}
-         </ScrollView>
+         </ScrollView>}
 
 
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} {item.specproduct}</Text>
@@ -121,59 +117,62 @@ function OneFirmsShop({route , navigation } ){
 
          {item.specproduct === "vehicles" && <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{height: 50 , margin : 5 , }} >
 
-            <View  style={{marginRight:12}}>
+           { item.mileage&& <View  style={{marginRight:12}}>
               <Text>MILEAGE </Text>
               <Text>{item.mileage} </Text>
-            </View>
+            </View>}
 
 
-            <View  style={{marginRight:12}}>
+            {item.year &&<View  style={{marginRight:12}}>
               <Text>Year</Text>
               <Text>{item.year} </Text>
-            </View>
+            </View>}
 
-            <View  style={{marginRight:12}}>
+           {item.engine && <View  style={{marginRight:12}}>
               <Text>ENGINE </Text>
               <Text>{item.engine}  </Text>
-            </View>
+            </View>}
 
-            <View  style={{marginRight:12}} >
+            {item.trans && <View  style={{marginRight:12}} >
               <Text> Trans </Text>
           <Text>{item.trans} </Text>
-            </View>
+            </View>}
 
-            <View style={{marginRight:12}} >
+            {item.fuel &&<View style={{marginRight:12}} >
               <Text> Fuel </Text>
           <Text>{item.fuel} </Text>
-            </View>
+            </View>}
           </ScrollView>}
 
-         { item.productName &&<View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Product</Text>
+          { item.productName &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >{sellOBuy ==="forSell" ? "Product":'Looking For' }</Text>
        {<Text>:  {item.productName} {item.sellRent ? "for sell" :'for rental' } </Text>} 
       </View>}
 
       { item.price &&<View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Price</Text>
-       {<Text>:  {item.currency?"USD" : "Rand" }  {item.price}</Text>} 
+        <Text style={{width :100}} >{sellOBuy==='forSell' ?'Price':'Budget' }</Text>
+       {<Text>:  {item.currency?"USD" : "Rand" }  {item.price} </Text>} 
       </View>}
-
-      { item.shopLocation &&<View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Location</Text>
-       {<Text>:  {item.shopLocation}  </Text>} 
+      {<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Contact</Text>
+       {<Text>:  {agCont? agCont : item.contact}</Text>} 
       </View>}
 
        {!contactDisplay[item.id] && <View>
 
-      { item.contact && <View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Contact</Text>
-       {<Text>:  {item.contact}</Text>} 
+  { item.shopLocation &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Store Loc</Text>
+       {<Text>:  {item.shopLocation}  </Text>} 
       </View>}
 
+      { specproduct ==="vehicles" || specproduct ==="trailers" ? item.productLoc &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >{specproduct} Loc</Text>
+       {<Text>:  {item.productLoc}  </Text>} 
+      </View>:null }
 
       { item.deliveryR && <View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >deliveryR</Text>
-       {<Text>:  {item.newDeliverR}</Text>} 
+       {<Text>:  {item.deliveryR}</Text>} 
       </View>}
       
       {  dspMoreInfo[item.id]  && item.additionalInfo  &&<View style={{flexDirection :'row'}} >
@@ -191,8 +190,6 @@ function OneFirmsShop({route , navigation } ){
         <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
           <Text style={{textDecorationLine:'underline'}} > get In Touch now</Text>
         </TouchableOpacity>
-
-
     </View>
         )
       })
@@ -247,6 +244,22 @@ return(
         </TouchableOpacity>
 
 
+     <View style={{justifyContent:'space-evenly' , backgroundColor:'#6a0c0c', flexDirection : "row" }} >
+       {sellOBuy !== "toBuy" || sellOBuy !=="forSell" ?<View style={{flexDirection :'row',backgroundColor:'#6a0c0c' }} >
+
+            <TouchableOpacity onPress={()=>setSellOBuy("forSell")}
+             style={sellOBuy === "forSell" ? styles.bttonIsTrue : styles.buttonIsFalse} >
+               <Text style={sellOBuy === "forSell" ? {color:'black'} : {color:'white'}} >BUY</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>setSellOBuy("toBuy")} style={sellOBuy === "toBuy" ? styles.bttonIsTrue : styles.buttonIsFalse} >
+                <Text style={sellOBuy === "toBuy" ? {color:'black'} :{color:'white'} } >SELL</Text>
+            </TouchableOpacity>
+
+        </View> :null }
+
+          <Text style={{color:'white'}} >Want to {sellOBuy === "forSell" ? "BUY" :'SELL'} </Text> 
+          </View>
+
 
   <View style={{flexDirection:'row' , justifyContent : 'space-evenly' , paddingLeft : 20 , paddingRight: 20 , height : 40 , alignItems : 'center' , backgroundColor : '#6a0c0c' , paddingTop : 10 }}>
 
@@ -276,8 +289,6 @@ return(
 
             </TouchableOpacity>
         </View>
-
-
 
        </View> )})
        }
@@ -338,6 +349,20 @@ const styles = StyleSheet.create({
       marginRight : 7 ,
        borderRadius : 15 ,
        backgroundColor : 'rgb(129,201,149)'
-  }
+  },  
+  buttonIsFalse : {
+     borderWidth : 1 ,
+     borderColor : '#6a0c0c' ,
+     paddingLeft :4 , 
+     paddingRight:4 ,
+    //  marginLeft : 6
+   } , 
+    bttonIsTrue:{
+    backgroundColor : 'white' ,
+     paddingLeft :4 ,
+     paddingRight:4 ,
+     color :'white' 
+
+    }
 
 });

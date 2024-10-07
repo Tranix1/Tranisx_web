@@ -81,7 +81,6 @@ function DspShopIterms({spechopLoc}){
 
           const docRef = doc(db, 'personalData', userId);
           await updateDoc(docRef, { shopLocation: newShopAdress, deliveryRange : newDeliverR });
-          alert("Shop Adress updated successfully!");
           setNewShopAdress("")
           setNewDeliveryR("")
           setEnterSHopLoc(false)
@@ -128,8 +127,6 @@ return(
             
         </View>
                </View>}
-
-
             {auth.currentUser ? <TouchableOpacity onPress={checkAuth}  style={{position :'absolute',top: 440 ,right:10 , width : 60 , height : 35 , alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' , zIndex :200 , borderRadius: 8}} >
                 <Text style={{color : 'white'}} >Add</Text>
              </TouchableOpacity>

@@ -7,6 +7,11 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 function SelectAddToShop(){
     const navigate = useNavigate()
     const {location}= useParams()
+const [sellOBuy , setSellOBuy] =React.useState(null)
+
+    function toggleSellOBuy(value){
+        setSellOBuy(value)
+    }
 
 
     return(
@@ -18,26 +23,40 @@ function SelectAddToShop(){
         </TouchableOpacity> 
         
         <Text style={{fontSize: 20 , color : 'white'}} > Add TO Shop </Text>
+        
        </View> 
-           <View>
 
-             <TouchableOpacity onPress={()=>navigate(`/AddToShop/${location}/vehicles`)} style={styles.buttonSelectStyle}>
+          {sellOBuy === true || sellOBuy ===false ? <View>
+            <Text> What do you want to {sellOBuy? "Buy" :"Sell" }  </Text>
+
+             <TouchableOpacity onPress={()=>navigate(`/AddToShop/${location}/vehicles/${sellOBuy}`)} style={styles.buttonSelectStyle}>
                 <Text style={{color:"white"}}>Add Vehicle</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/trailers`)} >
+            <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/trailers/${sellOBuy}/`)} >
                 <Text style={{color:"white"}}>Add Trailers </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/spares`)}>
+            <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/spares/${sellOBuy}/`)}>
                 <Text style={{color:"white"}}>Add Spares </Text>
             </TouchableOpacity>
 
-              <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/Sprovider`)}>
+              <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/Sprovider/${sellOBuy}/`)}>
                 <Text style={{color:"white"}}>Service Provider </Text>
             </TouchableOpacity>
             
-            </View>    
+            </View>:null }   
+
+          { sellOBuy !== true || sellOBuy !==false? <View>
+                <TouchableOpacity onPress={()=>toggleSellOBuy("forSell")} style={styles.buttonSelectStyle} >
+                    <Text>Want to sell</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={()=>toggleSellOBuy("toBuy")} style={styles.buttonSelectStyle} >
+                    <Text>Want to Buy</Text>
+                </TouchableOpacity>
+
+            </View>:null}
         </View>
     )
 }

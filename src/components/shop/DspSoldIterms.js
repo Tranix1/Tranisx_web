@@ -9,24 +9,23 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 function DspSoldIterms(){
     const navigate = useNavigate()
 
-  const {location, specproduct } = useParams()
-
+  const {location, specproduct , sellOBuy} = useParams()
   const [allSoldIterms, setAllSoldIterms] = useState([]);
-
+  
       let [buyRent , setBuyRent] = React.useState(null)
 
  useEffect(() => {
     try {
         let dataQuery;
 
-        if (specproduct === "vehicles" || specproduct === "trailers") {
+            if (specproduct === "vehicles" || specproduct === "trailers") {
             if (buyRent === true || buyRent === false) {
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent));
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) );
             } else {
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location));
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) );
             }
         } else {
-            dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location));
+            dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) );
         }
 
         let loadedData = [];
@@ -72,10 +71,8 @@ function DspSoldIterms(){
     } catch (err) {
         console.error(err);
     }
-}, [specproduct, buyRent]);
+}, [specproduct, buyRent, sellOBuy]);
 
-
-    
     const [contactDisplay, setContactDisplay] = React.useState({ ['']: false });
     const toggleContact = (itemId) => {
       setContactDisplay((prevState) => ({
@@ -83,8 +80,6 @@ function DspSoldIterms(){
         [itemId]: !prevState[itemId],
       }));
     };
-
-   
   const [dspMoreInfo , setDspMoreInfo] = React.useState({ ['']: false })
   function toggleDspMoreInfo(itemId){
           setDspMoreInfo((prevState) => ({
@@ -93,10 +88,9 @@ function DspSoldIterms(){
       }));
   }
 
-
   const rendereIterms = allSoldIterms.map((item)=>{
 
-        const message =  ` ${item.CompanyName} is this Product still available ${item.productName} ${item.sellRent ? "for sell" :'for rental' } from https://www.truckerz.net/OneFirmsShop/${item.userId}` ; // Set your desired message here
+        const message =  `${item.CompanyName} is this Product still ${ item.sellOBuy === "forSell"? "available":"wanted" } ${item.productName} ${item.sellRent ? "for sell" :'for rental' }   ${item.currency?"USD" : "Rand" }  ${item.price}   from https://www.truckerz.net/OneFirmsShop/${item.userId}/${item.id}` ; // Set your desired message here
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
           <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)}  >
@@ -113,81 +107,87 @@ function DspSoldIterms(){
 
           </View>)
     return(
-      <TouchableOpacity  key={item.id}  onPress={()=>navigate(`/OneFirmsShop/${item.userId}`)} style={{padding :7}}>
+      <TouchableOpacity  key={item.id}  onPress={()=>navigate(`/OneFirmsShop/${item.userId}/${item.id}`)} style={{padding :7}}>
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
       </View>}
 
 
-          <ScrollView  horizontal  showsHorizontalScrollIndicator={false}  >
+          {sellOBuy ==="forSell"  &&<ScrollView  horizontal  showsHorizontalScrollIndicator={false}  >
          
         {item.imageUrl.map((image, index) => (
             <img key={index} src={image} alt={`Image ${index}`}   style={{ width : 200 , height : 200 , margin : 7}} />
         ))}
 
-          </ScrollView>
+          </ScrollView>}
 
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} </Text>
 
-   {item.specproduct === "vehicles" && <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{height: 50 , margin : 5 , }} >
+     {item.specproduct === "vehicles" && <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{height: 50 , margin : 5 , }} >
 
-            <View  style={{marginRight:12}}>
+           { item.mileage&& <View  style={{marginRight:12}}>
               <Text>MILEAGE </Text>
               <Text>{item.mileage} </Text>
-            </View>
+            </View>}
 
 
-            <View  style={{marginRight:12}}>
+            {item.year &&<View  style={{marginRight:12}}>
               <Text>Year</Text>
               <Text>{item.year} </Text>
-            </View>
+            </View>}
 
-            <View  style={{marginRight:12}}>
+           {item.engine && <View  style={{marginRight:12}}>
               <Text>ENGINE </Text>
-              <Text>{item.engine}  </Text>
-            </View>
+              <Text>{item.engine}</Text>
+            </View>}
 
-            <View  style={{marginRight:12}} >
+            {item.trans && <View  style={{marginRight:12}} >
               <Text> Trans </Text>
           <Text>{item.trans} </Text>
-            </View>
+            </View>}
 
-            <View style={{marginRight:12}} >
+            {item.fuel &&<View style={{marginRight:12}} >
               <Text> Fuel </Text>
           <Text>{item.fuel} </Text>
-            </View>
+            </View>}
           </ScrollView>}
+
           
-         { item.productName &&<View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Product</Text>
+         {item.productName &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >{sellOBuy ==="forSell" ? "Product":'Looking For' }</Text>
        {<Text>:  {item.productName} {item.sellRent ? "for sell" :'for rental' } </Text>} 
       </View>}
 
       { item.price &&<View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Price</Text>
+        <Text style={{width :100}} >{sellOBuy==='forSell' ?'Price':'Budget' }</Text>
        {<Text>:  {item.currency?"USD" : "Rand" }  {item.price}</Text>} 
       </View>}
-
-      { item.shopLocation &&<View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Location</Text>
-       {<Text>:  {item.shopLocation}  </Text>} 
-      </View>}
-
-
-       {!contactDisplay[item.id] && <View>
 
       { item.contact && <View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >Contact</Text>
        {<Text>:  {item.contact}</Text>} 
       </View>}
 
-      { item.deliveryR && <View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >deliveryR</Text>
-       {<Text>:  {item.newDeliverR}</Text>} 
+
+       {!contactDisplay[item.id] && <View>
+
+      {item.shopLocation &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Store Loc</Text>
+       {<Text>:  {item.shopLocation}  </Text>} 
       </View>}
 
-      {  dspMoreInfo[item.id]  && item.additionalInfo  &&<View style={{flexDirection :'row'}} >
+      { specproduct ==="vehicles" || specproduct ==="trailers" ? item.productLoc &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >{specproduct} Loc</Text>
+       {<Text>:  {item.productLoc}  </Text>} 
+      </View>:null }
+      
+      {item.deliveryR && <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >deliveryR</Text>
+       {<Text>:  {item.deliveryR}</Text>} 
+      </View>}
+
+      {dspMoreInfo[item.id]  && item.additionalInfo  &&<View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >Aditional Info</Text>
       {<Text>:  {item.additionalInfo}</Text>} 
       </View>}
@@ -242,18 +242,18 @@ const styles = StyleSheet.create({
     color :'white'  , 
     borderWidth:1, 
     alignItems :'center' ,
-     justifyContent :'center' ,
-      marginRight : 7 ,
-       borderRadius : 15
+    justifyContent :'center' ,
+    marginRight : 7 ,
+    borderRadius : 15
   },
   btnIsActive : {
     width : 50 ,
     color :'white'  , 
     alignItems :'center' ,
-     justifyContent :'center' ,
-      marginRight : 7 ,
-       borderRadius : 15 ,
-       backgroundColor : 'rgb(129,201,149)'
+    justifyContent :'center' ,
+    marginRight : 7 ,
+    borderRadius : 15 ,
+    backgroundColor : 'rgb(129,201,149)'
   }
 
 });

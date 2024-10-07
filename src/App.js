@@ -3,7 +3,6 @@ import { View , Text  , TouchableOpacity , StatusBar , Share} from "react-native
 
 import  { auth , db,  } from "./components/config/fireBase"
 import {doc , getDoc ,query ,collection , where,onSnapshot } from "firebase/firestore"
-import { signOut} from  'firebase/auth'
 
 import Header from "./components/Header"
 import SmallMenu from "./components/SmallMenu";
@@ -47,8 +46,9 @@ import AddToShop from "./components/shop/AddToShop"
 import HelpHome from "./components/HelpCentre/HelpHome";
 import MobileAppSD from "./components/MobileAppSD";
 
-import VerifyInfo from "./components/verify/verifyInfo";
-import VerifyNewUser from "./components/verify/verifyNewUser";
+import VerifyInfo from "./components/verifyBlckList/verifyInfo";
+import VerifyNewUser from "./components/verifyBlckList/verifyNewUser";
+import Blacklist from "./components/verifyBlckList/Blacklist";
 
 import MainStyle from "./components/styles/Main.css"
 
@@ -57,18 +57,8 @@ import OneFirmsShop from "./components/shop/OneFirmsShop";
 import SearchInshop from "./components/shop/SearchInshop";
 import ManageStock from "./components/shop/ManageStock";
 
-
-
 function HomeScreen() {
-    const logout = async ()=>{
-    
-    try{
-    await signOut(auth)
-    }catch (err){
-      console.error(err)
-    }
-  }
-
+  
   // const navigation = useNavigation();
 const navigate = useNavigate()
 const {page} = useParams()
@@ -85,7 +75,6 @@ const {page} = useParams()
   }, [currentUser]);
 
    const [ username , setUsername] = React.useState("");
-   const [ contact , setContact] = React.useState('');
 
        React.useEffect(() => {
   let unsubscribe;  
@@ -98,7 +87,6 @@ const {page} = useParams()
       unsubscribe = onSnapshot(docRef, (doc) => {
         if (doc.exists()) {
           setUsername(doc.data().username);
-          setContact(doc.data().contact);
         }
       });
     }
@@ -160,7 +148,6 @@ const {page} = useParams()
                    <Text  style={{color : 'white'}}>Trucks</Text>  
                    }
                 </TouchableOpacity>
-
                    
                  <TouchableOpacity   onPress={()=>navigate('/shopLocation/') }  >
                   <Text style={{color:'white'}} >Store</Text>
@@ -170,7 +157,6 @@ const {page} = useParams()
              {smallMenu && <SmallMenu  toggleSmallMenu={toggleSmallMenu}  /> }
             
          {/* { currentUser&& !username&& <PersonalAccInfo personalInfo={personalInfo} />}  */}
-
              <TouchableOpacity onPress={checkAuth}  style={{position :'absolute',top: 440 ,right:10 , width : 60 , height : 35 , alignItems :"center" , justifyContent :'center', backgroundColor:'rgb(129,201,149)' , zIndex :200 , borderRadius: 8}} >
                 <Text style={{color : 'white'}} >Add</Text>
              </TouchableOpacity>
@@ -186,7 +172,6 @@ const {page} = useParams()
     </View>
   );
 }
-
 
 function App(){
   React.useEffect(() => {
@@ -239,7 +224,6 @@ function App(){
     }
   };
 }, [currentUser]);
-            
 
       const [isVerified, setIsVerified] = React.useState(false);
       React.useEffect(() => {
@@ -297,7 +281,6 @@ function App(){
       <Route path="/message/:chatStarterId/:starterCompanyName"   element={<Messaging username={username}/>}/>
       <Route path="/message/:gchatId/:senderName/:receiverName"   element={<Messaging username={username}/>}/>
 
-      {/* <Route path="/bookingsandBiddings/" element={<BookingsandBiddings/>} /> */}
       <Route path="/bookingsandBiddings/" element={<BookingsandBiddings/>} />
       <Route path="/bookingsandBiddings/:dbName/:dspRoute" element={<BookingsandBiddings/>} />
 
@@ -312,32 +295,30 @@ function App(){
       <Route path="/dspOneTrckType/:truckType" element={<DspOneTruckType/>} initialParams={{username : username , contact : contact , isVerified : isVerified}} />
       <Route path="/selectedUserTrucks/:userId" element={<SelectedUserTrucks/>} />
       <Route path="/selectedUserLoads/:userId" element={<DspAllLoads username={username} />} />
+      <Route path="/selectedUserLoads/:userId/:itemId" element={<DspAllLoads username={username} />} />
       <Route path="/searchedLoads/:userId/:itemId" element={<DspAllLoads username={username} />} />
 
       <Route path="/location/:location" element={<DspAllLoads username={username} />} />
 
       <Route path="/shopLocation/" element={<ShopLocation/>} />
-      <Route path="/DspShop/:location/:specproduct" element={<DspShopIterms  spechopLoc={spechopLoc} />} />
+      <Route path="/DspShop/:location/:specproduct/:sellOBuy" element={<DspShopIterms  spechopLoc={spechopLoc} />} />
       <Route path="/selectAddShop/:location" element={<SelectAddToShop/>} />
       <Route path="/AddToShop/:location/:specproduct" element={<AddToShop  
       username={ username}  contact = {contact}  isVerified ={ isVerified}  shopLocation={spechopLoc}   deliveryR ={deliveryR} /> } />
-      <Route path="/AddToShop/:location/:specproduct/:truckType" element={<AddToShop
+      <Route path="/AddToShop/:location/:specproduct/:sellOBuy" element={<AddToShop
       username={ username}  contact = {contact}  isVerified ={ isVerified} shopLocation={spechopLoc}/>} deliveryR ={deliveryR} />
-      <Route path="/OneFirmsShop/:userId" element={<OneFirmsShop/>} />
+      <Route path="/OneFirmsShop/:userId/:itemId/:sellOBuyG" element={<OneFirmsShop/>} />
+      <Route path="/OneFirmsShopA/:userId/:itemId/:sellOBuyG/:agCont" element={<OneFirmsShop/>} />
       <Route path="/manageStock/" element={<ManageStock/>} />
       <Route path="/sSoldProducts/:userId/:itemId" element={<OneFirmsShop/>} />
       <Route path="/shosearchElement/" element={<SearchInshop/>} />
 
-
       <Route path="/helpHome/" element={<HelpHome/>} />
       <Route path="/mobileAppSD/" element={<MobileAppSD/>} />
 
-      {/* <Route path="/mobileAppSD/" element={<MobileAppSD/>} /> */}
-      {/* <Route path="/mobileAppSD/" element={<MobileAppSD/>} /> */}
-
       <Route path="/verifyInfo/" element={<VerifyInfo/>} />
+      <Route path="/blacklist/" element={<Blacklist/>} />
       <Route path="/verifyNewUser/" element={<VerifyNewUser/>} />
-
       
     </Routes>
       </BrowserRouter>

@@ -304,7 +304,7 @@ setTimeout(() => {
       setSpinnerItem(null)      
     }
   };
-        const message =  `${item.companyName} is this Load still available ${item.typeofLoad} from ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : ''} from https://www.truckerz.net/selectedUserLoads/${item.userId}` ; // Set your desired message here
+        const message =  `${item.companyName} is this Load still available ${item.typeofLoad} from ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : ''} from https://www.truckerz.net/selectedUserLoads/${item.userId}/${item.id}` ; // Set your desired message here
 
   let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
@@ -579,7 +579,6 @@ setTimeout(() => {
 
 }
 export default React.memo( DspAllLoads)
-
 
 const styles = StyleSheet.create({
     buttonStyle : {

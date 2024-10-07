@@ -16,7 +16,7 @@ import { useParams , useNavigate } from 'react-router-dom';
 
 function AddToShop( { username ,contact , isVerified , shopLocation ,deliveryR} ) {
 
-    const {location , specproduct ,truckType} = useParams()
+    const {location , specproduct ,sellOBuy} = useParams()
 
     const navigate = useNavigate()
   const shopDB = collection(db, "Shop");
@@ -25,6 +25,7 @@ function AddToShop( { username ,contact , isVerified , shopLocation ,deliveryR} 
     productName: "",
     price: "",
     additionalInfo :"" ,
+    productLoc :"" ,
     mileage :'' ,
     year :'' ,
     engine : '' , 
@@ -76,18 +77,7 @@ const [ imageUpload, setImageUpload] = React.useState([])
         });
     };
 
- const uploadImages = async () => {
-    try {
-        for (const image of imageUpload) {
-            const imageName = image.name + new Date().getTime();
-            const imageRef = ref(storage, `Shop/${imageName}`);
-            await uploadBytes(imageRef, image);
-            // Handle successful upload if needed
-        }
-    } catch (error) {
-        console.error('Error uploading images:', error);
-    }
-}
+
 
     const [spinnerItem, setSpinnerItem] = React.useState(false);
     
@@ -144,7 +134,8 @@ const [ imageUpload, setImageUpload] = React.useState([])
             currency: currency,
             shopLocation: shopLocation,
             deliveryR : deliveryR ,
-            sellRent: sellRent
+            sellRent: sellRent ,
+            sellOBuy :sellOBuy
         });
 
 
@@ -167,10 +158,6 @@ const [ imageUpload, setImageUpload] = React.useState([])
       setSpinnerItem(false)
         console.error('Error uploading images and adding document:', error);
     }
-
-
-
-
   };
   return (
       <View style={{alignItems :'center', paddingTop : 80}} >
@@ -187,9 +174,8 @@ const [ imageUpload, setImageUpload] = React.useState([])
       {image && <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />}
 
 
-<Text>Add @ least 4  Images </Text>
-
-         <div>
+      { sellOBuy---'forSell' && <Text>Add @ least 4  Images </Text>}
+        {sellOBuy==='forSell' && <div>
             {images.length < 4 && (
                 <div>
                     <label for="fileInput">
@@ -205,19 +191,15 @@ const [ imageUpload, setImageUpload] = React.useState([])
                 </div>
             )}
 
-            {/* <Text>Add many Images</Text> */}
-
-            {/* Display selected images */}
-          
           <ScrollView  horizontal  showsHorizontalScrollIndicator={false}  >
 
         {images.map((image, index) => (
             <img key={index} src={image} alt={`Image ${index}`}   style={{ width : 200 , height : 200 , margin : 7}} />
         ))}
           </ScrollView>
-        </div>
+        </div>}
 
-      
+      {sellOBuy ==='toBuy' && <Text> What are you Looking for </Text> }
 
         {specproduct === "vehicles" && <ScrollView horizontal style={{ width : 240 , flexDirection: 'row' , height:40 , margin :10}} >
      <TextInput
@@ -295,6 +277,18 @@ const [ imageUpload, setImageUpload] = React.useState([])
 
       { spinnerItem &&<ActivityIndicator size={34} />}
        
+             {specproduct ==="vehicles" || specproduct ==="trailers" ? <View  >
+                
+          <TextInput 
+            value={formData.productLoc}
+            placeholderTextColor="#6a0c0c"
+            placeholder="Additional Information"
+            onChangeText={(text) => handlechange(text, 'productLoc')}
+            type="text"
+            style={inputstyles.addIterms }
+          />
+              </View>
+              :null}
 
           <TextInput 
             value={formData.additionalInfo}
@@ -336,13 +330,11 @@ const styles = StyleSheet.create({
      borderColor : '#6a0c0c' ,
      paddingLeft :4 , 
      paddingRight:4 ,
-    //  marginLeft : 6
    } , 
     bttonIsTrue:{
     backgroundColor : '#6a0c0c' ,
      paddingLeft :4 ,
      paddingRight:4 ,
      color :'white' 
-
     }
 });

@@ -1,6 +1,6 @@
 import React from "react";
 import { db, auth } from "../config/fireBase";
-import { collection, doc, getDoc, addDoc, serverTimestamp ,query , where , getDocs} from 'firebase/firestore';
+import { collection, doc,  addDoc, serverTimestamp ,} from 'firebase/firestore';
 
 import { View , TextInput , Text, Alert ,TouchableOpacity , ActivityIndicator, StyleSheet} from "react-native";
 
@@ -9,7 +9,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import {useNavigate} from 'react-router-dom';
 function AddLoadDB ({username ,contact , isVerified }) {
-
 
 const navigate = useNavigate()
 const [error , setError]= React.useState("")
@@ -60,10 +59,6 @@ const [error , setError]= React.useState("")
     }));
   };
   
-
- 
-
-
     const [spinnerItem, setSpinnerItem] = React.useState(false);
     
   const handleSubmit = async () => {
