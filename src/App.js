@@ -249,7 +249,6 @@ function App(){
         }
       }, [currentUser]);
 
-            
     return(
           <BrowserRouter>
 
@@ -303,10 +302,12 @@ function App(){
       <Route path="/shopLocation/" element={<ShopLocation/>} />
       <Route path="/DspShop/:location/:specproduct/:sellOBuy" element={<DspShopIterms  spechopLoc={spechopLoc} />} />
       <Route path="/selectAddShop/:location" element={<SelectAddToShop/>} />
+
       <Route path="/AddToShop/:location/:specproduct" element={<AddToShop  
       username={ username}  contact = {contact}  isVerified ={ isVerified}  shopLocation={spechopLoc}   deliveryR ={deliveryR} /> } />
       <Route path="/AddToShop/:location/:specproduct/:sellOBuy" element={<AddToShop
-      username={ username}  contact = {contact}  isVerified ={ isVerified} shopLocation={spechopLoc}/>} deliveryR ={deliveryR} />
+       deliveryR ={deliveryR}  username={ username}  contact = {contact}  isVerified ={ isVerified} shopLocation={spechopLoc}/>} />
+
       <Route path="/OneFirmsShop/:userId/:itemId/:sellOBuyG" element={<OneFirmsShop/>} />
       <Route path="/OneFirmsShopA/:userId/:itemId/:sellOBuyG/:agCont" element={<OneFirmsShop/>} />
       <Route path="/manageStock/" element={<ManageStock/>} />

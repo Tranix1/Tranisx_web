@@ -1,10 +1,10 @@
 import React,{useState , useEffect} from "react";
-import { View , Text , ScrollView , TouchableOpacity, ActivityIndicator ,  TextInput} from 'react-native';
-import { db, auth } from "../config/fireBase";
+import { View , Text ,  TouchableOpacity, ActivityIndicator ,  TextInput} from 'react-native';
+import { db,  } from "../config/fireBase";
 
 import { storage } from "../config/fireBase";
-import { getDownloadURL, ref, uploadBytes, uploadBytesResumable ,} from "firebase/storage";
-import { collection, onSnapshot , serverTimestamp ,addDoc, query , where , getDocs ,doc,deleteDoc , updateDoc, runTransaction , setDoc} from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytes, } from "firebase/storage";
+import { collection, serverTimestamp ,addDoc, query , where , getDocs ,} from 'firebase/firestore';
 import inputstyles from "../styles/inputElement";
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 

@@ -1,7 +1,7 @@
 import React from "react";
 import {View , TouchableOpacity , Text , StyleSheet} from "react-native"
 
-import {query ,collection , where,onSnapshot, updateDoc } from "firebase/firestore"
+import {query ,collection , where,onSnapshot} from "firebase/firestore"
 import  { auth , db,  } from "../components/config/fireBase"
 
 import {useNavigate} from 'react-router-dom';

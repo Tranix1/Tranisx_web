@@ -26,19 +26,22 @@ const [sellOBuy , setSellOBuy] =React.useState(null)
         
        </View> 
 
-          {sellOBuy === true || sellOBuy ===false ? <View>
-            <Text> What do you want to {sellOBuy? "Buy" :"Sell" }  </Text>
+          {sellOBuy === "toBuy"  || sellOBuy === "forSell" ? <View>
+
+             {sellOBuy ==="toBuy" ? <Text>What are you Looking For ? </Text>
+              :<Text>What are you selling ? </Text>
+               }  
 
              <TouchableOpacity onPress={()=>navigate(`/AddToShop/${location}/vehicles/${sellOBuy}`)} style={styles.buttonSelectStyle}>
-                <Text style={{color:"white"}}>Add Vehicle</Text>
+                <Text style={{color:"white"}}>Vehicles</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/trailers/${sellOBuy}/`)} >
-                <Text style={{color:"white"}}>Add Trailers </Text>
+                <Text style={{color:"white"}}>Trailers </Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/spares/${sellOBuy}/`)}>
-                <Text style={{color:"white"}}>Add Spares </Text>
+                <Text style={{color:"white"}}>Spares </Text>
             </TouchableOpacity>
 
               <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/Sprovider/${sellOBuy}/`)}>
@@ -47,13 +50,13 @@ const [sellOBuy , setSellOBuy] =React.useState(null)
             
             </View>:null }   
 
-          { sellOBuy !== true || sellOBuy !==false? <View>
+          { sellOBuy !== "toBuy" && sellOBuy !== "forSell" ? <View>
                 <TouchableOpacity onPress={()=>toggleSellOBuy("forSell")} style={styles.buttonSelectStyle} >
-                    <Text>Want to sell</Text>
+                    <Text style={{color:'white'}} >Want to sell</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={()=>toggleSellOBuy("toBuy")} style={styles.buttonSelectStyle} >
-                    <Text>Want to Buy</Text>
+                    <Text style={{color:'white'}}>Want to Buy</Text>
                 </TouchableOpacity>
 
             </View>:null}

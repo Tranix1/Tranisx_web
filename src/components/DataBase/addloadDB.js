@@ -1,8 +1,8 @@
 import React from "react";
 import { db, auth } from "../config/fireBase";
-import { collection, doc,  addDoc, serverTimestamp ,} from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp ,} from 'firebase/firestore';
 
-import { View , TextInput , Text, Alert ,TouchableOpacity , ActivityIndicator, StyleSheet} from "react-native";
+import { View , TextInput , Text, TouchableOpacity , ActivityIndicator, StyleSheet} from "react-native";
 
 import inputstyles from "../styles/inputElement";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';

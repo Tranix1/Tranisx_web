@@ -14,9 +14,8 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useParams , useNavigate } from 'react-router-dom';
 
-function AddToShop( { username ,contact , isVerified , shopLocation ,deliveryR} ) {
-
-    const {location , specproduct ,sellOBuy} = useParams()
+function AddToShop( {deliveryR ,username ,contact , isVerified , shopLocation} ) {
+    let {location , specproduct , sellOBuy} = useParams()
 
     const navigate = useNavigate()
   const shopDB = collection(db, "Shop");
@@ -174,8 +173,8 @@ const [ imageUpload, setImageUpload] = React.useState([])
       {image && <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />}
 
 
-      { sellOBuy---'forSell' && <Text>Add @ least 4  Images </Text>}
-        {sellOBuy==='forSell' && <div>
+          {sellOBuy==='forSell' &&   <Text>Add @ least 4  Images </Text>}
+        {sellOBuy==='forSell' && <div >
             {images.length < 4 && (
                 <div>
                     <label for="fileInput">

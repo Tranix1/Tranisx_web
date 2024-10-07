@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from "react";
 import { View , Text , ScrollView , TouchableOpacity,TextInput} from "react-native";
 
-import { collection, onSnapshot ,doc } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from "../config/fireBase";
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 // import { Ionicons } from "@expo/vector-icons";
@@ -38,7 +38,6 @@ const navigate = useNavigate()
    
 
         const [filteredData, setFilteredData] = React.useState([]);
-        const [wordEntered, setWordEntered] = React.useState("");
       
           const handleFilter = (text) => {
         const searchWord = text;
@@ -55,24 +54,15 @@ const navigate = useNavigate()
       };
        
 
-
-
-        const clearInput = () => {
-          setFilteredData([]); 
-          setWordEntered("");
-        };
-        
-
-
         const displaySearched =  filteredData.slice(0, 15).map((value , key)=>{
             return(
-              <TouchableOpacity  style={{flex : 1, marginBottom :6 , padding : 6}} key={value.id} onPress={()=> navigate(`/sSoldProducts/${value.userId}/${value.id}` ) }>
+              <TouchableOpacity  style={{flex : 1, marginBottom :3 , padding : 6}} key={value.id} onPress={()=> navigate(`/sSoldProducts/${value.userId}/${value.id}` ) }>
 
             {value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
             <VerifiedIcon style={{color : 'green'}} />
             </View>}
             <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}>{value.companyName} </Text>
-            <Text >{value.specproduct} : {value.productName}</Text>
+            <Text >{value.sellOBuy ==="forSell" ? "Selling":'Looking For' } {value.specproduct} : {value.productName}</Text>
             <Text > {value.location} store at {value.shopLocation} </Text>
               </TouchableOpacity>
             )

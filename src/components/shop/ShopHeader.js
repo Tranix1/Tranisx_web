@@ -17,7 +17,7 @@ const [sellOBuy , setSellOBuy] = React.useState('forSell')
 
     function toggleSellOBuy(value){
         setSellOBuy(value)
-        navigate(`/DspShop/${location}/vehicles/${value}/`) 
+        navigate(`/DspShop/${location}/${specproduct}/${value}/`) 
     }
 
 
@@ -124,8 +124,8 @@ const [sellOBuy , setSellOBuy] = React.useState('forSell')
 
             <TouchableOpacity onPress={()=> navigate(`/DspShop/${location}/trailers/${sellOBuy}/`) } >
                 {specproduct === "trailers" ?
-                 <Text style={{color:'white' , textDecorationLine :'underline',fontWeight:'600' , fontSize : 18}} > Trailer</Text> :
-                 <Text style={{color:'white'}} > Trailer</Text>}
+                 <Text style={{color:'white' , textDecorationLine :'underline',fontWeight:'600' , fontSize : 18}} > Trailers</Text> :
+                 <Text style={{color:'white'}} > Trailers</Text>}
             </TouchableOpacity>
 
             <TouchableOpacity onPress={()=> navigate(`/DspShop/${location}/spares/${sellOBuy}/`) }>
@@ -136,7 +136,7 @@ const [sellOBuy , setSellOBuy] = React.useState('forSell')
 
             <TouchableOpacity onPress={()=> navigate(`/DspShop/${location}/Sprovider/${sellOBuy}/`) }>
                {specproduct === "Sprovider" ?
-               <Text style={{color:'white' , textDecorationLine :'underline' ,fontWeight:'600' , fontSize : 18 }} > Service Provider</Text> :
+               <Text style={{color:'white' , textDecorationLine :'underline' ,fontWeight:'600' , fontSize : 18 }} > SProvider</Text> :
                <Text style={{color:'white'}} > SProvider </Text>}
 
             </TouchableOpacity>

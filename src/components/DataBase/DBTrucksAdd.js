@@ -1,9 +1,9 @@
 import React,{useState} from "react";
 import { storage } from "../config/fireBase"  ;
-import { getDownloadURL, ref, uploadBytes, uploadBytesResumable ,} from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes, } from "firebase/storage";
 import { collection, addDoc } from 'firebase/firestore';
 import { db, auth } from "../config/fireBase";
-import {View, TextInput , Text ,    TouchableOpacity , Image , ActivityIndicator} from "react-native"
+import {View, TextInput , Text ,    TouchableOpacity , ActivityIndicator} from "react-native"
 import inputstyles from "../styles/inputElement";
 
 // import * as ImagePicker from 'expo-image-picker';

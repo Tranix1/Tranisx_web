@@ -25,31 +25,31 @@ return(
             <Text style={{color:'#6a0c0c'}}> Zimbabwe</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={()=> navigate('/DspShop/SouthAfrica/vehicles') } style={styles.buttonStyle}>
+        <TouchableOpacity onPress={()=> navigate('/DspShop/SouthAfrica/vehicles/forSell') } style={styles.buttonStyle}>
             <Text style={{color:'#6a0c0c'}}>  South Africa</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={()=> navigate('/DspShop/Namibia/vehicles') } style={styles.buttonStyle}>
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Namibia/vehicles/forSell') } style={styles.buttonStyle}>
             <Text style={{color:'#6a0c0c'}}>Namibia </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={()=> navigate('/DspShop/Tanzania/vehicles') } style={styles.buttonStyle}>
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Tanzania/vehicles/forSell') } style={styles.buttonStyle}>
             <Text style={{color:'#6a0c0c'}}> Tanzania</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={()=> navigate('/DspShop/Mozambique/vehicles') } style={styles.buttonStyle}>
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Mozambique/vehicles/forSell') } style={styles.buttonStyle}>
             <Text style={{color:'#6a0c0c'}}>Mozambique </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={()=> navigate('/DspShop/Zambia/vehicles') } style={styles.buttonStyle}>
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Zambia/vehicles/forSell') } style={styles.buttonStyle}>
             <Text style={{color:'#6a0c0c'}}> Zambia</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={()=> navigate('/DspShop/Botswana/vehicles') } style={styles.buttonStyle} >
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Botswana/vehicles/forSell') } style={styles.buttonStyle} >
             <Text style={{color:'#6a0c0c'}}>Botswana </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={()=> navigate('/DspShop/Malawi/vehicles') }style={styles.buttonStyle} >
+        <TouchableOpacity onPress={()=> navigate('/DspShop/Malawi/vehicles/forSell') }style={styles.buttonStyle} >
             <Text style={{color:'#6a0c0c'}}>Malawi </Text>
         </TouchableOpacity>
 

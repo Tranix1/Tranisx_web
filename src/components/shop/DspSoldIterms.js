@@ -107,7 +107,7 @@ function DspSoldIterms(){
 
           </View>)
     return(
-      <TouchableOpacity  key={item.id}  onPress={()=>navigate(`/OneFirmsShop/${item.userId}/${item.id}`)} style={{padding :7}}>
+      <TouchableOpacity  key={item.id}  onPress={()=>navigate(`/OneFirmsShop/${item.userId}/${item.id}/${sellOBuy}`)} style={{padding :7}}>
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
@@ -124,9 +124,9 @@ function DspSoldIterms(){
 
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} </Text>
 
-     {item.specproduct === "vehicles" && <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{height: 50 , margin : 5 , }} >
+     {item.specproduct === "vehicles" && (item.mileage || item.year|| item.engine ||item.trans || item.fuel)&& <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{ margin : 5 , }} >
 
-           { item.mileage&& <View  style={{marginRight:12}}>
+           { item.mileage && <View  style={{marginRight:12}}>
               <Text>MILEAGE </Text>
               <Text>{item.mileage} </Text>
             </View>}
