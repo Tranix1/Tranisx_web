@@ -113,52 +113,70 @@ function DspSoldIterms(){
         let dataQuery;
 
             if(specproduct === "vehicles" ){
-              if(priceRange){
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("priceRange","==",priceRange ) );
-              } 
-              
-              else if(vehicleType){
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType","==",vehicleType ) );
-              }else if(vehicleType && priceRange){
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) );
-              }else if(vehicleType  &&(buyRent === true || buyRent === false) ){
 
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) , where("sellOBuy", "==", sellOBuy) );
-              }  else if(vehicleType  &&(buyRent === true || buyRent === false) &&vehiMake ){
+                 if(vehicleType && vehiMake && priceRange && (buyRent === true || buyRent === false) ){
+                    alert('asdasdasdasdas')
+                    dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehiMake", "==", vehiMake) , where("priceRange", "==", priceRange) , where("sellRent", "==", buyRent) );
+                 }else if(vehicleType && vehiMake && priceRange){
 
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) , where("sellOBuy", "==", sellOBuy) , where("vehiMake", "==", vehiMake) );
-              }
-              
-              
-              else if(vehiMake){
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) );
-              }else if(vehiMake && priceRange ){
+                    alert('')
+                    dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehiMake", "==", vehiMake) , where("priceRange", "==", priceRange) );
+                 }
 
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("priceRange", "==", priceRange) );
-              }else if(vehiMake && vehicleType){
+                 else if (priceRange) {
 
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehicleType", "==", vehicleType) );
-              }else if(vehiMake  &&(buyRent === true || buyRent === false) ){
+                if(vehicleType ){
+                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("priceRange", "==", priceRange) , where("vehicleType", "==", vehicleType) );
 
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("sellOBuy", "==", sellOBuy) );
-              }
-              else if(vehiMake && vehicleType && priceRange ){
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) );
+                }else if( vehiMake ){
 
-              } else if(vehiMake && vehicleType && priceRange &&(buyRent === true || buyRent === false) ){
+                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("priceRange", "==", priceRange) , where("vehiMake", "==", vehiMake) );
+                }else if ((buyRent === true || buyRent === false) ){
 
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) , where("sellOBuy", "==", sellOBuy) );
-              }
-              
+                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("sellRent", "==", buyRent) , where("priceRange", "==", priceRange));
+                }else{
+
+                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("priceRange", "==", priceRange) );
+                }
+
+                 }else if(vehicleType){
+                  if( vehiMake ){
+
+                    dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) );
+                  }else if ((buyRent === true || buyRent === false) ){
+
+                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("sellRent", "==", buyRent) , where("vehicleType", "==", vehicleType));
+
+                }
+                  else{
+
+                    dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType)  );
+                  }
+                 }else if(vehiMake){
+                   if ((buyRent === true || buyRent === false) ){
+
+                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("sellRent", "==", buyRent) , where("vehiMake", "==", vehiMake));
+
+                    }else {
+
+                      dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehiMake", "==", vehiMake)  );
+                    }
+                 }else if(buyRent === true || buyRent === false){
+
+                      dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy)  , where("sellRent", "==", buyRent) , );
+                 }
+                 else{
+
+                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) );
+                }
+            
 
 
-              else if(vehicleType && priceRange&&(buyRent === true || buyRent === false) ){
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) , where("sellOBuy", "==", sellOBuy) );
-              } else if (buyRent === true || buyRent === false) {
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) );
-            } else {
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) );
-            }
+
+
+
+
+
             }else   if (specproduct === "trailers") {
 
             if (buyRent === true || buyRent === false) {
@@ -259,12 +277,17 @@ function DspSoldIterms(){
             <VerifiedIcon style={{color : 'green'}} />
       </View>}
 
-      {item.brandNew && <Text> brand New</Text>}
+   
       
-          {sellOBuy ==="forSell"  &&<ScrollView  horizontal  showsHorizontalScrollIndicator={false}  >
+          {sellOBuy ==="forSell"  &&<ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{ width : 200 , height : 200 ,}} >
          
+      {item.brandNew &&<View style={{ backgroundColor :'#40E0D0',paddingLeft :4 , paddingRight:4 , position : 'absolute' , bottom :0 , left :0 }} >
+
+          <Text style={{color :'white'}} > brand New</Text>
+
+      </View>}
         {item.imageUrl.map((image, index) => (
-            <img key={index} src={image} alt={`Image ${index}`}   style={{ width : 200 , height : 200 , margin : 7}} />
+            <img key={index} src={image} alt={`Image ${index}`}   style={{ margin : 7 }} />
         ))}
 
           </ScrollView>}
@@ -384,35 +407,35 @@ function DspSoldIterms(){
           </TouchableOpacity>}
 
           {priceRangeDsp && <View style={{flexDirection:'row'}} >
-            <TouchableOpacity style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } onPress={()=>addPriceRange("firstRange") }>
+            <TouchableOpacity style={styles.bynIsUnActive } onPress={()=>addPriceRange("firstRange") }>
             <Text>0 - 1500</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } onPress={()=>addPriceRange("scndRange") }>
+            <TouchableOpacity style={ styles.bynIsUnActive } onPress={()=>addPriceRange("scndRange") }>
             <Text> 1.5k - 2.5k</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }   onPress={()=>addPriceRange("thirdRange") }>
+            <TouchableOpacity style={ styles.bynIsUnActive }   onPress={()=>addPriceRange("thirdRange") }>
             <Text>2.5 - 5k</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }  onPress={()=>addPriceRange("fouthRange") } >
+            <TouchableOpacity style={ styles.bynIsUnActive }  onPress={()=>addPriceRange("fouthRange") } >
             <Text>5k - 10k</Text>
             </TouchableOpacity>
-            <TouchableOpacity  style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }  onPress={()=>addPriceRange("fifthRange") } >
+            <TouchableOpacity  style={ styles.bynIsUnActive }  onPress={()=>addPriceRange("fifthRange") } >
             <Text>10k - 25k</Text>
             </TouchableOpacity>
-            <TouchableOpacity  style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }   onPress={()=>addPriceRange("sixthRange") }>
+            <TouchableOpacity  style={ styles.bynIsUnActive }   onPress={()=>addPriceRange("sixthRange") }>
             <Text>25k - 45k</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }   onPress={()=>addPriceRange("svthRange") }>
+            <TouchableOpacity style={styles.bynIsUnActive }   onPress={()=>addPriceRange("svthRange") }>
             <Text>45k 65k</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }   onPress={()=>addPriceRange("eighthRange") }>
+            <TouchableOpacity style={styles.bynIsUnActive }   onPress={()=>addPriceRange("eighthRange") }>
             <Text>65k - 80k</Text>
             </TouchableOpacity>
-            <TouchableOpacity  style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }   onPress={()=>addPriceRange("ninthRange") }>
+            <TouchableOpacity  style={ styles.bynIsUnActive }   onPress={()=>addPriceRange("ninthRange") }>
             <Text>80k - 100k</Text>
             </TouchableOpacity>
-            <TouchableOpacity  style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }   onPress={()=>addPriceRange("tentRange") }>
+            <TouchableOpacity  style={ styles.bynIsUnActive }   onPress={()=>addPriceRange("tentRange") }>
             <Text>100k +++ </Text>
             </TouchableOpacity>
           </View>}

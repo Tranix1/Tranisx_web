@@ -176,30 +176,35 @@ const [ imageUpload, setImageUpload] = React.useState([])
  let image 
 
   const handleSubmit = async () => {
-    if( specproduct !== "Sprovider" ){ 
+
+       if(images.length === 0){
+        alert("Add at least 4 images")
+        return
+      }else if(!username){
+        alert('add username')
+        return
+      }
+     
+
+      if(specproduct === "vehicles"){
+
+       if(!vehicleType){
+        alert("Specify the vehicle type")
+        return
+      } else if(!vehiMake){
+          alert("Specify vehicle make")
+          return
+        }else if(!formData.price ||!formData.productName  ) {
+        alert("Add product name and the price to continue")
+        return
+        }
+      }else if( specproduct !== "Sprovider" ){ 
       if(!formData.productName  || !formData.price  ){
         alert("Add product name and the price to continue")
         return
-      }}
-      else if(!username){
-        alert('add username')
-        return
-      }else if(images.length === 0){
-        alert("Add at least 4 images")
-        return
-      }else if(specproduct === "vehicles" && !priceRange){
-        alert("Specify the price Range")
-        return
-      }else if(!vehicleType &&specproduct === "vehicles"){
-        alert("Specify the vehicle type")
-        return
-      }else if (isNaN(formData.price)) {
-        // Handle the case where the input is not a number for the price field
-        alert('Price must be a number.');
-        return;
-        }else if(!trailerType &&specproduct === "vehicles" ){
-          alert('Specify vehc be a number.');
-
+      }}  else if(!trailerType &&specproduct === "trailers" ){
+          alert('Specify trailer type');
+          return
         }
       setSpinnerItem(true)
 
@@ -263,6 +268,9 @@ const [ imageUpload, setImageUpload] = React.useState([])
       setImages([])
       setImageUpload([])
       setSpinnerItem(false)
+      setVehiMake(null)
+      setVehicleType(null)
+      setBrandNew(false)
         console.log('Document added with image URLs:', docRef.id);
     } catch (error) {
       setSpinnerItem(false)
