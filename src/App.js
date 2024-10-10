@@ -311,7 +311,7 @@ function App(){
       <Route path="/OneFirmsShop/:userId/:itemId/:sellOBuyG" element={<OneFirmsShop/>} />
       <Route path="/OneFirmsShopA/:userId/:itemId/:sellOBuyG/:agCont" element={<OneFirmsShop/>} />
       <Route path="/manageStock/" element={<ManageStock/>} />
-      <Route path="/sSoldProducts/:userId/:itemId" element={<OneFirmsShop/>} />
+      <Route path="/sSoldProducts/:userId/:itemId/:sellOBuyG" element={<OneFirmsShop/>} />
       <Route path="/shosearchElement/" element={<SearchInshop/>} />
 
       <Route path="/helpHome/" element={<HelpHome/>} />

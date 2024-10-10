@@ -6,6 +6,8 @@ import {onSnapshot ,  query ,collection,where } from "firebase/firestore"
 import {useNavigate,useParams} from 'react-router-dom';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
+import { WhatsApp  } from '@mui/icons-material';
+
 function DspSoldIterms(){
     const navigate = useNavigate()
 
@@ -14,11 +16,83 @@ function DspSoldIterms(){
   
       let [buyRent , setBuyRent] = React.useState(null)
 
+
+
+  const [priceRangeDsp , setPriceRangeDsp]= React.useState(false)
+  function addPriceRangeDsp(){
+  setPriceRangeDsp(prev => !prev)
+  setVehicleTypeDsp(false)
+  }
+  const [priceRange , setPriceRange]= React.useState(null)
+  function addPriceRange(addedValue){
+    setPriceRange(addedValue)
+    setPriceRangeDsp(false)
+      setVehicleTypeDsp(false)
+  }
+   let priceRangeShow = null
+
+        if ( priceRange ==="firstRange") {
+            priceRangeShow = "0 - 1.5k"
+        } else if (priceRange ==="scndRange")  {
+          priceRangeShow = "1.5 - 2.5"
+        } else if (priceRange === "thirdRange" )  {
+          priceRangeShow= "2.5k - 5k" ;
+        } else if (priceRange === "fouthRange" )  {
+          priceRangeShow = "5k - 10k" ;
+        } else if (priceRange === "fifthRange" )  {
+          priceRangeShow = "10k - 25k" ;
+        } else if (priceRange === "sixthRange")  {
+          priceRangeShow = "25k - 45k" ;
+        } else if (priceRange === "svthRange")  {
+          priceRangeShow = "45k - 65k"
+        } else if (priceRange === "eighthRange")  {
+          priceRangeShow = "65k - 100k"
+        } else if (priceRange === "ninthRange")  {
+          priceRangeShow = "80k - 100k"
+        } else if (priceRange === "tentRange" )  {
+            priceRangeShow= "100k +++"
+
+        }
+
+   
+
+  const [vehicleTypeDsp , setVehicleTypeDsp] = React.useState(false)
+    function dspVehicleTypeDsp(){
+      setVehicleTypeDsp(prev => !prev)
+      setPriceRangeDsp(false)
+    }
+
+  const [vehicleType , setVehicleType] = React.useState(null)
+    function addVehicleType(slctedV){
+      setVehicleType(slctedV)
+      setVehicleTypeDsp(false)
+      setPriceRangeDsp(false)
+    }
+    const [cargoTrcks , setCargoTrucks] = React.useState(false)
+    function toggleCargoTrcks(){
+      setCargoTrucks(prev=>!prev)
+    }
+
  useEffect(() => {
     try {
         let dataQuery;
 
-            if (specproduct === "vehicles" || specproduct === "trailers") {
+            if(specproduct === "vehicles" ){
+              if(priceRange){
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("priceRange","==",priceRange ) );
+              } else if(vehicleType){
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType","==",vehicleType ) );
+              }else if(vehicleType && priceRange){
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) );
+              }else if(vehicleType && priceRange&&(buyRent === true || buyRent === false) ){
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) , where("sellOBuy", "==", sellOBuy) );
+              } else if (buyRent === true || buyRent === false) {
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) );
+            } else {
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) );
+            }
+            }else   if (specproduct === "trailers") {
+
             if (buyRent === true || buyRent === false) {
                 dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) );
             } else {
@@ -71,7 +145,7 @@ function DspSoldIterms(){
     } catch (err) {
         console.error(err);
     }
-}, [specproduct, buyRent, sellOBuy]);
+}, [specproduct, buyRent, sellOBuy , priceRange , vehicleType ]);
 
     const [contactDisplay, setContactDisplay] = React.useState({ ['']: false });
     const toggleContact = (itemId) => {
@@ -101,8 +175,8 @@ function DspSoldIterms(){
             <Text>Phone call</Text>
           </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)}>
-            <Text>WhatsApp</Text>
+            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 50}} >
+            <Text > WhatsApp <WhatsApp style={{color : "#25D366" }} />   </Text>
           </TouchableOpacity>
 
           </View>)
@@ -113,7 +187,8 @@ function DspSoldIterms(){
             <VerifiedIcon style={{color : 'green'}} />
       </View>}
 
-
+      {item.brandNew && <Text> brand New</Text>}
+      
           {sellOBuy ==="forSell"  &&<ScrollView  horizontal  showsHorizontalScrollIndicator={false}  >
          
         {item.imageUrl.map((image, index) => (
@@ -124,7 +199,7 @@ function DspSoldIterms(){
 
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} </Text>
 
-     {item.specproduct === "vehicles" && (item.mileage || item.year|| item.engine ||item.trans || item.fuel)&& <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{ margin : 5 , }} >
+     {item.specproduct === "vehicles" &&  <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{ margin : 5 , }} >
 
            { item.mileage && <View  style={{marginRight:12}}>
               <Text>MILEAGE </Text>
@@ -161,12 +236,12 @@ function DspSoldIterms(){
 
       { item.price &&<View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >{sellOBuy==='forSell' ?'Price':'Budget' }</Text>
-       {<Text>:  {item.currency?"USD" : "Rand" }  {item.price}</Text>} 
+       {<Text style={{color:'green'}} >:  {item.currency?"USD" : "Rand" }  {item.price}</Text>} 
       </View>}
 
       { item.contact && <View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >Contact</Text>
-       {<Text>:  {item.contact}</Text>} 
+       {<Text  >:  {item.contact}</Text>} 
       </View>}
 
 
@@ -200,7 +275,7 @@ function DspSoldIterms(){
           <Text style={{marginLeft :50 ,color :'green'}} >See more </Text>
         </TouchableOpacity>
         <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
-          <Text style={{textDecorationLine:'underline'}} > get In Touch now</Text>
+          <Text style={{textDecorationLine:'underline' , color:'#DC143C'}} > get In Touch now</Text>
         </TouchableOpacity>
 
 
@@ -224,6 +299,107 @@ function DspSoldIterms(){
             <Text style={ buyRent=== false ? {color : 'white'}: {color : 'black'} } >Rent</Text>
           </TouchableOpacity>
 
+          {<TouchableOpacity onPress={addPriceRangeDsp} style={priceRangeDsp  ? styles.btnIsActive : styles.bynIsUnActive }>
+            <Text style={ priceRangeDsp ? {color : 'white'}: {color : 'black'} } >{priceRange? priceRangeShow : "budjet"} </Text>
+          </TouchableOpacity>}
+
+         { !priceRangeDsp && <TouchableOpacity onPress={dspVehicleTypeDsp} style={vehicleTypeDsp ? styles.btnIsActive : styles.bynIsUnActive }>
+            <Text style={ vehicleTypeDsp ? {color : 'white'}: {color : 'black'} } > {vehicleType ? vehicleType : "body"} </Text>
+          </TouchableOpacity>}
+
+          {priceRangeDsp && <View style={{flexDirection:'row'}} >
+            <TouchableOpacity style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } onPress={()=>addPriceRange("firstRange") }>
+            <Text>0 - 1500</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } onPress={()=>addPriceRange("scndRange") }>
+            <Text> 1.5k - 2.5k</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }   onPress={()=>addPriceRange("thirdRange") }>
+            <Text>2.5 - 5k</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }  onPress={()=>addPriceRange("fouthRange") } >
+            <Text>5k - 10k</Text>
+            </TouchableOpacity>
+            <TouchableOpacity  style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }  onPress={()=>addPriceRange("fifthRange") } >
+            <Text>10k - 25k</Text>
+            </TouchableOpacity>
+            <TouchableOpacity  style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }   onPress={()=>addPriceRange("sixthRange") }>
+            <Text>25k - 45k</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }   onPress={()=>addPriceRange("svthRange") }>
+            <Text>45k 65k</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }   onPress={()=>addPriceRange("eighthRange") }>
+            <Text>65k - 80k</Text>
+            </TouchableOpacity>
+            <TouchableOpacity  style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }   onPress={()=>addPriceRange("ninthRange") }>
+            <Text>80k - 100k</Text>
+            </TouchableOpacity>
+            <TouchableOpacity  style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }   onPress={()=>addPriceRange("tentRange") }>
+            <Text>100k +++ </Text>
+            </TouchableOpacity>
+          </View>}
+
+  { vehicleTypeDsp && <View style={{flexDirection:'row'}} >
+                  <TouchableOpacity onPress={toggleCargoTrcks} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Cargo Trucks</Text>
+                  </TouchableOpacity>
+                 {cargoTrcks && <View style={{flexDirection:'row'}} >
+                  <TouchableOpacity onPress={()=>addVehicleType("truckhorse")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>truck horse</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("BoxTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Box Trucks</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("FlatbedTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Flatbed Trucks</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("RefrigeratedTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Refrigerated Trucks</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("DumpTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Dump Trucks</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("TankerTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Tanker Trucks</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={()=>addVehicleType("CurtainsideTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Curtainside Trucks</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={()=>addVehicleType("ParcelVans")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Parcel Vans</Text>
+                  </TouchableOpacity>
+                  </View>}
+
+                 {!cargoTrcks&& <View style={{flexDirection:'row'}} >
+                  <TouchableOpacity onPress={()=>addVehicleType("Sedans")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Sedans</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("SUV")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>SUV</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("PickupTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Pickup Trucks</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("Hatchbacks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Hatchbacks</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("Vans")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Vans</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("Convertibles")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Convertibles</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("Crossovers")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <Text>Crossovers</Text>
+                  </TouchableOpacity>
+                  </View>}
+
+                  </View>}
+
         </ScrollView> : null }
 
       <div className="Main-grid">
@@ -238,7 +414,9 @@ export default React.memo(DspSoldIterms)
 
 const styles = StyleSheet.create({
   bynIsUnActive : {
-    width : 50 ,
+    // width : 50 ,
+    paddingLeft : 6 ,
+    paddingRight :4 ,
     color :'white'  , 
     borderWidth:1, 
     alignItems :'center' ,
@@ -247,7 +425,8 @@ const styles = StyleSheet.create({
     borderRadius : 15
   },
   btnIsActive : {
-    width : 50 ,
+    paddingLeft : 5 ,
+    paddingRight :6 ,
     color :'white'  , 
     alignItems :'center' ,
     justifyContent :'center' ,

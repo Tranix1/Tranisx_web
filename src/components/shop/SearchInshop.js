@@ -56,13 +56,21 @@ const navigate = useNavigate()
 
         const displaySearched =  filteredData.slice(0, 15).map((value , key)=>{
             return(
-              <TouchableOpacity  style={{flex : 1, marginBottom :3 , padding : 6}} key={value.id} onPress={()=> navigate(`/sSoldProducts/${value.userId}/${value.id}` ) }>
+              <TouchableOpacity  style={{flex : 1, marginBottom :3 , padding : 6}} key={value.id} onPress={()=> navigate(`/sSoldProducts/${value.userId}/${value.id}/${value.sellOBuy}` ) }>
 
             {value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
             <VerifiedIcon style={{color : 'green'}} />
             </View>}
-            <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}>{value.companyName} </Text>
-            <Text >{value.sellOBuy ==="forSell" ? "Selling":'Looking For' } {value.specproduct} : {value.productName}</Text>
+            <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}>{value.CompanyName} </Text>
+
+             <View style={{flexDirection :'row'}} >
+              <Text style={{width :100}} >{value.sellOBuy ==="forSell" ? "Product":'Looking For' }</Text>
+            {<Text>:  {value.productName} {value.sellRent ? "for sell" :'for rental' } </Text>} 
+            </View>
+            <View style={{flexDirection :'row'}} >
+              <Text style={{width :100}} >{value.sellOBuy==='forSell' ?'Price':'Budget' }</Text>
+            {<Text>:  {value.currency?"USD" : "Rand" }  {value.price}</Text>} 
+            </View>
             <Text > {value.location} store at {value.shopLocation} </Text>
               </TouchableOpacity>
             )

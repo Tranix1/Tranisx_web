@@ -22,7 +22,7 @@ function AddToShop( {deliveryR ,username ,contact , isVerified , shopLocation} )
 
   const [formData, setFormData] = React.useState({
     productName: "",
-    price: "",
+    price: null,
     additionalInfo :"" ,
     productLoc :"" ,
     mileage :'' ,
@@ -33,6 +33,12 @@ function AddToShop( {deliveryR ,username ,contact , isVerified , shopLocation} )
   });
 
   const  handlechange  = (value, fieldName) => {
+
+      if (fieldName === 'price' && isNaN(value)) {
+        // Handle the case where the input is not a number for the price field
+        alert('Price must be a number.');
+        return;
+    }
     setFormData((prevFormData) => ({
       ...prevFormData,
       [fieldName]: value,
@@ -49,6 +55,93 @@ function AddToShop( {deliveryR ,username ,contact , isVerified , shopLocation} )
   function toggleSellRent(){
     setSellRent(prev=>!prev)
   }
+
+    const [brandNew , setBrandNew] = React.useState(false)
+  function toggleBrandNew(){
+    setBrandNew(prev=>!prev)
+  }
+
+ 
+
+  let priceRange = null
+
+        if (formData.price < 1500) {
+            priceRange= "firstRange"
+        } else if (formData.price >= 1500 && formData.price < 2500)  {
+            priceRange ="scndRange";
+        } else if (formData.price >= 2500 && formData.price < 5000)  {
+            priceRange = "thirdRange" ;
+        } else if (formData.price >= 5000 && formData.price < 10000)  {
+            priceRange = "fouthRange" ;
+        } else if (formData.price >= 10000 && formData.price < 25000)  {
+            priceRange = "fifthRange" ;
+        } else if (formData.price >= 25000 && formData.price < 45000)  {
+            priceRange = "sixthRange" ;
+        } else if (formData.price >= 45000 && formData.price < 65000)  {
+            priceRange = "svthRange"
+        } else if (formData.price >= 65000 && formData.price < 80000)  {
+            priceRange = "eighthRange"
+        } else if (formData.price >= 80000 && formData.price < 100000)  {
+            priceRange = "ninthRange"
+        } else if (formData.price >= 100000 )  {
+            priceRange = "tentRange"
+        }
+
+        const [vehiMakeDsp , setvehiMakeDsp] =React.useState(false)
+          function toggleVehiMakeDsp(){
+            setvehiMakeDsp(prev => !prev)
+          }
+          const [vehiMake , setVehiMake] = React.useState("")
+
+          function addVehiMake(value){
+              setVehiMake(value)
+              setvehiMakeDsp(false)
+          }
+
+
+    const [cargoTrcksMake , setCargoTrucksMake] = React.useState(false)
+    function toggleCargoTrcksMake(){
+      setCargoTrucksMake(prev=>!prev)
+      setheavyEquipmentMake(false)
+    }
+
+    const [ heavyEquipmentMake , setheavyEquipmentMake] = React.useState(false)
+    function toggleHeavyEquipmentMake(){
+      setheavyEquipmentMake(prev=>!prev)
+      setCargoTrucksMake(false)
+    }
+
+  const [vehicleTypeDsp , setVehicleTypeDsp] = React.useState(false)
+    function dspVehicleTypeDsp(){
+      setVehicleTypeDsp(prev => !prev)
+    }
+
+  const [vehicleType , setVehicleType] = React.useState(null)
+    function addVehicleType(slctedV){
+      setVehicleType(slctedV)
+      setVehicleTypeDsp(false)
+    }
+
+    const [cargoTrcks , setCargoTrucks] = React.useState(false)
+    function toggleCargoTrcks(){
+      setCargoTrucks(prev=>!prev)
+      setheavyEquipment(false)
+    }
+
+    const [ heavyEquipment , setheavyEquipment] = React.useState(false)
+    function toggleHeavyEquipment(){
+      setheavyEquipment(prev=>!prev)
+      setCargoTrucks(false)
+    }
+    const [ trailerTypeDsp , setTrailerTypeDsp] = React.useState(false)
+    function toggleTrailerTypeDsp(){
+      setTrailerTypeDsp(prev=>!prev)
+    }
+    const [ trailerType , setTrailerType] = React.useState(null)
+    function addTrailerType(value){
+      setTrailerType(value)
+      setTrailerTypeDsp(false)
+    }
 
 const [images, setImages] = useState([]);
 
@@ -94,7 +187,20 @@ const [ imageUpload, setImageUpload] = React.useState([])
       }else if(images.length === 0){
         alert("Add at least 4 images")
         return
-      }
+      }else if(specproduct === "vehicles" && !priceRange){
+        alert("Specify the price Range")
+        return
+      }else if(!vehicleType &&specproduct === "vehicles"){
+        alert("Specify the vehicle type")
+        return
+      }else if (isNaN(formData.price)) {
+        // Handle the case where the input is not a number for the price field
+        alert('Price must be a number.');
+        return;
+        }else if(!trailerType &&specproduct === "vehicles" ){
+          alert('Specify vehc be a number.');
+
+        }
       setSpinnerItem(true)
 
     
@@ -134,7 +240,12 @@ const [ imageUpload, setImageUpload] = React.useState([])
             shopLocation: shopLocation,
             deliveryR : deliveryR ,
             sellRent: sellRent ,
-            sellOBuy :sellOBuy
+            sellOBuy :sellOBuy ,
+            priceRange : priceRange ,
+            vehicleType : vehicleType ,
+            brandNew : brandNew ,
+            vehiMake : vehiMake
+
         });
 
 
@@ -173,8 +284,8 @@ const [ imageUpload, setImageUpload] = React.useState([])
       {image && <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />}
 
 
-          {sellOBuy==='forSell' &&   <Text>Add @ least 4  Images </Text>}
-        {sellOBuy==='forSell' && <div >
+          {sellOBuy==='forSell' && !vehiMakeDsp && !vehicleTypeDsp &&  <Text>Add @ most 4  Images </Text>}
+        {sellOBuy==='forSell' && !vehiMakeDsp && !vehicleTypeDsp &&  <div >
             {images.length < 4 && (
                 <div>
                     <label for="fileInput">
@@ -200,7 +311,7 @@ const [ imageUpload, setImageUpload] = React.useState([])
 
       {sellOBuy ==='toBuy' && <Text> What are you Looking for </Text> }
 
-        {specproduct === "vehicles" && <ScrollView horizontal style={{ width : 240 , flexDirection: 'row' , height:40 , margin :10}} >
+  {!vehiMakeDsp && !vehicleTypeDsp && specproduct === "vehicles" && <ScrollView horizontal style={{ width : 240 , flexDirection: 'row' , height:40 , margin :10}} >
      <TextInput
           value={formData.mileage}
           placeholder="Mileage"
@@ -245,6 +356,10 @@ const [ imageUpload, setImageUpload] = React.useState([])
         </ScrollView>}
 
 
+              <TouchableOpacity onPress={toggleBrandNew} style={ brandNew ? styles.bttonIsTrue : styles.buttonIsFalse} >
+                <Text style={ brandNew ? {color:'white'} :null } >Brand New</Text>
+              </TouchableOpacity>
+
         <TextInput
           value={formData.productName}
           placeholder="Product Name"
@@ -276,39 +391,338 @@ const [ imageUpload, setImageUpload] = React.useState([])
 
       { spinnerItem &&<ActivityIndicator size={34} />}
        
-             {specproduct ==="vehicles" || specproduct ==="trailers" ? <View  >
                 
-          <TextInput 
+          {!vehicleTypeDsp&& !vehiMakeDsp && <TextInput 
             value={formData.productLoc}
             placeholderTextColor="#6a0c0c"
             placeholder="Additional Information"
             onChangeText={(text) => handlechange(text, 'productLoc')}
             type="text"
             style={inputstyles.addIterms }
-          />
-              </View>
-              :null}
-
-          <TextInput 
-            value={formData.additionalInfo}
-            placeholderTextColor="#6a0c0c"
-            placeholder="Additional Information"
-            onChangeText={(text) => handlechange(text, 'additionalInfo')}
-            type="text"
-            style={inputstyles.addIterms }
-          />
-             {specproduct ==="vehicles" || specproduct ==="trailers" ? <View style={{flexDirection: 'row' , margin : 8 , }} >
+          />}
+          
+             {!vehicleTypeDsp && !trailerTypeDsp && specproduct ==="vehicles" || specproduct ==="trailers" ? <View style={{margin : 8 , }} >
+              <View style={{flexDirection:'row', marginBottom:5}} >
                 <TouchableOpacity style={sellRent ? styles.bttonIsTrue : styles.buttonIsFalse} onPress={toggleSellRent} >
                   <Text style={sellRent ? {color:'white'} : {color:'black'} } > Sell </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity  style={!sellRent ? styles.bttonIsTrue : styles.buttonIsFalse} onPress={toggleSellRent} >
                   <Text style={!sellRent ? {color:'white'} : {color:'black'} } > Rent </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> 
+                </View>
+               { <View>
+                </View>}
+
               </View>
               :null}
 
-        <TouchableOpacity onPress={handleSubmit} style={{backgroundColor : '#6a0c0c' , width : 70 , height : 30 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center'}} >
+
+              { specproduct === "vehicles" &&  <View style={{flexDirection:'row'}} >
+                 { !vehicleTypeDsp && !vehiMakeDsp && <TouchableOpacity onPress={dspVehicleTypeDsp} style={!vehicleType ? {        
+                  backgroundColor :"#6a0c0c",height : 30,justifyContent : 'center' , alignItems : 'center'  ,marginBottom: 15 ,borderRadius: 10 , paddingLeft: 7 , paddingRight  : 7
+                    } : {
+                  height : 30,justifyContent : 'center' , alignItems : 'center' ,marginBottom: 15 ,borderWidth: 2 ,borderColor:"#6a0c0c" ,borderRadius: 10 , paddingLeft: 7 , paddingRight  : 7
+                    } } >
+                    <Text style={!vehicleType ? {color :'white'}:null } > {vehicleType ? vehicleType : "vehicle type"}</Text>
+                  </TouchableOpacity>}
+
+                 {!vehiMakeDsp && !vehicleTypeDsp &&<TouchableOpacity onPress={toggleVehiMakeDsp} style={!vehiMake ? {        
+                  backgroundColor :"#6a0c0c",height : 30,justifyContent : 'center' , alignItems : 'center'  ,marginBottom: 15 ,borderRadius: 10 , paddingLeft: 7 , paddingRight  : 7  , marginLeft:9
+                    } : {
+                  height : 30,justifyContent : 'center' , alignItems : 'center' ,marginBottom: 15 ,borderWidth: 2 ,borderColor:"#6a0c0c" ,borderRadius: 10 , paddingLeft: 7 , paddingRight  : 7 , marginLeft:5
+                    } } >
+                    <Text style={!vehiMake ? {color :'white'}:null } > {vehiMake ? vehiMake : "vehicle Make"} </Text>
+                  </TouchableOpacity>}
+
+                </View>}
+                    {specproduct=== "trailers" && <View>
+                      <TouchableOpacity onPress={toggleTrailerTypeDsp} style={!trailerType ? styles.buttonSelectStyle : styles.buttonStyle } >
+                        <Text style={!trailerType ? {color :'white'}:null } >{trailerType ? trailerType  : "Trailer Type" } </Text>
+                      </TouchableOpacity>
+
+                     {trailerTypeDsp && <View>
+                      <TouchableOpacity onPress={()=>addTrailerType("Bulktrailer")} style={styles.buttonStyle} >
+                        <Text>Bulk trailer</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("SideTipper")}  style={styles.buttonStyle} >
+                        <Text>Side Tipper</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("Tautliner")}  style={styles.buttonStyle} >
+                        <Text>Tautliner</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("Flatbed")}  style={styles.buttonStyle} >
+                        <Text>Flatbed</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("Tanker")}  style={styles.buttonStyle} >
+                        <Text>Tanker</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("Refrigerated")} style={styles.buttonStyle}  >
+                        <Text>Refrigerated</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("CarHauler")}  style={styles.buttonStyle} >
+                        <Text>Car Hauler </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("UtilityTrailer")} style={styles.buttonStyle}  >
+                        <Text>Utility Trailer</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("Lowboy")} style={styles.buttonStyle}  >
+                        <Text>Lowboy</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("otherTrailer")}  style={styles.buttonStyle} >
+                        <Text>other</Text>
+                      </TouchableOpacity>
+                        </View>}
+                    </View> }
+
+
+
+                 { vehicleTypeDsp && <View>
+                 { !heavyEquipment && <TouchableOpacity onPress={toggleCargoTrcks} style={styles.buttonSelectStyle} >
+                    <Text style={{color:'white'}} >Cargo Trucks</Text>
+                  </TouchableOpacity>}
+
+                 { !cargoTrcks && <TouchableOpacity onPress={toggleHeavyEquipment} style={styles.buttonSelectStyle} >
+                    <Text style={{color:'white'}}>Heavy Equipment </Text>
+                  </TouchableOpacity>}
+
+                 { heavyEquipment && <View> 
+                    <TouchableOpacity onPress={()=>addVehicleType("Tipper")}  style={styles.buttonStyle} >
+                      <Text>Tipper</Text>
+                    </TouchableOpacity  >
+                    <TouchableOpacity  onPress={()=>addVehicleType("Excavator")} style={styles.buttonStyle} >
+                      <Text>Excavator</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity  onPress={()=>addVehicleType("Bulldozer")} style={styles.buttonStyle} >
+                      <Text>Bulldozer</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity  onPress={()=>addVehicleType("WheelLoader")}style={styles.buttonStyle}  >
+                      <Text>Crane</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity  onPress={()=>addVehicleType("truckhorse")} style={styles.buttonStyle} >
+                      <Text>WheelLoader</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity  onPress={()=>addVehicleType("Compactors")}style={styles.buttonStyle}  >
+                      <Text>Compactors</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity  onPress={()=>addVehicleType("Pavers")}style={styles.buttonStyle}  >
+                      <Text>Pavers</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity  onPress={()=>addVehicleType("Graders")} style={styles.buttonStyle} >
+                      <Text>Graders</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity  onPress={()=>addVehicleType("TrackedLoader")} style={styles.buttonStyle} >
+                      <Text>Tracked Loader</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity  onPress={()=>addVehicleType("ConcreteMixer")} style={styles.buttonStyle} >
+                      <Text>Concrete Mixer</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity  onPress={()=>addVehicleType("otherHeavyB")} style={styles.buttonStyle} >
+                      <Text>Other</Text>
+                    </TouchableOpacity>
+                    
+                  </View>}
+                 {cargoTrcks && <View>
+                  <TouchableOpacity onPress={()=>addVehicleType("truckhorse")} style={styles.buttonStyle} >
+                    <Text>truck horse</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("BoxTrucks")} style={styles.buttonStyle} >
+                    <Text>Box Trucks</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("FlatbedTrucks")}style={styles.buttonStyle}  >
+                    <Text>Flatbed Trucks</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("RefrigeratedTrucks")} style={styles.buttonStyle} >
+                    <Text>Refrigerated Trucks</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("DumpTrucks")} style={styles.buttonStyle} >
+                    <Text>Dump Trucks</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("TankerTrucks")}style={styles.buttonStyle}  >
+                    <Text>Tanker Trucks</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={()=>addVehicleType("CurtainsideTrucks")} style={styles.buttonStyle} >
+                    <Text>Curtainside Trucks</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={()=>addVehicleType("ParcelVans")} style={styles.buttonStyle} >
+                    <Text>Parcel Vans</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("otherCargos")} style={styles.buttonStyle} >
+                    <Text>Other</Text>
+                  </TouchableOpacity>
+                  </View>}
+
+                 {!cargoTrcks&& !heavyEquipment&& <View>
+                  <TouchableOpacity onPress={()=>addVehicleType("Sedans")} style={styles.buttonStyle} >
+                    <Text>Sedans</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("SUV")} style={styles.buttonStyle} >
+                    <Text>SUV</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("PickupTrucks")} style={styles.buttonStyle} >
+                    <Text>Pickup Trucks</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("Hatchbacks")} style={styles.buttonStyle} >
+                    <Text>Hatchbacks</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("Vans")} style={styles.buttonStyle} >
+                    <Text>Vans</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("Convertibles")} style={styles.buttonStyle} >
+                    <Text>Convertibles</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("Crossovers")} style={styles.buttonStyle} >
+                    <Text>Crossovers</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("otherVehicles")} style={styles.buttonStyle} >
+                    <Text>other</Text>
+                  </TouchableOpacity>
+                  </View>}
+
+                  </View>}
+
+                  {vehiMakeDsp && <View>
+                    {!heavyEquipmentMake && <TouchableOpacity style={styles.buttonSelectStyle} onPress={toggleCargoTrcksMake} >
+                      <Text style={{color:'white'}}>Cargo Trucks</Text>
+                    </TouchableOpacity>}
+
+                   { !cargoTrcksMake&& <TouchableOpacity  style={styles.buttonSelectStyle} onPress={toggleHeavyEquipmentMake}>
+                      <Text style={{color:'white'}} >Heavy Equipment</Text>
+                    </TouchableOpacity>}
+
+                    {heavyEquipmentMake && <View> 
+                      <TouchableOpacity style={styles.buttonStyle}  onPress={()=>addVehiMake("heavyCaterpillar") } >
+                        <Text>Caterpillar </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle}  onPress={()=>addVehiMake("heavyVolvo") }>
+                        <Text>Volvo</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle}  onPress={()=>addVehiMake("heavyJohnDeere") }>
+                        <Text>John Deere</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("heavyHyundai") } >
+                        <Text>Hyundai</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("heavySany") } >
+                        <Text>Sany </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("heavyKobelco") } >
+                        <Text>Kobelco </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("heavyXCMG") } >
+                        <Text>XCMG</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("heavyBobcat") } >
+                        <Text>Bobcat</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("heavyHitachi") } >
+                        <Text>Hitachi</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("heavyManitou") } >
+                        <Text>Manitou</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("heavyKubota") } >
+                        <Text>Kubota</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("heavyOtherM") } >
+                        <Text>Other</Text>
+                      </TouchableOpacity>
+                    </View>}
+
+                   {cargoTrcksMake && <View>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("cargoMercedesBenz") }  >
+                        <Text>Mercedes-Benz</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("cargoMAN") } >
+                        <Text>MAN</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("cargoScania") } >
+                        <Text>Scania </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("cargoHowo") } >
+                        <Text>Howo</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("cargoVolvo") } >
+                        <Text>Volvo </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("cargoDAF") } >
+                        <Text>DAF </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("cargoIveco") } >
+                        <Text>Iveco </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("cargoUD") } >
+                        <Text>UD </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("cargoIsuzu") } >
+                        <Text>Isuzu </Text>
+                      </TouchableOpacity  >
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("cargoMitsubishiFuso") } >
+                        <Text>Mitsubishi Fuso</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("cargoHino") } >
+                        <Text>Hino</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("cargoOtherM") } >
+                        <Text>other</Text>
+                      </TouchableOpacity>
+                    </View>}
+
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("Toyota") }  >
+                      <Text>Toyota</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("MercedesBenz") }  >
+                      <Text>Mercedes-Benz</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("BMW") }  >
+                      <Text>BMW</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("Honda") }  >
+                      <Text>Honda</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("NISSAN") }  >
+                      <Text>NISSAN</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("MAZDA") }  >
+                      <Text>MAZDA</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("Volkswagen") }  >
+                      <Text>Volkswagen</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("Ford") }  >
+                      <Text>Ford</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("Isuzu") }  >
+                      <Text>Isuzu</Text>
+                    </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("Chevrolet") }  >
+                      <Text>Chevrolet</Text>
+                      </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("Hyundai") }  >
+                        <Text>Hyundai</Text>
+                    </TouchableOpacity>
+                      <TouchableOpacity  style={styles.buttonStyle} onPress={()=>addVehiMake("Renault") } >
+                        <Text>Renault</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("Mitsubishi") }  >
+                        <Text>Mitsubishi</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("Kia") }  >
+                        <Text>Kia</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.buttonStyle} onPress={()=>addVehiMake("otherMakes") }  >
+                        <Text>other</Text>
+                      </TouchableOpacity>
+                  </View>}
+
+        <TouchableOpacity onPress={handleSubmit} style={{backgroundColor : '#6a0c0c' , width : 70 , height : 30 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center', marginTop :6}} >
 
         <Text style={{color:'white'}} >submit</Text>
 
@@ -335,5 +749,25 @@ const styles = StyleSheet.create({
      paddingLeft :4 ,
      paddingRight:4 ,
      color :'white' 
+    } ,
+       buttonStyle : {
+        height : 30,
+        justifyContent : 'center' , 
+        alignItems : 'center' ,
+        width : 150 ,
+        marginBottom: 15 ,
+        borderWidth: 2 ,
+        borderColor:"#6a0c0c" ,
+        borderRadius: 10
+    } ,
+    buttonSelectStyle :{
+        backgroundColor :"#6a0c0c",
+        height : 30,
+        justifyContent : 'center' , 
+        alignItems : 'center' ,
+        width : 150 ,
+        marginBottom: 15 ,
+        borderRadius: 10
+
     }
 });

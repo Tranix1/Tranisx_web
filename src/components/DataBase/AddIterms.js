@@ -33,27 +33,27 @@ const {addTrucks} = useParams()
 
            { addTrucks &&<View>
                 <TouchableOpacity  onPress={()=> navigate('/addTrucksDB/BulkTrailers') }  style={styles.buttonStyle}>
-                    <Text style={{color:"#6a0c0c"}}>BulkTrailers </Text>
+                    <Text style={{color:"#6a0c0c"}}>BulkTrailers</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity  onPress={()=> navigate( '/addTrucksDB/sideTippers') }  style={styles.buttonStyle}>
-                    <Text style={{color:"#6a0c0c"}}>SideTipper </Text>
+                    <Text style={{color:"#6a0c0c"}}>SideTipper</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={()=> navigate('/addTrucksDB/LowBeds') }  style={styles.buttonStyle}>
-                    <Text style={{color:"#6a0c0c"}}> Lowbeds </Text>
+                    <Text style={{color:"#6a0c0c"}}>Lowbeds</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={()=> navigate('/addTrucksDB/tauntliner' ) } style={styles.buttonStyle}>
-                    <Text style={{color:"#6a0c0c"}}> Tautliner </Text>
+                    <Text style={{color:"#6a0c0c"}}>Tautliner</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={()=> navigate('/addTrucksDB/tanker') } style={styles.buttonStyle} >
-                    <Text style={{color:"#6a0c0c"}}>Tankers </Text>
+                    <Text style={{color:"#6a0c0c"}}>Tankers</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={()=> navigate('/addTrucksDB/Rigid') } style={styles.buttonStyle} >
-                    <Text style={{color:"#6a0c0c"}}>Rigid </Text>
+                    <Text style={{color:"#6a0c0c"}}>Rigid</Text>
                 </TouchableOpacity>
 
             </View>}
