@@ -10,6 +10,9 @@ import { useParams , useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
+import { WhatsApp  } from '@mui/icons-material';
+import CallIcon from '@mui/icons-material/Call';
+import ChatIcon from '@mui/icons-material/Chat';
 function DspOneTruckType ({} ){ 
 
 const navigate = useNavigate()
@@ -66,18 +69,23 @@ const navigate = useNavigate()
       }));
     };
   const rendereIterms = allTrucks.map((item)=>{
-      let contactMe = ( <View style={{ paddingLeft: 30 }}>
+        const message =  `${item.CompanyName} is this truck still available ${item.trailerType} from ${item.fromLocation} to ${item.toLocation} ` ; // Set your desired message here
+    let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-        {auth.currentUser &&   <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)}  >
-            <Text>Message now</Text>
-          </TouchableOpacity>}
+         <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
+            <Text style={{color:"#008080"}} >Message now</Text>
+            <ChatIcon/>
 
-          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)}>
-            <Text>Phone call</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}`)}>
-            <Text>WhatsApp</Text>
+          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#40E0D0" , borderWidth:1 , borderColor :'#40E0D0', justifyContent:'center', marginBottom:4}} >
+            <Text style={{color:'#40E0D0'}} >Phone call</Text>
+            <CallIcon/>
+          </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#25D366" , borderWidth:1 , borderColor :'#25D366', justifyContent:'center'}} >
+            <Text style={{color : "#25D366"}} >WhatsApp </Text> 
+            <WhatsApp  />  
           </TouchableOpacity>
 
           </View>)
@@ -124,7 +132,7 @@ const navigate = useNavigate()
         </TouchableOpacity>
         {contactDisplay[item.id] && contactMe}
         <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
-          <Text style={{textDecorationLine:'underline'}} > get In Touch now</Text>
+          <Text style={{textDecorationLine:'underline',color:'#DC143C'}} > get In Touch now</Text>
         </TouchableOpacity>
     </View>
         )

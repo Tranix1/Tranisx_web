@@ -8,6 +8,11 @@ import {useNavigate , useParams} from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
+
+import { WhatsApp  } from '@mui/icons-material';
+import CallIcon from '@mui/icons-material/Call';
+import ChatIcon from '@mui/icons-material/Chat';
+
 function BookingsandBiddings(){
 
     const navigate = useNavigate()
@@ -185,20 +190,24 @@ let whnBookBiddAload = getAllIterms.map((item) => {
   const userId = auth.currentUser.uid;
 
   const message =  ` Is this Load still available   ${item.typeofLoad} from  ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : null} from Truckerz ` ; // Set your desired message here
-  let contactMe = ( <View style={{ paddingLeft: 30 }}>
+    let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-        {auth.currentUser &&  <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.companyName} `)} >
-            <Text>Message now</Text>
-          </TouchableOpacity>}
-          
-          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)}>
-            <Text>Phone call</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)}>
-            <Text>WhatsApp</Text>
+         <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
+            <Text style={{color:"#008080"}} >Message now</Text>
+            <ChatIcon/>
+
           </TouchableOpacity>
-          
+
+          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#40E0D0" , borderWidth:1 , borderColor :'#40E0D0', justifyContent:'center', marginBottom:4}} >
+            <Text style={{color:'#40E0D0'}} >Phone call</Text>
+            <CallIcon/>
+          </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#25D366" , borderWidth:1 , borderColor :'#25D366', justifyContent:'center'}} >
+            <Text style={{color : "#25D366"}} >WhatsApp </Text> 
+            <WhatsApp  />  
+          </TouchableOpacity>
+
           </View>)
   if (item.bookerId === userId) {
     return (
@@ -233,7 +242,7 @@ let whnBookBiddAload = getAllIterms.map((item) => {
 
         {contactDisplay[item.id] && contactMe}
         {item.Accept && <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
-          <Text style={{textDecorationLine:'underline'}} > get In Touch now</Text>
+          <Text style={{textDecorationLine:'underline',color:'#DC143C'}} > get In Touch now</Text>
         </TouchableOpacity>}
 
           <TouchableOpacity onPress={()=>loadTaken(  null ,   item.id ) } style={{backgroundColor :'red' , width : 100 , alignItems :'center' , borderRadius :50 , position :'absolute', right :7 , bottom :7}}>
@@ -255,20 +264,24 @@ const userId = auth.currentUser.uid;
 
   const message =  ` Is this Load still available   ${item.typeofLoad} from  ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : null} from Truckerz ` ; // Set your desired message here
 
-  let contactMe = ( <View style={{ paddingLeft: 30 }}>
+ let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-        {auth.currentUser &&  <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.companyName} `)} >
-            <Text>Message now</Text>
-          </TouchableOpacity>}
-          
-          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)}>
-            <Text>Phone call</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)}>
-            <Text>WhatsApp</Text>
+         <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
+            <Text style={{color:"#008080"}} >Message now</Text>
+            <ChatIcon/>
+
           </TouchableOpacity>
-          
+
+          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#40E0D0" , borderWidth:1 , borderColor :'#40E0D0', justifyContent:'center', marginBottom:4}} >
+            <Text style={{color:'#40E0D0'}} >Phone call</Text>
+            <CallIcon/>
+          </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#25D366" , borderWidth:1 , borderColor :'#25D366', justifyContent:'center'}} >
+            <Text style={{color : "#25D366"}} >WhatsApp </Text> 
+            <WhatsApp  />  
+          </TouchableOpacity>
+
           </View>)
           let dbToBechanged 
           dbName === "bookings" ?  dbToBechanged = "bookings" : dbToBechanged = "biddings"
@@ -317,7 +330,7 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350
           </TouchableOpacity>
 
         <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{  borderRightWidth :1 , paddingLeft :5 , paddingRight:5 }} >
-          <Text style={{textDecorationLine:'underline', fontSize:17}} > get In Touch now</Text>
+          <Text style={{textDecorationLine:'underline', fontSize:17,color:'#DC143C'}} > get In Touch now</Text>
         </TouchableOpacity>
         </View>
 

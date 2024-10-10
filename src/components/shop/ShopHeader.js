@@ -18,6 +18,7 @@ const [sellOBuy , setSellOBuy] = React.useState('forSell')
     function toggleSellOBuy(value){
         setSellOBuy(value)
         navigate(`/DspShop/${location}/${specproduct}/${value}/`) 
+        setSmallMenu(false)
     }
 
 
@@ -82,19 +83,7 @@ const [sellOBuy , setSellOBuy] = React.useState('forSell')
                 <Text style={{color : 'white' , fontSize : 19 , zIndex : 50}} >{location} Store  </Text>
                 
             <View style={{justifyContent:'space-evenly' , backgroundColor:'#6a0c0c'}} >
-       {sellOBuy !== "toBuy" || sellOBuy !=="forSell" ?<View style={{flexDirection :'row',backgroundColor:'#6a0c0c' }} >
-
-            <TouchableOpacity onPress={()=>toggleSellOBuy("forSell")}
-             style={sellOBuy === "forSell" ? styles.bttonIsTrue : styles.buttonIsFalse} >
-               <Text style={sellOBuy === "forSell" ? {color:'black'} : {color:'white'}} >BUY</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={()=>toggleSellOBuy("toBuy")} style={sellOBuy === "toBuy" ? styles.bttonIsTrue : styles.buttonIsFalse} >
-                <Text style={sellOBuy === "toBuy" ? {color:'black'} :{color:'white'} } >SELL</Text>
-            </TouchableOpacity>
-
-        </View> :null }
-
-          <Text style={{color:'white'}} >Want to {sellOBuy === "forSell" ? "BUY" :'SELL'} </Text> 
+     
           </View>
                 <View style={{flexDirection: 'row'}} > 
                     <TouchableOpacity onPress={()=> navigate('/shosearchElement/') }>
@@ -142,11 +131,30 @@ const [sellOBuy , setSellOBuy] = React.useState('forSell')
             </TouchableOpacity>
         </View>:null     }
 
-                   {smallMenu && <View style={{position : 'absolute' ,top : 40 , right : 0  , borderBlockColor:"#6a0c0c",borderWidth:3 , backgroundColor :'white'  , width : 165 , }} >
-                        <TouchableOpacity  style={{height : 27  }} onPress={()=> navigate(`/manageStock/`) } >
+                   
+
+
+  {smallMenu && <TouchableOpacity style={{position : 'absolute' , right : 0 ,top: 0, bottom : 0 , left : 0 ,zIndex : 400 }} onPress={checkAuth}> 
+   <View style={{position : 'absolute' , right : 0  , borderBlockColor:"#6a0c0c",borderWidth:3 , backgroundColor :'white'  , width : 200 , borderRadius: 13 , zIndex : 1000}} >
+
+                        <TouchableOpacity onPress={()=> navigate(`/manageStock/`) } style={styles.buttonStyle} >
                         <Text  > Manage Stock</Text>
                         </TouchableOpacity>
-                    </View>}
+
+            <TouchableOpacity onPress={()=>toggleSellOBuy("forSell")} style={styles.buttonStyle} >
+               <Text> BUY </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>toggleSellOBuy("toBuy")}  style={styles.buttonStyle} >
+                <Text >SELL</Text>
+            </TouchableOpacity>
+
+                    </View>
+      </TouchableOpacity>}
+
+
+
+
+
         </View>
     )
 }
@@ -167,5 +175,10 @@ const styles = StyleSheet.create({
      paddingRight:4 ,
      color :'white' 
 
+    },
+        buttonStyle : {
+        height : 33,
+        justifyContent : 'center' , 
+        alignItems : 'center',
     }
 });

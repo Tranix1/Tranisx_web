@@ -7,6 +7,9 @@ import {useNavigate,useParams} from 'react-router-dom';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 import { WhatsApp  } from '@mui/icons-material';
+import CallIcon from '@mui/icons-material/Call';
+import ChatIcon from '@mui/icons-material/Chat';
+
 
 function DspSoldIterms(){
     const navigate = useNavigate()
@@ -16,18 +19,17 @@ function DspSoldIterms(){
   
       let [buyRent , setBuyRent] = React.useState(null)
 
-
-
   const [priceRangeDsp , setPriceRangeDsp]= React.useState(false)
   function addPriceRangeDsp(){
   setPriceRangeDsp(prev => !prev)
   setVehicleTypeDsp(false)
+  setvehiMakeDsp(false)
   }
   const [priceRange , setPriceRange]= React.useState(null)
   function addPriceRange(addedValue){
     setPriceRange(addedValue)
     setPriceRangeDsp(false)
-      setVehicleTypeDsp(false)
+     setVehicleTypeDsp(false)
   }
    let priceRangeShow = null
 
@@ -60,6 +62,7 @@ function DspSoldIterms(){
     function dspVehicleTypeDsp(){
       setVehicleTypeDsp(prev => !prev)
       setPriceRangeDsp(false)
+      setvehiMakeDsp(false)
     }
 
   const [vehicleType , setVehicleType] = React.useState(null)
@@ -73,6 +76,38 @@ function DspSoldIterms(){
       setCargoTrucks(prev=>!prev)
     }
 
+    const [vehiMakeDsp , setvehiMakeDsp] =React.useState(false)
+          function toggleVehiMakeDsp(){
+            setvehiMakeDsp(prev => !prev)
+            setVehicleTypeDsp(false)
+            setPriceRangeDsp(false)
+          }
+     const [ heavyEquipmentMake , setheavyEquipmentMake] = React.useState(false)
+    function toggleHeavyEquipmentMake(){
+      setheavyEquipmentMake(prev=>!prev)
+      setCargoTrucksMake(false)
+    }
+
+          const [vehiMake , setVehiMake] = React.useState("")
+
+          function addVehiMake(value){
+              setVehiMake(value)
+              setvehiMakeDsp(false)
+          }
+
+
+    const [cargoTrcksMake , setCargoTrucksMake] = React.useState(false)
+    function toggleCargoTrcksMake(){
+      setCargoTrucksMake(prev=>!prev)
+      setheavyEquipmentMake(false)
+    }
+
+    const [ heavyEquipment , setheavyEquipment] = React.useState(false)
+    function toggleHeavyEquipment(){
+      setheavyEquipment(prev=>!prev)
+      setCargoTrucks(false)
+    }
+
  useEffect(() => {
     try {
         let dataQuery;
@@ -80,11 +115,44 @@ function DspSoldIterms(){
             if(specproduct === "vehicles" ){
               if(priceRange){
                 dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("priceRange","==",priceRange ) );
-              } else if(vehicleType){
+              } 
+              
+              else if(vehicleType){
                 dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType","==",vehicleType ) );
               }else if(vehicleType && priceRange){
                 dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) );
-              }else if(vehicleType && priceRange&&(buyRent === true || buyRent === false) ){
+              }else if(vehicleType  &&(buyRent === true || buyRent === false) ){
+
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) , where("sellOBuy", "==", sellOBuy) );
+              }  else if(vehicleType  &&(buyRent === true || buyRent === false) &&vehiMake ){
+
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) , where("sellOBuy", "==", sellOBuy) , where("vehiMake", "==", vehiMake) );
+              }
+              
+              
+              else if(vehiMake){
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) );
+              }else if(vehiMake && priceRange ){
+
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("priceRange", "==", priceRange) );
+              }else if(vehiMake && vehicleType){
+
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehicleType", "==", vehicleType) );
+              }else if(vehiMake  &&(buyRent === true || buyRent === false) ){
+
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("sellOBuy", "==", sellOBuy) );
+              }
+              else if(vehiMake && vehicleType && priceRange ){
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) );
+
+              } else if(vehiMake && vehicleType && priceRange &&(buyRent === true || buyRent === false) ){
+
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) , where("sellOBuy", "==", sellOBuy) );
+              }
+              
+
+
+              else if(vehicleType && priceRange&&(buyRent === true || buyRent === false) ){
                 dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("priceRange", "==", priceRange) , where("sellOBuy", "==", sellOBuy) );
               } else if (buyRent === true || buyRent === false) {
                 dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) );
@@ -145,7 +213,7 @@ function DspSoldIterms(){
     } catch (err) {
         console.error(err);
     }
-}, [specproduct, buyRent, sellOBuy , priceRange , vehicleType ]);
+}, [specproduct, buyRent, sellOBuy , priceRange , vehicleType ,vehiMake]);
 
     const [contactDisplay, setContactDisplay] = React.useState({ ['']: false });
     const toggleContact = (itemId) => {
@@ -167,16 +235,20 @@ function DspSoldIterms(){
         const message =  `${item.CompanyName} is this Product still ${ item.sellOBuy === "forSell"? "available":"wanted" } ${item.productName} ${item.sellRent ? "for sell" :'for rental' }   ${item.currency?"USD" : "Rand" }  ${item.price}   from https://www.truckerz.net/OneFirmsShop/${item.userId}/${item.id}` ; // Set your desired message here
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-          <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)}  >
-            <Text>Message now</Text>
+          <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
+            <Text style={{color:"#008080"}} >Message now</Text>
+            <ChatIcon/>
+
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)}>
-            <Text>Phone call</Text>
+          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#40E0D0" , borderWidth:1 , borderColor :'#40E0D0', justifyContent:'center', marginBottom:4}} >
+            <Text style={{color:'#40E0D0'}} >Phone call</Text>
+            <CallIcon/>
           </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 50}} >
-            <Text > WhatsApp <WhatsApp style={{color : "#25D366" }} />   </Text>
+            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#25D366" , borderWidth:1 , borderColor :'#25D366', justifyContent:'center'}} >
+            <Text style={{color : "#25D366"}} >WhatsApp </Text> 
+            <WhatsApp  />  
           </TouchableOpacity>
 
           </View>)
@@ -299,12 +371,16 @@ function DspSoldIterms(){
             <Text style={ buyRent=== false ? {color : 'white'}: {color : 'black'} } >Rent</Text>
           </TouchableOpacity>
 
-          {<TouchableOpacity onPress={addPriceRangeDsp} style={priceRangeDsp  ? styles.btnIsActive : styles.bynIsUnActive }>
-            <Text style={ priceRangeDsp ? {color : 'white'}: {color : 'black'} } >{priceRange? priceRangeShow : "budjet"} </Text>
+          {<TouchableOpacity onPress={addPriceRangeDsp} style={priceRange  ? styles.btnIsActive : styles.bynIsUnActive }>
+            <Text style={ priceRange ? {color : 'white'}: {color : 'black'} } >{priceRange? priceRangeShow : "budjet"} </Text>
           </TouchableOpacity>}
 
-         { !priceRangeDsp && <TouchableOpacity onPress={dspVehicleTypeDsp} style={vehicleTypeDsp ? styles.btnIsActive : styles.bynIsUnActive }>
-            <Text style={ vehicleTypeDsp ? {color : 'white'}: {color : 'black'} } > {vehicleType ? vehicleType : "body"} </Text>
+         { !priceRangeDsp && <TouchableOpacity onPress={dspVehicleTypeDsp} style={vehicleType ? styles.btnIsActive : styles.bynIsUnActive }>
+            <Text style={ vehicleType ? {color : 'white'}: {color : 'black'} } > {vehicleType ? vehicleType : "body"} </Text>
+          </TouchableOpacity>}
+
+          {!priceRangeDsp&& !vehicleTypeDsp && <TouchableOpacity onPress={toggleVehiMakeDsp} style={ vehiMake ? styles.btnIsActive : styles.bynIsUnActive }>
+            <Text style={ vehiMake ? {color : 'white'}: {color : 'black'} }  > {vehiMake ? vehiMake : "Make"} </Text>
           </TouchableOpacity>}
 
           {priceRangeDsp && <View style={{flexDirection:'row'}} >
@@ -342,62 +418,240 @@ function DspSoldIterms(){
           </View>}
 
   { vehicleTypeDsp && <View style={{flexDirection:'row'}} >
-                  <TouchableOpacity onPress={toggleCargoTrcks} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
-                    <Text>Cargo Trucks</Text>
+                  <TouchableOpacity onPress={toggleCargoTrcks} style={styles.btnIsActive  } >
+                    <Text style={{color:"white"}} >Cargo Trucks</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={toggleHeavyEquipment} style={styles.btnIsActive  } >
+                    <Text style={{color:"white"}} >heavy Equipment</Text>
                   </TouchableOpacity>
                  {cargoTrcks && <View style={{flexDirection:'row'}} >
-                  <TouchableOpacity onPress={()=>addVehicleType("truckhorse")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("truckhorse")} style={styles.bynIsUnActive } >
                     <Text>truck horse</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("BoxTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("BoxTrucks")} style={styles.bynIsUnActive } >
                     <Text>Box Trucks</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("FlatbedTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("FlatbedTrucks")} style={styles.bynIsUnActive } >
                     <Text>Flatbed Trucks</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("RefrigeratedTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("RefrigeratedTrucks")} style={styles.bynIsUnActive } >
                     <Text>Refrigerated Trucks</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("DumpTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("DumpTrucks")} style={styles.bynIsUnActive } >
                     <Text>Dump Trucks</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("TankerTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("TankerTrucks")} style={styles.bynIsUnActive } >
                     <Text>Tanker Trucks</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity onPress={()=>addVehicleType("CurtainsideTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("CurtainsideTrucks")} style={styles.bynIsUnActive } >
                     <Text>Curtainside Trucks</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity onPress={()=>addVehicleType("ParcelVans")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("ParcelVans")} style={styles.bynIsUnActive } >
                     <Text>Parcel Vans</Text>
                   </TouchableOpacity>
                   </View>}
+             { heavyEquipment && <View style={{flexDirection:'row'}} >   
+                    <TouchableOpacity onPress={()=>addVehicleType("Tipper")}  style={styles.bynIsUnActive }  >
+                      <Text>Tipper</Text>
+                    </TouchableOpacity  >
+                    <TouchableOpacity  onPress={()=>addVehicleType("Excavator")} style={styles.bynIsUnActive }  >
+                      <Text>Excavator</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity  onPress={()=>addVehicleType("Bulldozer")} style={styles.bynIsUnActive } >
+                      <Text>Bulldozer</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity  onPress={()=>addVehicleType("WheelLoader")}style={styles.bynIsUnActive }   >
+                      <Text>Crane</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity  onPress={()=>addVehicleType("truckhorse")} style={styles.bynIsUnActive } >
+                      <Text>WheelLoader</Text>
+                    </TouchableOpacity>
 
-                 {!cargoTrcks&& <View style={{flexDirection:'row'}} >
-                  <TouchableOpacity onPress={()=>addVehicleType("Sedans")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                    <TouchableOpacity  onPress={()=>addVehicleType("Compactors")}style={styles.bynIsUnActive } >
+                      <Text>Compactors</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity  onPress={()=>addVehicleType("Pavers")}style={styles.bynIsUnActive } >
+                      <Text>Pavers</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity  onPress={()=>addVehicleType("Graders")} style={styles.bynIsUnActive } >
+                      <Text>Graders</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity  onPress={()=>addVehicleType("TrackedLoader")} style={styles.bynIsUnActive } >
+                      <Text>Tracked Loader</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity  onPress={()=>addVehicleType("ConcreteMixer")} style={styles.bynIsUnActive } >
+                      <Text>Concrete Mixer</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity  onPress={()=>addVehicleType("otherHeavyB")} style={styles.bynIsUnActive }  >
+                      <Text>Other</Text>
+                    </TouchableOpacity>
+                    
+                  </View>}
+
+                 {!cargoTrcks&&  !heavyEquipment &&<View style={{flexDirection:'row'}} >
+                  <TouchableOpacity onPress={()=>addVehicleType("Sedans")} style={styles.bynIsUnActive } >
                     <Text>Sedans</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("SUV")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("SUV")} style={ styles.bynIsUnActive } >
                     <Text>SUV</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("PickupTrucks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("PickupTrucks")} style={styles.bynIsUnActive } >
                     <Text>Pickup Trucks</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("Hatchbacks")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("Hatchbacks")} style={styles.bynIsUnActive } >
                     <Text>Hatchbacks</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("Vans")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("Vans")} style={ styles.bynIsUnActive } >
                     <Text>Vans</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("Convertibles")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("Convertibles")} style={ styles.bynIsUnActive } >
                     <Text>Convertibles</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("Crossovers")} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive } >
+                  <TouchableOpacity onPress={()=>addVehicleType("Crossovers")} style={styles.bynIsUnActive } >
                     <Text>Crossovers</Text>
                   </TouchableOpacity>
                   </View>}
 
+                  </View>}
+
+                  {vehiMakeDsp && <View style={{flexDirection:'row'}} >
+                    {!heavyEquipmentMake && <TouchableOpacity style={styles.btnIsActive} onPress={toggleCargoTrcksMake} >
+                      <Text style={{color:'white'}}>Cargo Trucks</Text>
+                    </TouchableOpacity>}
+
+                   { !cargoTrcksMake&& <TouchableOpacity  style={styles.btnIsActive} onPress={toggleHeavyEquipmentMake}>
+                      <Text style={{color:'white'}} >Heavy Equipment</Text>
+                    </TouchableOpacity>}
+
+                    {heavyEquipmentMake && <View style={{flexDirection:'row'}} > 
+                      <TouchableOpacity style={styles.bynIsUnActive }   onPress={()=>addVehiMake("heavyCaterpillar") } >
+                        <Text>Caterpillar </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }   onPress={()=>addVehiMake("heavyVolvo") }>
+                        <Text>Volvo</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("heavyJohnDeere") }>
+                        <Text>John Deere</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("heavyHyundai") } >
+                        <Text>Hyundai</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("heavySany") } >
+                        <Text>Sany </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive } onPress={()=>addVehiMake("heavyKobelco") } >
+                        <Text>Kobelco </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive } onPress={()=>addVehiMake("heavyXCMG") } >
+                        <Text>XCMG</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("heavyBobcat") } >
+                        <Text>Bobcat</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("heavyHitachi") } >
+                        <Text>Hitachi</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("heavyManitou") } >
+                        <Text>Manitou</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("heavyKubota") } >
+                        <Text>Kubota</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("heavyOtherM") } >
+                        <Text>Other</Text>
+                      </TouchableOpacity>
+                    </View>}
+
+                   {cargoTrcksMake && <View style={{flexDirection:'row'}} >
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("cargoMercedesBenz") }  >
+                        <Text>Mercedes-Benz</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("cargoMAN") } >
+                        <Text>MAN</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("cargoScania") } >
+                        <Text>Scania </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("cargoHowo") } >
+                        <Text>Howo</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("cargoVolvo") } >
+                        <Text>Volvo </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("cargoDAF") } >
+                        <Text>DAF </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("cargoIveco") } >
+                        <Text>Iveco </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("cargoUD") } >
+                        <Text>UD </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("cargoIsuzu") } >
+                        <Text>Isuzu </Text>
+                      </TouchableOpacity  >
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("cargoMitsubishiFuso") } >
+                        <Text>Mitsubishi Fuso</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("cargoHino") } >
+                        <Text>Hino</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("cargoOtherM") } >
+                        <Text>other</Text>
+                      </TouchableOpacity>
+                    </View>}
+
+                    <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("Toyota") }  >
+                      <Text>Toyota</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("MercedesBenz") }  >
+                      <Text>Mercedes-Benz</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("BMW") }  >
+                      <Text>BMW</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("Honda") }  >
+                      <Text>Honda</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("NISSAN") }  >
+                      <Text>NISSAN</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("MAZDA") }  >
+                      <Text>MAZDA</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("Volkswagen") }  >
+                      <Text>Volkswagen</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("Ford") }  >
+                      <Text>Ford</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("Isuzu") }  >
+                      <Text>Isuzu</Text>
+                    </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("Chevrolet") }  >
+                      <Text>Chevrolet</Text>
+                      </TouchableOpacity>
+                    <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("Hyundai") }  >
+                        <Text>Hyundai</Text>
+                    </TouchableOpacity>
+                      <TouchableOpacity  style={styles.bynIsUnActive }  onPress={()=>addVehiMake("Renault") } >
+                        <Text>Renault</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("Mitsubishi") }  >
+                        <Text>Mitsubishi</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive }  onPress={()=>addVehiMake("Kia") }  >
+                        <Text>Kia</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.bynIsUnActive } onPress={()=>addVehiMake("otherMakes") }  >
+                        <Text>other</Text>
+                      </TouchableOpacity>
                   </View>}
 
         </ScrollView> : null }
