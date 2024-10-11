@@ -74,6 +74,7 @@ function DspSoldIterms(){
     const [cargoTrcks , setCargoTrucks] = React.useState(false)
     function toggleCargoTrcks(){
       setCargoTrucks(prev=>!prev)
+      setheavyEquipmentMake(false)
     }
 
     const [vehiMakeDsp , setvehiMakeDsp] =React.useState(false)
@@ -108,6 +109,16 @@ function DspSoldIterms(){
       setCargoTrucks(false)
     }
 
+        const [ trailerTypeDsp , setTrailerTypeDsp] = React.useState(false)
+    function toggleTrailerTypeDsp(){
+      setTrailerTypeDsp(prev=>!prev)
+    }
+    const [ trailerType , setTrailerType] = React.useState(null)
+    function addTrailerType(value){
+      setTrailerType(value)
+      setTrailerTypeDsp(false)
+    }
+
  useEffect(() => {
     try {
         let dataQuery;
@@ -115,11 +126,9 @@ function DspSoldIterms(){
             if(specproduct === "vehicles" ){
 
                  if(vehicleType && vehiMake && priceRange && (buyRent === true || buyRent === false) ){
-                    alert('asdasdasdasdas')
                     dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehiMake", "==", vehiMake) , where("priceRange", "==", priceRange) , where("sellRent", "==", buyRent) );
                  }else if(vehicleType && vehiMake && priceRange){
 
-                    alert('')
                     dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehiMake", "==", vehiMake) , where("priceRange", "==", priceRange) );
                  }
 
@@ -173,13 +182,17 @@ function DspSoldIterms(){
 
 
 
-
-
-
-
             }else   if (specproduct === "trailers") {
+              if(trailerType){
 
-            if (buyRent === true || buyRent === false) {
+                if(buyRent === true || buyRent === false){
+                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("trailerType", "==", trailerType), where("sellRent", "==", buyRent) );
+
+                }else{
+                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("trailerType", "==", trailerType) );
+                }
+
+              }else if (buyRent === true || buyRent === false) {
                 dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) );
             } else {
                 dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) );
@@ -231,7 +244,7 @@ function DspSoldIterms(){
     } catch (err) {
         console.error(err);
     }
-}, [specproduct, buyRent, sellOBuy , priceRange , vehicleType ,vehiMake]);
+}, [specproduct, buyRent, sellOBuy , priceRange , vehicleType ,vehiMake ,trailerType]);
 
     const [contactDisplay, setContactDisplay] = React.useState({ ['']: false });
     const toggleContact = (itemId) => {
@@ -259,19 +272,23 @@ function DspSoldIterms(){
 
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#40E0D0" , borderWidth:1 , borderColor :'#40E0D0', justifyContent:'center', marginBottom:4}} >
-            <Text style={{color:'#40E0D0'}} >Phone call</Text>
-            <CallIcon/>
-          </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#25D366" , borderWidth:1 , borderColor :'#25D366', justifyContent:'center'}} >
+            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#25D366" , borderWidth:1 , borderColor :'#25D366', justifyContent:'center', marginBottom:6}} >
             <Text style={{color : "#25D366"}} >WhatsApp </Text> 
             <WhatsApp  />  
           </TouchableOpacity>
 
+          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#0074D9" , borderWidth:1 , borderColor :'#0074D9', justifyContent:'center', marginBottom:4}} >
+            <Text style={{color:'#0074D9'}} >Phone call</Text>
+            <CallIcon/>
+          </TouchableOpacity>
+
+
           </View>)
     return(
-      <TouchableOpacity  key={item.id}  onPress={()=>navigate(`/OneFirmsShop/${item.userId}/${item.id}/${sellOBuy}`)} style={{padding :7}}>
+      <TouchableOpacity  key={item.id}  onPress={()=>navigate(`/OneFirmsShop/${item.userId}/${item.id}/${location}/${sellOBuy}`)} style={{padding :7, borderWidth : 2 , borderColor:'black', borderRadius:8 ,  shadowColor: '#6a0c0c',
+        shadowOffset: { width: 1, height: 2 },
+        shadowOpacity: 0.7,
+        shadowRadius: 5,backgroundColor:'rgba(235, 142, 81, 0.07)' }}>
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
@@ -279,15 +296,17 @@ function DspSoldIterms(){
 
    
       
-          {sellOBuy ==="forSell"  &&<ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{ width : 200 , height : 200 ,}} >
+          {sellOBuy ==="forSell"  &&<ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{  height : 200 ,}} >
          
+
       {item.brandNew &&<View style={{ backgroundColor :'#40E0D0',paddingLeft :4 , paddingRight:4 , position : 'absolute' , bottom :0 , left :0 }} >
 
           <Text style={{color :'white'}} > brand New</Text>
 
       </View>}
         {item.imageUrl.map((image, index) => (
-            <img key={index} src={image} alt={`Image ${index}`}   style={{ margin : 7 }} />
+            <img key={index} src={image} alt={`Image ${index}`} style={{ margin: 7, maxWidth: '100%', height: 'auto', }} loading='lazy'
+          />
         ))}
 
           </ScrollView>}
@@ -358,8 +377,8 @@ function DspSoldIterms(){
       </View>}
 
       {dspMoreInfo[item.id]  && item.additionalInfo  &&<View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Aditional Info</Text>
-      {<Text>:  {item.additionalInfo}</Text>} 
+        <Text style={{width :100 }} >Aditional Info</Text>
+      {<Text  >:  {item.additionalInfo}</Text>} 
       </View>}
 
         </View>}
@@ -367,10 +386,11 @@ function DspSoldIterms(){
         {contactDisplay[item.id] && contactMe}
 
         <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
-          <Text style={{marginLeft :50 ,color :'green'}} >See more </Text>
+          <Text style={{color :'green'}} >{  dspMoreInfo[item.id]  ?"See Less": "See more"} </Text>
         </TouchableOpacity>
-        <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
-          <Text style={{textDecorationLine:'underline' , color:'#DC143C'}} > get In Touch now</Text>
+        
+        <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{ width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#228B22' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
+          <Text style={{ color:'white'}} > Get In Touch Now</Text>
         </TouchableOpacity>
 
 
@@ -380,7 +400,7 @@ function DspSoldIterms(){
 
     return(
         <ScrollView >
-     { specproduct ==="vehicles" || specproduct ==="trailers" ? <ScrollView  horizontal  showsHorizontalScrollIndicator={false}  >
+     { specproduct ==="vehicles" || specproduct ==="trailers" ? <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{marginBottom:10}} >
 
 
           <TouchableOpacity onPress={()=> setBuyRent(null)} style={buyRent === null ? styles.btnIsActive : styles.bynIsUnActive } >
@@ -394,19 +414,23 @@ function DspSoldIterms(){
             <Text style={ buyRent=== false ? {color : 'white'}: {color : 'black'} } >Rent</Text>
           </TouchableOpacity>
 
-          {<TouchableOpacity onPress={addPriceRangeDsp} style={priceRange  ? styles.btnIsActive : styles.bynIsUnActive }>
+          { specproduct ==="vehicles" && <TouchableOpacity onPress={addPriceRangeDsp} style={priceRange  ? styles.btnIsActive : styles.bynIsUnActive }>
             <Text style={ priceRange ? {color : 'white'}: {color : 'black'} } >{priceRange? priceRangeShow : "budjet"} </Text>
           </TouchableOpacity>}
 
-         { !priceRangeDsp && <TouchableOpacity onPress={dspVehicleTypeDsp} style={vehicleType ? styles.btnIsActive : styles.bynIsUnActive }>
+         { specproduct ==="vehicles" && !priceRangeDsp && <TouchableOpacity onPress={dspVehicleTypeDsp} style={vehicleType ? styles.btnIsActive : styles.bynIsUnActive }>
             <Text style={ vehicleType ? {color : 'white'}: {color : 'black'} } > {vehicleType ? vehicleType : "body"} </Text>
           </TouchableOpacity>}
 
-          {!priceRangeDsp&& !vehicleTypeDsp && <TouchableOpacity onPress={toggleVehiMakeDsp} style={ vehiMake ? styles.btnIsActive : styles.bynIsUnActive }>
+          { specproduct ==="vehicles" && !priceRangeDsp && !priceRangeDsp&& !vehicleTypeDsp && <TouchableOpacity onPress={toggleVehiMakeDsp} style={ vehiMake ? styles.btnIsActive : styles.bynIsUnActive }>
             <Text style={ vehiMake ? {color : 'white'}: {color : 'black'} }  > {vehiMake ? vehiMake : "Make"} </Text>
           </TouchableOpacity>}
 
-          {priceRangeDsp && <View style={{flexDirection:'row'}} >
+          { specproduct=== "trailers" &&<TouchableOpacity onPress={toggleTrailerTypeDsp}  style={ trailerType ? styles.btnIsActive : styles.bynIsUnActive }>
+            <Text style={ trailerType ? {color :'white'}:null } >{trailerType ? trailerType  : "Trailer Type" } </Text>
+            </TouchableOpacity>}
+
+          {specproduct ==="vehicles" && priceRangeDsp && <View style={{flexDirection:'row'}} >
             <TouchableOpacity style={styles.bynIsUnActive } onPress={()=>addPriceRange("firstRange") }>
             <Text>0 - 1500</Text>
             </TouchableOpacity>
@@ -440,7 +464,8 @@ function DspSoldIterms(){
             </TouchableOpacity>
           </View>}
 
-  { vehicleTypeDsp && <View style={{flexDirection:'row'}} >
+  { specproduct ==="vehicles" && vehicleTypeDsp && <View style={{flexDirection:'row'}} >
+    
                   <TouchableOpacity onPress={toggleCargoTrcks} style={styles.btnIsActive  } >
                     <Text style={{color:"white"}} >Cargo Trucks</Text>
                   </TouchableOpacity>
@@ -523,14 +548,14 @@ function DspSoldIterms(){
                   <TouchableOpacity onPress={()=>addVehicleType("SUV")} style={ styles.bynIsUnActive } >
                     <Text>SUV</Text>
                   </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("Vans")} style={styles.buttonStyle} >
+                    <Text>Vans</Text>
+                  </TouchableOpacity>
                   <TouchableOpacity onPress={()=>addVehicleType("PickupTrucks")} style={styles.bynIsUnActive } >
                     <Text>Pickup Trucks</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>addVehicleType("Hatchbacks")} style={styles.bynIsUnActive } >
                     <Text>Hatchbacks</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("Vans")} style={ styles.bynIsUnActive } >
-                    <Text>Vans</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>addVehicleType("Convertibles")} style={ styles.bynIsUnActive } >
                     <Text>Convertibles</Text>
@@ -538,11 +563,15 @@ function DspSoldIterms(){
                   <TouchableOpacity onPress={()=>addVehicleType("Crossovers")} style={styles.bynIsUnActive } >
                     <Text>Crossovers</Text>
                   </TouchableOpacity>
+                   <TouchableOpacity onPress={()=>addVehicleType("otherVehicles")} style={styles.buttonStyle} >
+                    <Text>other</Text>
+                  </TouchableOpacity>
                   </View>}
 
                   </View>}
 
-                  {vehiMakeDsp && <View style={{flexDirection:'row'}} >
+                  {specproduct ==="vehicles" && vehiMakeDsp && <View style={{flexDirection:'row'}} >
+
                     {!heavyEquipmentMake && <TouchableOpacity style={styles.btnIsActive} onPress={toggleCargoTrcksMake} >
                       <Text style={{color:'white'}}>Cargo Trucks</Text>
                     </TouchableOpacity>}
@@ -676,6 +705,42 @@ function DspSoldIterms(){
                         <Text>other</Text>
                       </TouchableOpacity>
                   </View>}
+
+
+                      {specproduct=== "trailers" && trailerTypeDsp && <View style={{flexDirection:'row'}}>
+                      <TouchableOpacity onPress={()=>addTrailerType("Bulktrailer")} style={styles.bynIsUnActive } >
+                        <Text>Bulk trailer</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("SideTipper")}  style={styles.bynIsUnActive }>
+                        <Text>Side Tipper</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("Tautliner")}  style={styles.bynIsUnActive }>
+                        <Text>Tautliner</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("Flatbed")}  style={styles.bynIsUnActive }>
+                        <Text>Flatbed</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("Tanker")}  style={styles.bynIsUnActive }>
+                        <Text>Tanker</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("Refrigerated")} style={styles.bynIsUnActive } >
+                        <Text>Refrigerated</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("CarHauler")}  style={styles.bynIsUnActive }>
+                        <Text>Car Hauler </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("UtilityTrailer")} style={styles.bynIsUnActive } >
+                        <Text>Utility Trailer</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("Lowboy")} style={styles.bynIsUnActive } >
+                        <Text>Lowboy</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addTrailerType("otherTrailer")}  style={styles.bynIsUnActive }>
+                        <Text>other</Text>
+                      </TouchableOpacity>
+                        </View>}
+
+
 
         </ScrollView> : null }
 

@@ -142,10 +142,10 @@ const [sellOBuy , setSellOBuy] = React.useState('forSell')
                         </TouchableOpacity>
 
             <TouchableOpacity onPress={()=>toggleSellOBuy("forSell")} style={styles.buttonStyle} >
-               <Text> BUY </Text>
+               <Text>Click to BUY </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>toggleSellOBuy("toBuy")}  style={styles.buttonStyle} >
-                <Text >SELL</Text>
+                <Text >Click to SELL</Text>
             </TouchableOpacity>
 
                     </View>

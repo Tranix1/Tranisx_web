@@ -7,6 +7,8 @@ import ShopHeader from "./ShopHeader";
 import inputstyles from "../styles/inputElement";
 
 import { useNavigate , useParams} from "react-router-dom";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+
 function DspShopIterms({spechopLoc}){
 
   const navigate = useNavigate()
@@ -127,8 +129,9 @@ return(
             
         </View>
                </View>}
-            {auth.currentUser ? <TouchableOpacity onPress={checkAuth}  style={{position :'absolute',top: 440 ,right:10 , width : 60 , height : 35 , alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' , zIndex :200 , borderRadius: 8}} >
-                <Text style={{color : 'white'}} >Add</Text>
+            {auth.currentUser ?   <TouchableOpacity onPress={checkAuth}  style={{position :'fixed',top: 470 ,right:10 , width : 80 , height : 35 , alignItems :"center" , justifyContent :'space-around' , backgroundColor:'#228B22' , zIndex :200 , borderRadius: 8, flexDirection :'row', }} >
+                <Text style={{color : 'white', fontSize:18}} >Add</Text>
+                 <AddShoppingCartIcon style={{color:'white'}} />
              </TouchableOpacity>
             :
             

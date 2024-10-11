@@ -312,20 +312,20 @@ setTimeout(() => {
 
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-          <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
+            <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
             <Text style={{color:"#008080"}} >Message now</Text>
             <ChatIcon/>
 
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#40E0D0" , borderWidth:1 , borderColor :'#40E0D0', justifyContent:'center', marginBottom:4}} >
-            <Text style={{color:'#40E0D0'}} >Phone call</Text>
-            <CallIcon/>
-          </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#25D366" , borderWidth:1 , borderColor :'#25D366', justifyContent:'center'}} >
+            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#25D366" , borderWidth:1 , borderColor :'#25D366', justifyContent:'center', marginBottom:6}} >
             <Text style={{color : "#25D366"}} >WhatsApp </Text> 
             <WhatsApp  />  
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#0074D9" , borderWidth:1 , borderColor :'#0074D9', justifyContent:'center', marginBottom:4}} >
+            <Text style={{color:'#0074D9'}} >Phone call</Text>
+            <CallIcon/>
           </TouchableOpacity>
 
           </View>)
@@ -381,13 +381,16 @@ setTimeout(() => {
 
 
   return(
-    <View  key={item.id} style={{ backgroundColor:  "#DDDDDD", marginBottom : 8, padding :6  , }} >
+    <View  key={item.id} style={{  marginBottom : 8, padding :6  , padding :7, borderWidth : 2 , borderColor:'black', borderRadius:8 ,  shadowColor: '#6a0c0c',
+        shadowOffset: { width: 1, height: 2 },
+        shadowOpacity: 0.7,
+        shadowRadius: 5}} >
 
             
             { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white',zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
             </View>}
-        <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}  >{item.companyName} </Text>
+        <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 21 , fontWeight:'600'}}  >{item.companyName} </Text>
 
       <View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >Commodity</Text>
@@ -426,8 +429,8 @@ setTimeout(() => {
        {<Text>:  {item.additionalInfo} </Text>} 
       </View>}
 
-        <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
-          <Text style={{marginLeft :50 ,color :'green'}} >See more </Text>
+          <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
+          <Text style={{color :'green'}} >{  dspMoreInfo[item.id]  ?"See Less": "See more"} </Text>
         </TouchableOpacity>
         </View> }
 
@@ -437,8 +440,8 @@ setTimeout(() => {
 
          {bidDisplay[item.id]&& bidNow}
 
-        { !item.isVerified&& !bidDisplay[item.id]&&<TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
-          <Text style={{textDecorationLine:'underline' , color:'#DC143C'}}  > get In Touch now</Text>
+        { !item.isVerified&& !bidDisplay[item.id]&&  <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{  width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#228B22' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
+          <Text style={{color:'white'}} > Get In Touch Now</Text>
         </TouchableOpacity>}
         
         
@@ -447,17 +450,17 @@ setTimeout(() => {
           {spinnerItem === item ? (
         <ActivityIndicator size={34} />
       ) : (
-        <TouchableOpacity style={styles.buttonStyle} onPress={() => handleSubmit(item , "bookings")}>
-          <Text>Book</Text>
+        <TouchableOpacity style={{ width : 90 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' ,  borderRadius: 8, alignSelf:'center', margin:5 }} onPress={() => handleSubmit(item , "bookings")}>
+          <Text style={{color:'white'}} >Book</Text>
         </TouchableOpacity>
       )}
 
-      <TouchableOpacity onPress={()=>toggleBid(item.id) } style={{ height : 30,justifyContent : 'center' , alignItems : 'center' ,width : 90 ,marginBottom: 10 ,borderRadius: 10}} >
-        <Text>Bid</Text>
+      <TouchableOpacity onPress={()=>toggleBid(item.id) } style={{ width : 90 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
+        <Text style={{color:'white'}} >Bid</Text>
       </TouchableOpacity>
 
-        <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.companyName} `)} style={styles.buttonStyle} >
-          <Text>Message</Text>
+        <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.companyName} `)} style={{ width : 90 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
+          <Text style={{color:'white'}} >Message</Text>
         </TouchableOpacity>       
         </View> : 
         <Text style={{color:'red'}}> Sign In to Book Bid and Message </Text>
@@ -533,11 +536,11 @@ setTimeout(() => {
    {!localLoads &&  <ScrollView style={{padding : 10 , marginTop : 10 , paddingTop : 0}} >
    {!location && <View style={{flexDirection : 'row' , justifyContent : 'space-evenly' }} >
     <TouchableOpacity onPress={toggleLocalLoads} style={styles.buttonStyle} >
-      <Text> Local </Text>
+      <Text style={{color:'white'}} > Local </Text>
     </TouchableOpacity>
 
     <TouchableOpacity style={styles.buttonStyle} onPress={()=> navigate(`/location/International`) }>
-      <Text> International  </Text>
+      <Text style={{color:'white'}} >International  </Text>
     </TouchableOpacity>
     </View>
 }
@@ -593,13 +596,14 @@ const styles = StyleSheet.create({
         height : 30,
         justifyContent : 'center' , 
         alignItems : 'center' ,
-        paddingLeft : 10,
-        paddingRight : 10 ,
-        // width : 70 ,
+        // paddingLeft : 10,
+        // paddingRight : 10 ,
+        width : 100 ,
         marginBottom: 10 ,
         borderWidth: 2 ,
         borderColor:"#6a0c0c" ,
-        borderRadius: 10
+        borderRadius: 10,
+        backgroundColor:'#228B22' 
     } ,
     buttonStyleCounry :{
         height : 40,

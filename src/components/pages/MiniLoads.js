@@ -61,14 +61,14 @@ const mainLoadsCollection = collection(db, 'Loads');
 
 
 const rendereIterms = mainLoadsList.map((item)=>{
-  return( <TouchableOpacity style={{borderWidth : 2 , borderColor : "rgb(129,201,149)" , width : 230 , marginRight :16}} 
+  return( <TouchableOpacity style={{borderWidth : 2  , width : 230 , marginRight :16}} 
   onPress={()=> navigate(`/selectedUserLoads/${item.userId}`) } >
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
       </View>}
 
-      <View className='miniloadH3Div' key={item.id} style={{backgroundColor : 'rgb(129,201,149)' ,  }} >
+      <View className='miniloadH3Div' key={item.id} style={{backgroundColor : '#228B22' ,  }} >
          <Text style={{color : 'white' , textAlign : 'center' , fontSize : 16}} > {item.companyName} </Text>
       </View  >
 

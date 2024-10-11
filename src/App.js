@@ -57,6 +57,9 @@ import OneFirmsShop from "./components/shop/OneFirmsShop";
 import SearchInshop from "./components/shop/SearchInshop";
 import ManageStock from "./components/shop/ManageStock";
 
+import AddBoxIcon from '@mui/icons-material/AddBox';
+
+
 function HomeScreen() {
   
   // const navigation = useNavigation();
@@ -101,7 +104,7 @@ const {page} = useParams()
   };
 }, [currentUser]);
 
-  function checkAuth(){
+function checkAuth(){
     if(!currentUser){
       navigate("/createUser/")
     }else if(currentUser &&!username){
@@ -157,8 +160,9 @@ const {page} = useParams()
              {smallMenu && <SmallMenu  toggleSmallMenu={toggleSmallMenu}  /> }
             
          {/* { currentUser&& !username&& <PersonalAccInfo personalInfo={personalInfo} />}  */}
-             <TouchableOpacity onPress={checkAuth}  style={{position :'absolute',top: 440 ,right:10 , width : 60 , height : 35 , alignItems :"center" , justifyContent :'center', backgroundColor:'rgb(129,201,149)' , zIndex :200 , borderRadius: 8}} >
-                <Text style={{color : 'white'}} >Add</Text>
+             <TouchableOpacity onPress={checkAuth}  style={{position :'fixed',top: 470 ,right:10 , width : 80 , height : 35 , alignItems :"center" , justifyContent :'space-around' , backgroundColor:'#228B22' , zIndex :200 , borderRadius: 8, flexDirection :'row', }} >
+                <Text style={{color : 'white', fontSize:18}} >Add</Text>
+                 <AddBoxIcon style={{color:'white'}} />
              </TouchableOpacity>
 
    {!page && <View >
@@ -308,8 +312,8 @@ function App(){
       <Route path="/AddToShop/:location/:specproduct/:sellOBuy" element={<AddToShop
        deliveryR ={deliveryR}  username={ username}  contact = {contact}  isVerified ={ isVerified} shopLocation={spechopLoc}/>} />
 
-      <Route path="/OneFirmsShop/:userId/:itemId/:sellOBuyG" element={<OneFirmsShop/>} />
-      <Route path="/OneFirmsShopA/:userId/:itemId/:sellOBuyG/:agCont" element={<OneFirmsShop/>} />
+      <Route path="/OneFirmsShop/:userId/:itemId/:location/:sellOBuyG" element={<OneFirmsShop/>} />
+      <Route path="/OneFirmsShopA/:userId/:itemId/:location/:sellOBuyG/:agCont" element={<OneFirmsShop/>} />
       <Route path="/manageStock/" element={<ManageStock/>} />
       <Route path="/sSoldProducts/:userId/:itemId/:sellOBuyG" element={<OneFirmsShop/>} />
       <Route path="/shosearchElement/" element={<SearchInshop/>} />

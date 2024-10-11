@@ -198,14 +198,19 @@ const [ imageUpload, setImageUpload] = React.useState([])
         alert("Add product name and the price to continue")
         return
         }
-      }else if( specproduct !== "Sprovider" ){ 
+      }
+       else if(specproduct === "trailers" ){
+        if(!trailerType){
+
+          alert('Specify trailer type')
+          return
+        }
+        }
+      else if( specproduct !== "Sprovider" ){ 
       if(!formData.productName  || !formData.price  ){
         alert("Add product name and the price to continue")
         return
-      }}  else if(!trailerType &&specproduct === "trailers" ){
-          alert('Specify trailer type');
-          return
-        }
+      }} 
       setSpinnerItem(true)
 
     
@@ -249,7 +254,8 @@ const [ imageUpload, setImageUpload] = React.useState([])
             priceRange : priceRange ,
             vehicleType : vehicleType ,
             brandNew : brandNew ,
-            vehiMake : vehiMake
+            vehiMake : vehiMake,
+            trailerType : trailerType ,
 
         });
 
@@ -573,14 +579,14 @@ const [ imageUpload, setImageUpload] = React.useState([])
                   <TouchableOpacity onPress={()=>addVehicleType("SUV")} style={styles.buttonStyle} >
                     <Text>SUV</Text>
                   </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>addVehicleType("Vans")} style={styles.buttonStyle} >
+                    <Text>Vans</Text>
+                  </TouchableOpacity>
                   <TouchableOpacity onPress={()=>addVehicleType("PickupTrucks")} style={styles.buttonStyle} >
                     <Text>Pickup Trucks</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>addVehicleType("Hatchbacks")} style={styles.buttonStyle} >
                     <Text>Hatchbacks</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("Vans")} style={styles.buttonStyle} >
-                    <Text>Vans</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>addVehicleType("Convertibles")} style={styles.buttonStyle} >
                     <Text>Convertibles</Text>

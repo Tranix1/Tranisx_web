@@ -241,8 +241,8 @@ let whnBookBiddAload = getAllIterms.map((item) => {
       </View>
 
         {contactDisplay[item.id] && contactMe}
-        {item.Accept && <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{marginTop : 7 , marginBottom :10}} >
-          <Text style={{textDecorationLine:'underline',color:'#DC143C'}} > get In Touch now</Text>
+        {item.Accept &&  <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{ width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#228B22' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
+          <Text style={{ color:'white'}} > Get In Touch Now</Text>
         </TouchableOpacity>}
 
           <TouchableOpacity onPress={()=>loadTaken(  null ,   item.id ) } style={{backgroundColor :'red' , width : 100 , alignItems :'center' , borderRadius :50 , position :'absolute', right :7 , bottom :7}}>
@@ -265,21 +265,20 @@ const userId = auth.currentUser.uid;
   const message =  ` Is this Load still available   ${item.typeofLoad} from  ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : null} from Truckerz ` ; // Set your desired message here
 
  let contactMe = ( <View style={{ paddingLeft: 30 }}>
-
-         <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
+  <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
             <Text style={{color:"#008080"}} >Message now</Text>
             <ChatIcon/>
 
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#40E0D0" , borderWidth:1 , borderColor :'#40E0D0', justifyContent:'center', marginBottom:4}} >
-            <Text style={{color:'#40E0D0'}} >Phone call</Text>
-            <CallIcon/>
-          </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#25D366" , borderWidth:1 , borderColor :'#25D366', justifyContent:'center'}} >
+            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#25D366" , borderWidth:1 , borderColor :'#25D366', justifyContent:'center', marginBottom:6}} >
             <Text style={{color : "#25D366"}} >WhatsApp </Text> 
             <WhatsApp  />  
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#0074D9" , borderWidth:1 , borderColor :'#0074D9', justifyContent:'center', marginBottom:4}} >
+            <Text style={{color:'#0074D9'}} >Phone call</Text>
+            <CallIcon/>
           </TouchableOpacity>
 
           </View>)

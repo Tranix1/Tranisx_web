@@ -52,11 +52,11 @@ const [sellOBuy , setSellOBuy] =React.useState(null)
 
           { sellOBuy !== "toBuy" && sellOBuy !== "forSell" ? <View>
                 <TouchableOpacity onPress={()=>toggleSellOBuy("forSell")} style={styles.buttonSelectStyle} >
-                    <Text style={{color:'white'}} >Want to sell</Text>
+                    <Text style={{color:'white'}} >Click to sell</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={()=>toggleSellOBuy("toBuy")} style={styles.buttonSelectStyle} >
-                    <Text style={{color:'white'}}>Want to Buy</Text>
+                    <Text style={{color:'white'}}>Click to Buy</Text>
                 </TouchableOpacity>
 
             </View>:null}
