@@ -125,7 +125,7 @@ function DspSoldIterms(){
 
             if(specproduct === "vehicles" ){
 
-                 if(vehicleType && vehiMake && priceRange && (buyRent === true || buyRent === false) ){
+                 if(vehicleType && vehiMake && priceRange && (buyRent===true || buyRent === false || buyRent==="R2B") ){
                     dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehiMake", "==", vehiMake) , where("priceRange", "==", priceRange) , where("sellRent", "==", buyRent) );
                  }else if(vehicleType && vehiMake && priceRange){
 
@@ -140,7 +140,7 @@ function DspSoldIterms(){
                 }else if( vehiMake ){
 
                   dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("priceRange", "==", priceRange) , where("vehiMake", "==", vehiMake) );
-                }else if ((buyRent === true || buyRent === false) ){
+                }else if ((buyRent === true || buyRent === false || buyRent ==="R2B" ) ){
 
                   dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("sellRent", "==", buyRent) , where("priceRange", "==", priceRange));
                 }else{
@@ -152,7 +152,7 @@ function DspSoldIterms(){
                   if( vehiMake ){
 
                     dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) );
-                  }else if ((buyRent === true || buyRent === false) ){
+                  }else if ((buyRent === true || buyRent === false || buyRent==="R2B" ) ){
 
                   dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("sellRent", "==", buyRent) , where("vehicleType", "==", vehicleType));
 
@@ -162,7 +162,7 @@ function DspSoldIterms(){
                     dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType)  );
                   }
                  }else if(vehiMake){
-                   if ((buyRent === true || buyRent === false) ){
+                   if ((buyRent === true || buyRent === false || buyRent==="R2B" ) ){
 
                   dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("sellRent", "==", buyRent) , where("vehiMake", "==", vehiMake));
 
@@ -170,7 +170,7 @@ function DspSoldIterms(){
 
                       dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehiMake", "==", vehiMake)  );
                     }
-                 }else if(buyRent === true || buyRent === false){
+                 }else if(buyRent === true || buyRent === false || buyRent==="R2B" ){
 
                       dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy)  , where("sellRent", "==", buyRent) , );
                  }
@@ -185,14 +185,14 @@ function DspSoldIterms(){
             }else   if (specproduct === "trailers") {
               if(trailerType){
 
-                if(buyRent === true || buyRent === false){
+                if(buyRent === true || buyRent === false || buyRent==="R2B" ){
                   dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("trailerType", "==", trailerType), where("sellRent", "==", buyRent) );
 
                 }else{
                 dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("trailerType", "==", trailerType) );
                 }
 
-              }else if (buyRent === true || buyRent === false) {
+              }else if (buyRent === true || buyRent === false || buyRent==="R2B" ) {
                 dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) );
             } else {
                 dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) );
@@ -263,7 +263,7 @@ function DspSoldIterms(){
 
   const rendereIterms = allSoldIterms.map((item)=>{
 
-        const message =  `${item.CompanyName} is this Product still ${ item.sellOBuy === "forSell"? "available":"wanted" } ${item.productName} ${item.sellRent ? "for sell" :'for rental' }   ${item.currency?"USD" : "Rand" }  ${item.price}   from https://www.truckerz.net/OneFirmsShop/${item.userId}/${item.id}` ; // Set your desired message here
+        const message =  `${item.CompanyName} is this Product still ${ item.sellOBuy === "forSell"? "available":"wanted" } ${item.productName} ${item.sellRent ? "for sell" :'for rental' }   ${item.currency?"USD" : "Rand" }  ${item.price}                    from https://www.transix.net/OneFirmsShop/${item.userId}/${item.id}/${item.location}/${sellOBuy}` ; // Set your desired message here
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
           <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
@@ -295,21 +295,39 @@ function DspSoldIterms(){
       </View>}
 
    
-      
+       
+           <View>
           {sellOBuy ==="forSell"  &&<ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{  height : 200 ,}} >
-         
-
-      {item.brandNew &&<View style={{ backgroundColor :'#40E0D0',paddingLeft :4 , paddingRight:4 , position : 'absolute' , bottom :0 , left :0 }} >
-
-          <Text style={{color :'white'}} > brand New</Text>
-
-      </View>}
         {item.imageUrl.map((image, index) => (
-            <img key={index} src={image} alt={`Image ${index}`} style={{ margin: 7, maxWidth: '100%', height: 'auto', }} loading='lazy'
-          />
+          <View>
+            {
+              image ?
+            <img key={index} src={image} alt={`Image ${index}`} style={{ margin: 7, maxWidth: '100%', height: 200, }} loading='lazy'/>
+            : <Text style={{alignSelf:'center'}} >quality images loading </Text>
+            }
+          </View>
         ))}
 
-          </ScrollView>}
+          </ScrollView>} 
+          
+
+      {<View style={{ position : 'absolute' , bottom :0 , left :0 ,flexDirection:'row'}} >
+
+         {item.brandNew &&  <View style={{backgroundColor :'#40E0D0',paddingLeft :4 , paddingRight:4 , marginLeft :7}} >
+          <Text style={{color :'white'}} > brand New</Text>
+          </View>}
+
+         {item.swapA &&  <View style={{backgroundColor :'#008080',paddingLeft :4 , paddingRight:4 , marginLeft :7}} >
+          <Text style={{color :'white'}} >Swap</Text>
+          </View>}
+
+         {item.negetiatable &&  <View style={{backgroundColor :'#25D366',paddingLeft :4 , paddingRight:4 , marginLeft :7}} >
+          <Text style={{color :'white'}} >Negotiable</Text>
+          </View>}
+
+      </View>}
+
+          </View>
 
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} </Text>
 
@@ -345,7 +363,12 @@ function DspSoldIterms(){
           
          {item.productName &&<View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >{sellOBuy ==="forSell" ? "Product":'Looking For' }</Text>
-       {<Text>:  {item.productName} {item.sellRent ? "for sell" :'for rental' } </Text>} 
+       {<Text>:  {item.productName} { item.sellRent === "R2B" ?"Rent To Buy": item.sellRent ? "for sell" :'for rental' } </Text>} 
+      </View>}
+          
+         {item.swapWith &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Swap</Text>
+       {<Text>:  {item.swapWith} </Text>} 
       </View>}
 
       { item.price &&<View style={{flexDirection :'row'}} >
@@ -385,9 +408,9 @@ function DspSoldIterms(){
 
         {contactDisplay[item.id] && contactMe}
 
-        <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
+       { !contactDisplay[item.id] &&<TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
           <Text style={{color :'green'}} >{  dspMoreInfo[item.id]  ?"See Less": "See more"} </Text>
-        </TouchableOpacity>
+        </TouchableOpacity>}
         
         <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{ width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#228B22' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
           <Text style={{ color:'white'}} > Get In Touch Now</Text>
@@ -403,6 +426,7 @@ function DspSoldIterms(){
      { specproduct ==="vehicles" || specproduct ==="trailers" ? <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{marginBottom:10}} >
 
 
+           { !priceRangeDsp && !vehicleTypeDsp && !vehiMakeDsp && !trailerTypeDsp && <View style={{flexDirection:'row'}} > 
           <TouchableOpacity onPress={()=> setBuyRent(null)} style={buyRent === null ? styles.btnIsActive : styles.bynIsUnActive } >
             <Text style={ buyRent=== null ? {color : 'white'}: {color : 'black'} } >All </Text>
           </TouchableOpacity>
@@ -414,15 +438,20 @@ function DspSoldIterms(){
             <Text style={ buyRent=== false ? {color : 'white'}: {color : 'black'} } >Rent</Text>
           </TouchableOpacity>
 
-          { specproduct ==="vehicles" && <TouchableOpacity onPress={addPriceRangeDsp} style={priceRange  ? styles.btnIsActive : styles.bynIsUnActive }>
+          <TouchableOpacity onPress={()=> setBuyRent("R2B")} style={buyRent === "R2B" ? styles.btnIsActive : styles.bynIsUnActive }>
+            <Text style={ buyRent=== "R2B" ? {color : 'white'}: {color : 'black'} } >R2B</Text>
+          </TouchableOpacity>
+          </View>}
+
+          { specproduct ==="vehicles" && !vehicleTypeDsp && !vehiMakeDsp && <TouchableOpacity onPress={addPriceRangeDsp} style={priceRange  ? styles.btnIsActive : styles.bynIsUnActive }>
             <Text style={ priceRange ? {color : 'white'}: {color : 'black'} } >{priceRange? priceRangeShow : "budjet"} </Text>
           </TouchableOpacity>}
 
-         { specproduct ==="vehicles" && !priceRangeDsp && <TouchableOpacity onPress={dspVehicleTypeDsp} style={vehicleType ? styles.btnIsActive : styles.bynIsUnActive }>
+         { specproduct ==="vehicles" && !priceRangeDsp && !vehiMakeDsp && <TouchableOpacity onPress={dspVehicleTypeDsp} style={vehicleType ? styles.btnIsActive : styles.bynIsUnActive }>
             <Text style={ vehicleType ? {color : 'white'}: {color : 'black'} } > {vehicleType ? vehicleType : "body"} </Text>
           </TouchableOpacity>}
 
-          { specproduct ==="vehicles" && !priceRangeDsp && !priceRangeDsp&& !vehicleTypeDsp && <TouchableOpacity onPress={toggleVehiMakeDsp} style={ vehiMake ? styles.btnIsActive : styles.bynIsUnActive }>
+          { specproduct ==="vehicles" && !priceRangeDsp&& !vehicleTypeDsp && <TouchableOpacity onPress={toggleVehiMakeDsp} style={ vehiMake ? styles.btnIsActive : styles.bynIsUnActive }>
             <Text style={ vehiMake ? {color : 'white'}: {color : 'black'} }  > {vehiMake ? vehiMake : "Make"} </Text>
           </TouchableOpacity>}
 

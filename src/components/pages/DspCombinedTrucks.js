@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, onSnapshot, } from 'firebase/firestore';
 import { db , auth} from '../config/fireBase';
 import { View , Text , Image , ScrollView , TouchableOpacity , Linking} from 'react-native';
-import defaultImage from '../images/logo.png'
+import defaultImage from '../images/logo.jpg'
 
 import VerifiedIcon from '@mui/icons-material/Verified';
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -121,9 +121,9 @@ const navigate = useNavigate()
         </View>}
 
         {contactDisplay[item.id] && contactMe}
-         <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
+        { !contactDisplay[item.id]&& <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
           <Text style={{color :'green'}} >{  dspMoreInfo[item.id]  ?"See Less": "See more"} </Text>
-        </TouchableOpacity>
+        </TouchableOpacity>}
         
         <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{ width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#228B22' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
           <Text style={{ color:'white'}} > Get In Touch Now</Text>

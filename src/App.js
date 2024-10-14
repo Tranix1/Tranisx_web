@@ -297,7 +297,7 @@ function App(){
 
       <Route path="/dspOneTrckType/:truckType" element={<DspOneTruckType/>} initialParams={{username : username , contact : contact , isVerified : isVerified}} />
       <Route path="/selectedUserTrucks/:userId" element={<SelectedUserTrucks/>} />
-      <Route path="/selectedUserLoads/:userId" element={<DspAllLoads username={username} />} />
+      <Route path="/selectedUserLoads/:userId/:itemId" element={<DspAllLoads username={username} />} />
       <Route path="/selectedUserLoads/:userId/:itemId" element={<DspAllLoads username={username} />} />
       <Route path="/searchedLoads/:userId/:itemId" element={<DspAllLoads username={username} />} />
 
@@ -315,7 +315,7 @@ function App(){
       <Route path="/OneFirmsShop/:userId/:itemId/:location/:sellOBuyG" element={<OneFirmsShop/>} />
       <Route path="/OneFirmsShopA/:userId/:itemId/:location/:sellOBuyG/:agCont" element={<OneFirmsShop/>} />
       <Route path="/manageStock/" element={<ManageStock/>} />
-      <Route path="/sSoldProducts/:userId/:itemId/:sellOBuyG" element={<OneFirmsShop/>} />
+      <Route path="/sSoldProducts/:userId/:itemId/:location/:sellOBuyG" element={<OneFirmsShop/>} />
       <Route path="/shosearchElement/" element={<SearchInshop/>} />
 
       <Route path="/helpHome/" element={<HelpHome/>} />

@@ -5,7 +5,7 @@ import {onSnapshot ,  query ,collection,where } from "firebase/firestore"
 
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-import defaultImage from '../images/logo.png'
+import defaultImage from '../images/logo.jpg'
 import { useParams , useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -130,9 +130,9 @@ const navigate = useNavigate()
         </View>}
 
         {contactDisplay[item.id] && contactMe}
-        <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
+        {!contactDisplay[item.id] &&<TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
           <Text style={{color:'green'}} > See more </Text>
-        </TouchableOpacity>
+        </TouchableOpacity>}
         <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{ width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#228B22' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
           <Text style={{ color:'white'}} > Get In Touch Now</Text>
         </TouchableOpacity>

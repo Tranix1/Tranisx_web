@@ -69,20 +69,37 @@ const rendereIterms = mainLoadsList.map((item)=>{
       </View>}
 
       <View className='miniloadH3Div' key={item.id} style={{backgroundColor : '#228B22' ,  }} >
-         <Text style={{color : 'white' , textAlign : 'center' , fontSize : 16}} > {item.companyName} </Text>
+         <Text style={{color : 'white' , textAlign : 'center' , fontSize : 18}} > {item.companyName} </Text>
       </View  >
 
       <View style={{padding : 8}} >
-          <Text>
-          Commodity: {item.typeofLoad}
-          </Text>
+          <View style={{flexDirection :'row'}} >
+        <Text style={{width :75}} >Commodity</Text>
+        <Text  >:  {item.typeofLoad} </Text>
+      </View>
 
-        <Text>
-        Route From : {item.fromLocation} to : {item.toLocation}
-        </Text>
-      <Text>
-      Rate : {item.ratePerTonne}
-      </Text>
+      <View style={{flexDirection :'row'}} >
+        <Text style={{width :75}} >Route</Text>
+        <Text>:  from  {item.fromLocation}  to  {item.toLocation} </Text>
+      </View>
+
+      {!item.linksRate && !item.triaxleRate && <View style={{flexDirection :'row'}} >
+        <Text style={{width :34}} >Rate</Text>
+        <Text>:  {item.currency ? "USD" : "RAND"} {item.ratePerTonne} {item.perTonne ? "Per tonne" :null} </Text>
+      </View>}
+
+        <View style={{flexDirection:'row'}} >
+       {item.linksRate&&  <View style={{flexDirection :'row'}} >
+        <Text style={{width :34}} >Link</Text>
+        <Text>: {item.currency ? "USD" : "RAND"} {item.linksRate} {item.perTonne ? "Per tonne" :null} </Text>
+      </View>}
+
+       {item.triaxleRate&& <View style={{flexDirection :'row'}} >
+        <Text style={{width :30}} >Triax</Text>
+        <Text>: {item.currency ? "USD" : "RAND"} {item.triaxleRate} {item.perTonne ? "Per tonne" :null} </Text> 
+      </View>}
+        </View>
+
     </View>
     </TouchableOpacity>
 

@@ -22,11 +22,19 @@ const [error , setError]= React.useState("")
     paymentTerms: "",
     requirements: "",
     additionalInfo: "",
+    links :null ,
+    triaxle :null
   });
 
     const [currency , setCurrency] = React.useState(true)
   function toggleCurrency(){
     setCurrency(prev=>!prev)
+  }
+
+
+    const [ trailerConfig , settrailerConfig] = React.useState(false)
+  function toggleTrailerConfig(){
+    settrailerConfig(prev=>!prev)
   }
 
   const [perTonne , setPerTonne] = React.useState(false)
@@ -62,12 +70,15 @@ const [error , setError]= React.useState("")
     const [spinnerItem, setSpinnerItem] = React.useState(false);
     
   const handleSubmit = async () => {
-     if(!formData.ratePerTonne || !formData.typeofLoad || !formData.toLocation || !formData.fromLocation || !formData.paymentTerms){
+     if(!formData.typeofLoad || !formData.toLocation || !formData.fromLocation || !formData.paymentTerms){
         alert('Enter Rate , Commodity,Routes and Payment terms' )
         return
-      }else if(!username){
-        
+      }else if(!formData.ratePerTonne && !formData.links && formData.triaxle){
+        alert("Enter the rate")
+        return
+      } else if(!username){
         alert('Create an accont' )
+        return
       }
       setSpinnerItem(true)
 
@@ -83,6 +94,8 @@ const [error , setError]= React.useState("")
         fromLocation: formData.fromLocation,
         toLocation: formData.toLocation,
         ratePerTonne: formData.ratePerTonne,
+        linksRate : formData.links ,
+        triaxleRate : formData.triaxle ,
         paymentTerms: formData.paymentTerms,
         requirements: formData.requirements,
         additionalInfo: formData.additionalInfo,
@@ -96,13 +109,15 @@ const [error , setError]= React.useState("")
       });
 
       setFormData({
-        typeofLoad: "",
-        fromLocation: "",
-        toLocation: "",
-        ratePerTonne: "",
-        paymentTerms: "",
-        requirements: "",
-        additionalInfo: "",
+    typeofLoad: "",
+    fromLocation: "",
+    toLocation: "",
+    ratePerTonne: null,
+    additionalInfo: "",
+    links :null ,
+    triaxle :null,
+    paymentTerms: "",
+    requirements: "",
       });
       setSpinnerItem(false)
       setPerTonne(false)
@@ -152,7 +167,13 @@ const [error , setError]= React.useState("")
     style={inputstyles.addIterms }
   />
 
-  <View style={{flexDirection:'row', alignItems : 'center'}}>
+
+
+
+
+
+
+  {!trailerConfig && <View style={{flexDirection:'row', alignItems : 'center'}}>
 
     <View>   
      <TouchableOpacity onPress={toggleCurrency}>
@@ -174,7 +195,79 @@ const [error , setError]= React.useState("")
          {perTonne ? <Text style={styles.bttonIsTrue} >Per tonne</Text> : 
           <Text style={styles.buttonIsFalse}>Per tonne</Text>}
       </TouchableOpacity>
+   </View>}
+
+
+<TouchableOpacity onPress={toggleTrailerConfig} style={ trailerConfig ? styles.bttonIsTrue : styles.buttonIsFalse} >
+  <Text style={ trailerConfig ? {color:'white'} :null }  >Trailer config</Text>
+</TouchableOpacity>
+
+
+
+
+{trailerConfig && <View>
+
+  <View >
+    <Text style={{fontSize:19 ,}} >Links </Text>
+        <View style={{flexDirection:'row', alignItems : 'center'}} >
+    <View>   
+     <TouchableOpacity onPress={toggleCurrency}>
+        {currency ? <Text style={styles.buttonIsFalse} >USD</Text> :
+         <Text style={styles.bttonIsTrue}>Rand </Text>}
+      </TouchableOpacity>
+    </View>
+
+    <TextInput
+        onChangeText={(text) => handleTypedText(text, 'links')}
+        name="links"
+        value={formData.links}
+        keyboardType="numeric"
+        placeholderTextColor="#6a0c0c"
+        style={ {   height : 40 , borderBottomWidth: 2 , borderBottomColor : "#6a0c0c" ,marginBottom : 10 , paddingLeft : 20 ,width : 180}}
+        placeholder="Enter Links rate"
+      />
+      <TouchableOpacity onPress={togglePerTonne} >
+         {perTonne ? <Text style={styles.bttonIsTrue} >Per tonne</Text> : 
+          <Text style={styles.buttonIsFalse}>Per tonne</Text>}
+      </TouchableOpacity>
    </View>
+ </View>
+
+
+  <View >
+    <Text style={{fontSize:19 , }}>Triaxle</Text>
+        <View style={{flexDirection:'row', alignItems : 'center'}} > 
+    <View>   
+     <TouchableOpacity onPress={toggleCurrency}>
+        {currency ? <Text style={styles.buttonIsFalse} >USD</Text> :
+         <Text style={styles.bttonIsTrue}>Rand </Text>}
+      </TouchableOpacity>
+    </View>
+
+    <TextInput
+        onChangeText={(text) => handleTypedText(text, 'triaxle')}
+        name="triaxle"
+        value={formData.triaxle}
+        keyboardType="numeric"
+        placeholderTextColor="#6a0c0c"
+        style={ {   height : 40 , borderBottomWidth: 2 , borderBottomColor : "#6a0c0c" ,marginBottom : 10 , paddingLeft : 20 ,width : 180}}
+        placeholder="Enter triaxle rate"
+      />
+      <TouchableOpacity onPress={togglePerTonne} >
+         {perTonne ? <Text style={styles.bttonIsTrue} >Per tonne</Text> : 
+          <Text style={styles.buttonIsFalse}>Per tonne</Text>}
+      </TouchableOpacity>
+   </View>
+   </View>
+
+</View>}
+
+
+
+
+
+
+
       { spinnerItem &&<ActivityIndicator size={36} />}
         {error &&<Text>{error} retry </Text>}
 
@@ -288,13 +381,16 @@ const styles = StyleSheet.create({
      borderColor : '#6a0c0c' ,
      paddingLeft :4 , 
      paddingRight:4 ,
+     alignSelf:'center'
+
     //  marginLeft : 6
    } , 
     bttonIsTrue:{
     backgroundColor : '#6a0c0c' ,
      paddingLeft :4 ,
      paddingRight:4 ,
-     color :'white' 
+     color :'white' ,
+     alignSelf:'center'
 
     }
 });

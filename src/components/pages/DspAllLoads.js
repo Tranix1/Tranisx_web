@@ -190,6 +190,8 @@ setTimeout(() => {
           }
 
           const [bidRate, setBidRate] = React.useState("");
+          const [bidLinks, setBidLinks] = React.useState("");
+          const [bidTriaxle, setBdTriaxle] = React.useState("");
 
     
   const [dspMoreInfo , setDspMoreInfo] = React.useState({ ['']: false })
@@ -211,7 +213,7 @@ setTimeout(() => {
         const userId = auth.currentUser.uid
         try {
           
-          let docId = `${userId}${item.typeofLoad}${item.ratePerTonne}${item.userId}  `
+          let docId = item.linksRate || item.triaxleRate ? `${userId}${item.typeofLoad}${item.linksRate || item.triaxleRate }${item.userId}` : `${userId}${item.typeofLoad}${item.ratePerTonne}${item.userId}`
 
           let existingChat 
             if(dbName === "bookings" ){
@@ -220,11 +222,16 @@ setTimeout(() => {
             }
 
            let theRate 
+           let thelinksRate
+           let thetriaxleRate
            let currencyB 
            let perTonneB
 
               if(bidDisplay[item.id]){ 
+
               theRate= bidRate  
+              thelinksRate = bidLinks
+              thetriaxleRate = bidTriaxle
                currencyB = currencyBid  
                perTonneB = perTonneBid
               }else{
@@ -232,6 +239,8 @@ setTimeout(() => {
                currencyB = null
                perTonneB = null
                 theRate = item.ratePerTonne
+                thelinksRate = item.linksRate
+                thetriaxleRate= item.triaxleRate
               }
 
           if(  !existingChat ){
@@ -249,6 +258,8 @@ setTimeout(() => {
         msgReceiverId : userId ,
         docId : docId,
         rate :  theRate ,
+        linksRate :   thelinksRate ,
+        triaxleRate : thetriaxleRate ,
         currencyB : currencyB ,
         perTonneB : perTonneB ,
         loadId : item.id ,
@@ -257,6 +268,8 @@ setTimeout(() => {
       });
       
       setBidRate("")
+      setBidLinks("")
+      setBdTriaxle("")
       setBidDisplay({ ['']: false });
       alert(`${!bidDisplay[item.id] ? "booking": "bidding"} was successfull`)    
         }else {
@@ -308,7 +321,7 @@ setTimeout(() => {
       setSpinnerItem(null)      
     }
   };
-        const message =  `${item.companyName} is this Load still available ${item.typeofLoad} from ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : ''} from https://www.truckerz.net/selectedUserLoads/${item.userId}/${item.id}` ; // Set your desired message here
+        const message =  `${item.companyName} is this Load still available ${item.typeofLoad} from ${item.fromLocation} to ${item.toLocation} ${item.linksRate || item.triaxleRate ? item.triaxleRate &&`Triaxle ${item.triaxleRate } ` + item.linksRate&&`Links for ${item.linksRate}` : `Rate ${item.ratePerTonne}` } ${item.perTonne ?"Per tonne" : ''}            from https://www.transix.net/selectedUserLoads/${item.userId}/${item.id}` ; // Set your desired message here
 
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
@@ -336,7 +349,9 @@ setTimeout(() => {
 
     {spinnerItem === item ? (
         <ActivityIndicator size={34} />
-      ) :    <View style={{flexDirection:'row', alignItems : 'center' ,}}>
+      ) :    <View >
+
+         {!item.linksRate && !item.triaxleRate &&  <View style={{flexDirection:'row', alignItems : 'center' ,}} >
 
         <TouchableOpacity onPress={toggleCurrencyBid}>
             {currencyBid ? <Text style={styles.buttonIsFalse} >USD</Text> :
@@ -350,12 +365,80 @@ setTimeout(() => {
             keyboardType="numeric"
             placeholderTextColor="#6a0c0c"
             style={ {height : 30 , borderBottomWidth: 2 , borderBottomColor : "#6a0c0c" ,marginBottom : 10 , paddingLeft : 20 ,width : 180}}
-            placeholder="Enter rate here"
+            placeholder="Bid rate here"
           />
           <TouchableOpacity onPress={togglePerTonneBid} >
             {perTonneBid ? <Text style={styles.bttonIsTrue} >Per tonne</Text> : 
               <Text style={styles.buttonIsFalse}>Per tonne</Text>}
           </TouchableOpacity>
+          </View>}
+
+
+          {item.linksRate || item.triaxleRate ?   <View>
+                {item.linksRate&& <View style={{flexDirection:'row', alignItems : 'center' ,}} >
+
+        <TouchableOpacity onPress={toggleCurrencyBid}>
+            {currencyBid ? <Text style={styles.buttonIsFalse} >USD</Text> :
+            <Text style={styles.bttonIsTrue}>Rand </Text>}
+          </TouchableOpacity>
+
+        <TextInput
+           onChangeText={(text) => setBidLinks (text)}
+            name="ratePerTonne"
+            value={bidLinks}
+            keyboardType="numeric"
+            placeholderTextColor="#6a0c0c"
+            style={ {height : 30 , borderBottomWidth: 2 , borderBottomColor : "#6a0c0c" ,marginBottom : 10 , paddingLeft : 20 ,width : 180}}
+            placeholder="Bid Links rate"
+          />
+          <TouchableOpacity onPress={togglePerTonneBid} >
+            {perTonneBid ? <Text style={styles.bttonIsTrue} >Per tonne</Text> : 
+              <Text style={styles.buttonIsFalse}>Per tonne</Text>}
+          </TouchableOpacity>
+          </View>}
+          
+
+
+ { item.triaxleRate&& <View style={{flexDirection:'row', alignItems : 'center' ,}} >
+
+        <TouchableOpacity onPress={toggleCurrencyBid}>
+            {currencyBid ? <Text style={styles.buttonIsFalse} >USD</Text> :
+            <Text style={styles.bttonIsTrue}>Rand </Text>}
+          </TouchableOpacity>
+
+        <TextInput
+           onChangeText={(text) => setBdTriaxle(text)}
+            name="ratePerTonne"
+            value={bidTriaxle}
+            keyboardType="numeric"
+            placeholderTextColor="#6a0c0c"
+            style={ {height : 30 , borderBottomWidth: 2 , borderBottomColor : "#6a0c0c" ,marginBottom : 10 , paddingLeft : 20 ,width : 180}}
+            placeholder="Bid triaxle rate"
+          />
+          <TouchableOpacity onPress={togglePerTonneBid} >
+            {perTonneBid ? <Text style={styles.bttonIsTrue} >Per tonne</Text> : 
+              <Text style={styles.buttonIsFalse}>Per tonne</Text>}
+          </TouchableOpacity>
+          </View>}
+
+
+            </View>:null}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
    </View>}
 
 
@@ -402,10 +485,20 @@ setTimeout(() => {
         <Text>:  from  {item.fromLocation}  to  {item.toLocation} </Text>
       </View>
 
-      <View style={{flexDirection :'row'}} >
+      {!item.linksRate && !item.triaxleRate && <View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >Rate</Text>
         <Text>:  {item.currency ? "USD" : "RAND"} {item.ratePerTonne} {item.perTonne ? "Per tonne" :null} </Text>
-      </View>
+      </View>}
+
+       {item.linksRate&&  <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Links</Text>
+        <Text>:  {item.currency ? "USD" : "RAND"} {item.linksRate} {item.perTonne ? "Per tonne" :null} </Text>
+      </View>}
+
+       {item.triaxleRate&& <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Triaxle</Text>
+        <Text>:  {item.currency ? "USD" : "RAND"} {item.triaxleRate} {item.perTonne ? "Per tonne" :null} </Text>
+      </View>}
 
        {   !contactDisplay[item.id] && <View>
 
@@ -429,12 +522,12 @@ setTimeout(() => {
        {<Text>:  {item.additionalInfo} </Text>} 
       </View>}
 
-          <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
+         {!contactDisplay[item.id] && <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
           <Text style={{color :'green'}} >{  dspMoreInfo[item.id]  ?"See Less": "See more"} </Text>
-        </TouchableOpacity>
+        </TouchableOpacity>}
         </View> }
 
-        {item.activeLoading&& <Text style={{fontSize:17 , color:"#FF8C00" }} >Active Loading </Text> }
+        {item.activeLoading&& <Text style={{fontSize:17 , color:"#FF8C00" }} >Active Loading.... </Text> }
 
         {contactDisplay[item.id] && contactMe}
 
@@ -611,9 +704,6 @@ const styles = StyleSheet.create({
         alignItems : 'center' ,
         width : 150 ,
         marginBottom: 15 ,
-        borderWidth: 2 ,
-        borderColor:"#6a0c0c" ,
-        borderRadius: 3
     },
   
     buttonIsFalse : {

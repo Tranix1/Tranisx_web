@@ -10,9 +10,24 @@ function PersonalAccTrucks(){
 const navigate = useNavigate()
 
     const [spinnerItem, setSpinnerItem] = React.useState(false);
-    const deleteLoad = async (id) => {
+    const deleteLoad = async (id , imageUrl) => {
 
       setSpinnerItem(true)
+
+      fetch(imageUrl, {
+        method: 'DELETE',
+      })
+        .then(response => {
+          if (response.ok) {
+            console.log('Image deleted successfully');
+          } else {
+            console.error('Error deleting image:', response.status);
+          }
+        })
+        .catch(error => {
+          console.error('Error deleting image:', error);
+        });
+      
     const loadsDocRef = doc(db, 'Trucks' , id);
     await deleteDoc(loadsDocRef);
       setSpinnerItem(false)
@@ -74,7 +89,7 @@ const navigate = useNavigate()
       <Text>contact {item.contact}</Text>
 
       { spinnerItem &&<ActivityIndicator size={36} />}
-       <TouchableOpacity onPress={()=>deleteLoad(item.id)} >
+       <TouchableOpacity onPress={()=>deleteLoad(item.id , item.imageUrl)} >
               <DeleteIcon style={{color : 'red'} }/>
           {/* <AntDesign name="delete" size={24} color="black" /> */}
 

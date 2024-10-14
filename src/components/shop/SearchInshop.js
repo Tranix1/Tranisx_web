@@ -56,7 +56,7 @@ const navigate = useNavigate()
 
         const displaySearched =  filteredData.slice(0, 15).map((value , key)=>{
             return(
-              <TouchableOpacity  style={{flex : 1, marginBottom :3 , padding : 6}} key={value.id} onPress={()=> navigate(`/sSoldProducts/${value.userId}/${value.id}/${value.sellOBuy}` ) }>
+              <TouchableOpacity  style={{flex : 1, marginBottom :3 , padding : 6}} key={value.id} onPress={()=> navigate(`/sSoldProducts/${value.userId}/${value.id}/${value.location}/${value.sellOBuy}` ) }>
 
             {value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
             <VerifiedIcon style={{color : 'green'}} />

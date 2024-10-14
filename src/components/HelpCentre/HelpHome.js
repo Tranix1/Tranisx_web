@@ -3,7 +3,7 @@ import { View , Text , ScrollView , TouchableOpacity , Linking} from 'react-nati
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {useNavigate} from 'react-router-dom';
-import defaultImage from '../images/logo.png'
+import defaultImage from '../images/logo.jpg'
 
 import { Facebook, WhatsApp, Email ,LinkedIn } from '@mui/icons-material';
 

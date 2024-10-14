@@ -8,17 +8,46 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { getStorage, ref, deleteObject } from 'firebase/storage';
 
 function ManageStock(){ 
 
       const [spinnerItem, setSpinnerItem] = React.useState(false);
-    const deleteLoad = async (id) => {
+ 
 
-      setSpinnerItem(true)
-    const loadsDocRef = doc(db, 'Shop' , id);
-    await deleteDoc(loadsDocRef);
-      setSpinnerItem(false)
-  };
+
+    const deleteLoad = async (id , imageUrls) => {
+
+    setSpinnerItem(true);
+
+        imageUrls.forEach(async (imageUrl) => {
+           
+          fetch(imageUrl, {
+            method: 'DELETE',
+          }).then(response => {
+              if (response.ok) {
+                const loadsDocRef = doc(db, 'Shop', id);
+                deleteDoc(loadsDocRef);
+                console.log('Document deleted successfully');
+              } else {
+                console.log('Error deleting image:', response.status);
+    setSpinnerItem(false);
+              }
+            })
+            .catch(error => {
+              alert('Error deleting image:', error);
+    setSpinnerItem(false);
+            });
+        });
+
+    setSpinnerItem(false);
+    } 
+
+
+
+
+
+
 
     const navigate = useNavigate()
   const [allTrucks, setAllTrucks] = useState([]);
@@ -67,8 +96,39 @@ function ManageStock(){
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
       </View>}
+        <View>
+          {item.sellOBuy ==="forSell"  &&<ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{  height : 200 ,}} >
+        {item.imageUrl.map((image, index) => (
+          <View>
+            {
+              image ?
+            <img key={index} src={image} alt={`Image ${index}`} style={{ margin: 7, maxWidth: '100%', height: 200, }} loading='lazy'/>
+            : <Text style={{alignSelf:'center'}} >quality images loading </Text>
+            }
+          </View>
+        ))}
+
+          </ScrollView>} 
+          
+
+      {<View style={{ position : 'absolute' , bottom :0 , left :0 ,flexDirection:'row'}} >
+
+         {item.brandNew &&  <View style={{backgroundColor :'#40E0D0',paddingLeft :4 , paddingRight:4 , marginLeft :7}} >
+          <Text style={{color :'white'}} > brand New</Text>
+          </View>}
+
+         {item.swapA &&  <View style={{backgroundColor :'#008080',paddingLeft :4 , paddingRight:4 , marginLeft :7}} >
+          <Text style={{color :'white'}} >Swap</Text>
+          </View>}
+
+         {item.negetiatable &&  <View style={{backgroundColor :'#25D366',paddingLeft :4 , paddingRight:4 , marginLeft :7}} >
+          <Text style={{color :'white'}} >Negotiable</Text>
+          </View>}
+
+      </View>}
+
+          </View>
       
-          {item.imageUrl &&<img src={item.imageUrl} style={{height : 200 , borderRadius : 10}}/>}
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} </Text>
         {item.productName &&<Text>Product {item.productName} </Text> }
         {item.price &&<Text>Price :  {item.currency?"USD" : "Rand" }  {item.price} </Text> }
@@ -83,7 +143,7 @@ function ManageStock(){
 
 
       { spinnerItem &&<ActivityIndicator size={36} />}
-       <TouchableOpacity onPress={()=>deleteLoad(item.id)} >
+       <TouchableOpacity onPress={()=>deleteLoad(item.id , item.imageUrl)} >
               <DeleteIcon style={{color : 'red'} }/>
         </TouchableOpacity> 
 

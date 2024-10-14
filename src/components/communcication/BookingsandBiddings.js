@@ -3,7 +3,6 @@ import { View,TouchableOpacity , Text, StyleSheet,ScrollView,Linking } from "rea
 import { onSnapshot ,  query ,doc , collection,where ,updateDoc , deleteDoc ,runTransaction} from "firebase/firestore"
 import { auth , db } from "../config/fireBase";
 
-
 import {useNavigate , useParams} from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -189,7 +188,7 @@ const getAlltermsF = () => {
 let whnBookBiddAload = getAllIterms.map((item) => {
   const userId = auth.currentUser.uid;
 
-  const message =  ` Is this Load still available   ${item.typeofLoad} from  ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : null} from Truckerz ` ; // Set your desired message here
+  const message =  ` Is this Load still available   ${item.typeofLoad} from  ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : null}              from https://www.transix.net/selectedUserLoads/${item.userId}/${item.id} ` ; // Set your desired message here
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
          <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
@@ -225,10 +224,22 @@ let whnBookBiddAload = getAllIterms.map((item) => {
         <Text>:  {item.itemName} </Text>
       </View>
 
-      <View style={{flexDirection :'row'}} >
-        <Text style={{width :60}} >Rate</Text>
-        <Text>:  {item.currencyB ? "USD" : "RAND"} {item.rate} {item.perTonneB ? "Per tonne" :null} </Text>
-      </View>
+        {!item.linksRate && !item.triaxleRate && <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Rate</Text>
+        <Text>:  {item.currency ? "USD" : "RAND"} {item.ratePerTonne} {item.perTonne ? "Per tonne" :null} </Text>
+      </View>}
+
+    
+       {item.linksRate&&  <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Links</Text>
+        <Text>:  {item.currency ? "USD" : "RAND"} {item.linksRate} {item.perTonne ? "Per tonne" :null} </Text>
+      </View>}
+
+       {item.triaxleRate&& <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Triaxle</Text>
+        <Text>:  {item.currency ? "USD" : "RAND"} {item.triaxleRate} {item.perTonne ? "Per tonne" :null} </Text>
+      </View>}
+
 
   <View style={{flexDirection :'row'}} >
         <Text style={{width :60}} >Route</Text>
@@ -262,7 +273,7 @@ let whnBookBiddAload = getAllIterms.map((item) => {
   
 const userId = auth.currentUser.uid;
 
-  const message =  ` Is this Load still available   ${item.typeofLoad} from  ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : null} from Truckerz ` ; // Set your desired message here
+  const message =  ` Is this Load still available   ${item.typeofLoad} from  ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : null}             from https://www.transix.net/selectedUserLoads/${item.userId}/${item.id}` ; // Set your desired message here
 
  let contactMe = ( <View style={{ paddingLeft: 30 }}>
   <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
@@ -301,11 +312,22 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350
         <Text>: {item.itemName} was {dbName === "bookings" ?  "Booked" : "Bidded"} </Text>
       </View>
 
-      <View style={{flexDirection :'row'}} >
-        <Text style={{width :75}} >Rate</Text>
-        {/* <Text>:  {item.currencyB ? "USD" : "RAND"} {item.rate} {item.perTonneB ? "Per tonne" :null} </Text> */}
-        <Text>: {item.currencyB ? "USD" : "Rand"} {item.rate} {item.perTonneB ? "per tonne": null} {dbName === "bookings" ?  "solid" : "offered"} </Text>
-      </View>
+        {!item.linksRate && !item.triaxleRate && <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Rate</Text>
+        <Text>:  {item.currency ? "USD" : "RAND"} {item.ratePerTonne} {item.perTonne ? "Per tonne" :null} </Text>
+      </View>}
+
+       {item.linksRate&&  <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Links</Text>
+        <Text>:  {item.currency ? "USD" : "RAND"} {item.linksRate} {item.perTonne ? "Per tonne" :null} </Text>
+      </View>}
+
+       {item.triaxleRate&& <View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >Triaxle</Text>
+        <Text>:  {item.currency ? "USD" : "RAND"} {item.triaxleRate} {item.perTonne ? "Per tonne" :null} </Text>
+      </View>}
+    
+
 
   <View style={{flexDirection :'row'}} >
         <Text style={{width :75}} >Route</Text>

@@ -29,7 +29,8 @@ function AddToShop( {deliveryR ,username ,contact , isVerified , shopLocation} )
     year :'' ,
     engine : '' , 
     trans :"" ,
-     fuel :''
+     fuel :'',
+     swapWith :''
   });
 
   const  handlechange  = (value, fieldName) => {
@@ -52,8 +53,8 @@ function AddToShop( {deliveryR ,username ,contact , isVerified , shopLocation} )
   }
 
     const [sellRent , setSellRent] = React.useState(true)
-  function toggleSellRent(){
-    setSellRent(prev=>!prev)
+  function toggleSellRent(value){
+    setSellRent(value)
   }
 
     const [brandNew , setBrandNew] = React.useState(false)
@@ -61,7 +62,16 @@ function AddToShop( {deliveryR ,username ,contact , isVerified , shopLocation} )
     setBrandNew(prev=>!prev)
   }
 
- 
+
+    const [negetiatable , setnegotiatable] = React.useState(false)
+  function toggleNegotiatable(){
+    setnegotiatable(prev=>!prev)
+  }
+
+    const [ swapA , setSwapA] = React.useState(false)
+  function toggleSwapA(){
+    setSwapA(prev=>!prev)
+  }
 
   let priceRange = null
 
@@ -234,6 +244,7 @@ const [ imageUpload, setImageUpload] = React.useState([])
             CompanyName: username,
             contact: contact,
             productName: formData.productName,
+            swapWith : formData.swapWith ,
             price: formData.price,
             imageUrl: imageUrls,
             userId: userId,
@@ -254,6 +265,8 @@ const [ imageUpload, setImageUpload] = React.useState([])
             priceRange : priceRange ,
             vehicleType : vehicleType ,
             brandNew : brandNew ,
+            swapA : swapA ,
+            negetiatable : negetiatable ,
             vehiMake : vehiMake,
             trailerType : trailerType ,
 
@@ -268,7 +281,8 @@ const [ imageUpload, setImageUpload] = React.useState([])
         year :'' ,
         engine : '' , 
         trans :"" ,
-        fuel :''
+        fuel :'' ,
+        swapA :''
       });
       imageUrls = []
       setImages([])
@@ -277,6 +291,8 @@ const [ imageUpload, setImageUpload] = React.useState([])
       setVehiMake(null)
       setVehicleType(null)
       setBrandNew(false)
+      setnegotiatable(false)
+      setSwapA(false)
         console.log('Document added with image URLs:', docRef.id);
     } catch (error) {
       setSpinnerItem(false)
@@ -369,10 +385,19 @@ const [ imageUpload, setImageUpload] = React.useState([])
           
         </ScrollView>}
 
-
+              <View style={{flexDirection:'row', margin :5}} >
               <TouchableOpacity onPress={toggleBrandNew} style={ brandNew ? styles.bttonIsTrue : styles.buttonIsFalse} >
                 <Text style={ brandNew ? {color:'white'} :null } >Brand New</Text>
               </TouchableOpacity>
+
+              <TouchableOpacity onPress={toggleSwapA} style={  swapA ? styles.bttonIsTrue : styles.buttonIsFalse} >
+                <Text style={ swapA ? {color:'white'} :null } >Swap</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={toggleNegotiatable} style={ negetiatable ? styles.bttonIsTrue : styles.buttonIsFalse} >
+                <Text style={ negetiatable ? {color:'white'} :null } >Negotiable</Text>
+              </TouchableOpacity>
+            </View>
 
         <TextInput
           value={formData.productName}
@@ -382,7 +407,14 @@ const [ imageUpload, setImageUpload] = React.useState([])
           type="text" 
           style={inputstyles.addIterms }
         />
-
+         {swapA && <TextInput
+          value={formData.swapWith}
+          placeholder="Swap condtions"
+          placeholderTextColor="#6a0c0c"
+          onChangeText={(text) => handlechange(text, 'swapWith')}
+          type="text" 
+          style={inputstyles.addIterms }
+        />}
     
    { specproduct !== "Sprovider" && <View style={{flexDirection:'row', alignItems : 'center'}}>   
      <TouchableOpacity onPress={toggleCurrency}>
@@ -417,12 +449,16 @@ const [ imageUpload, setImageUpload] = React.useState([])
           
              {!vehicleTypeDsp && !trailerTypeDsp && specproduct ==="vehicles" || specproduct ==="trailers" ? <View style={{margin : 8 , }} >
               <View style={{flexDirection:'row', marginBottom:5}} >
-                <TouchableOpacity style={sellRent ? styles.bttonIsTrue : styles.buttonIsFalse} onPress={toggleSellRent} >
-                  <Text style={sellRent ? {color:'white'} : {color:'black'} } > Sell </Text>
+                <TouchableOpacity style={sellRent===true ? styles.bttonIsTrue : styles.buttonIsFalse} onPress={()=>toggleSellRent(true) } >
+                  <Text style={sellRent===true ? {color:'white'} : {color:'black'} } > Sell </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity  style={!sellRent ? styles.bttonIsTrue : styles.buttonIsFalse} onPress={toggleSellRent} >
+                <TouchableOpacity  style={!sellRent ? styles.bttonIsTrue : styles.buttonIsFalse} onPress={()=>toggleSellRent(false) } >
                   <Text style={!sellRent ? {color:'white'} : {color:'black'} } > Rent </Text>
+                </TouchableOpacity> 
+
+                <TouchableOpacity  style={sellRent==="R2B" ? styles.bttonIsTrue : styles.buttonIsFalse} onPress={()=>toggleSellRent("R2B") } >
+                  <Text style={sellRent==="R2B" ? {color:'white'} : {color:'black'} } > Rent to Buy </Text>
                 </TouchableOpacity> 
                 </View>
                { <View>
