@@ -2,7 +2,7 @@ import React from "react";
 
 import { View , Text , TouchableOpacity ,TextInput , ActivityIndicator} from "react-native";
 // import { signInWithEmailAndPassword , } from 'firebase/auth';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword ,sendEmailVerification,sendPasswordResetEmail} from 'firebase/auth';
 
 import { useNavigate } from "react-router-dom";
 
@@ -23,16 +23,39 @@ function SignIn(){
   const handleSignIn  = async () => {
     setSpinnerItem(true)
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+     const userCredential =  await signInWithEmailAndPassword(auth, email, password);
+
+      const user = userCredential.user;
+      await  
+      sendEmailVerification(user); 
       setEmail("")
       setPassword("")
-      navigate('/')
+
+      alert('Verification Email Sent', 'Please Verify Your Email To Continue');
+      navigate("/")
       setSpinnerItem(false)
     } catch (error) {
-      setError(error.message.toString());
       setSpinnerItem(false)
+      setError(error.message.toString());
     }
   };
+
+  const sendPasswordReset = () => {
+  if(email){
+
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      // Password reset email sent successfully
+      alert('Password reset email sent');
+    })
+    .catch((error) => {
+      // An error occurred
+      setError('Error sending password reset email',  error.message.toString());
+    });
+  }else{
+    alert("Enter Email that need to be reset")
+  }
+};
 
 
 return(
@@ -46,7 +69,9 @@ return(
        </View>
 
       {error && <Text>{error}</Text>}
-       
+        <TouchableOpacity onPress={sendPasswordReset} >
+          <Text  style={{textDecorationLine : 'underline', fontSize : 15}} >Forgot Password</Text>
+        </TouchableOpacity>
         <TextInput
           placeholder="Email"
           style={inputstyles.inputElem}

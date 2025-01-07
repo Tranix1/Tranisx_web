@@ -1,9 +1,9 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import { storage } from "../config/fireBase";
 import { getDownloadURL, ref, uploadBytes, } from "firebase/storage";
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc,onSnapshot ,  query ,where , serverTimestamp } from 'firebase/firestore';
 import { db, auth } from "../config/fireBase";
-import {View, TextInput , Text ,    TouchableOpacity , Image , ActivityIndicator , StyleSheet , ScrollView} from "react-native"
+import {View, TextInput , Text ,    TouchableOpacity , Image , ActivityIndicator , StyleSheet , ScrollView,Linking} from "react-native"
 import inputstyles from "../styles/inputElement";
 
 // import * as ImagePicker from 'expo-image-picker';
@@ -14,7 +14,7 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useParams , useNavigate } from 'react-router-dom';
 
-function AddToShop( {deliveryR ,username ,contact , isVerified , shopLocation} ) {
+function AddToShop( {deliveryR ,username ,contact , isVerified , shopLocation , isBlackListed ,blackLWarning ,blockVerifiedU , verifyOngoing  } ) {
     let {location , specproduct , sellOBuy} = useParams()
 
     const navigate = useNavigate()
@@ -32,6 +32,39 @@ function AddToShop( {deliveryR ,username ,contact , isVerified , shopLocation} )
      fuel :'',
      swapWith :''
   });
+
+  const [frontMarkting, setFrontMarketing] = useState([]);
+
+let frontMarkert = false
+  useEffect(() => {
+    try {
+        const userId = auth.currentUser.uid;
+        // const dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId) );
+      let dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId), where("frontMarkert" ,"==", true), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) );
+       
+        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
+          const loadedData = [];
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added' || change.type === 'modified') {
+              const dataWithId = { id: change.doc.id, ...change.doc.data() };
+              loadedData.push(dataWithId);
+            }
+          });
+
+        setFrontMarketing(loadedData);
+        });
+        
+        // Clean up function to unsubscribe from the listener when the component unmounts
+        return () => unsubscribe();
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
+  if(frontMarkting.length < 4 ){
+    frontMarkert = true
+  }
+
 
   const  handlechange  = (value, fieldName) => {
 
@@ -186,10 +219,23 @@ const [ imageUpload, setImageUpload] = React.useState([])
  let image 
 
   const handleSubmit = async () => {
+        if(isBlackListed ){
+        return
+      }else if(blackLWarning ){
+        alert("Your account is currently under investigation.\n Please contact us for resolution")
+        Linking.openURL(`whatsapp://send?phone=+263716326160  &text=${encodeURIComponent(`Good day \nMy Transix account is being investigated whats the issue and how can we resolve it \nMy username is ${username} `)} `)
+        return
+      }else if(blockVerifiedU){
+        alert("Important: You are a blocked verified user.\n Legal action may be taken if necessary. \nContact us immediately.")
+        Linking.openURL(`whatsapp://send?phone=+263716326160  &text=${encodeURIComponent(`Good day \n I am a blocked Transix verified User \nMy username is ${username} \n How can we speed up the resolving process l am legit`)} `)
+        return
+      }
+      if(sellOBuy ==="forSell" ){
 
        if(images.length === 0){
         alert("Add at least 4 images")
         return
+      }
       }else if(!username){
         alert('add username')
         return
@@ -248,7 +294,9 @@ const [ imageUpload, setImageUpload] = React.useState([])
             price: formData.price,
             imageUrl: imageUrls,
             userId: userId,
+            frontMarkert : frontMarkert,
             additionalInfo: formData.additionalInfo,
+            productLoc: formData.productLoc ,
             mileage : formData.mileage ,
             year : formData.year ,
             engine : formData.engine ,
@@ -269,20 +317,22 @@ const [ imageUpload, setImageUpload] = React.useState([])
             negetiatable : negetiatable ,
             vehiMake : vehiMake,
             trailerType : trailerType ,
+            timeStamp : serverTimestamp() ,
 
         });
 
 
        setFormData({
-        productName: "",
-        price: "",
-        additionalInfo :"",
-        mileage :'' ,
-        year :'' ,
-        engine : '' , 
-        trans :"" ,
-        fuel :'' ,
-        swapA :''
+      productName: "",
+      price: null,
+      additionalInfo :"" ,
+      productLoc :"" ,
+      mileage :'' ,
+      year :'' ,
+      engine : '' , 
+      trans :"" ,
+      fuel :'',
+      swapWith :''
       });
       imageUrls = []
       setImages([])
@@ -314,8 +364,10 @@ const [ imageUpload, setImageUpload] = React.useState([])
       {image && <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />}
 
 
-          {sellOBuy==='forSell' && !vehiMakeDsp && !vehicleTypeDsp &&  <Text>Add @ most 4  Images </Text>}
-        {sellOBuy==='forSell' && !vehiMakeDsp && !vehicleTypeDsp &&  <div >
+          {sellOBuy==='forSell' && !vehiMakeDsp && !vehicleTypeDsp &&  <Text></Text>}
+             {images.length <4 && sellOBuy!=="toBuy" && <Text>Add @ most 4  Images  </Text> }
+      {images.length <4 && sellOBuy!=="toBuy" && <Text style={{fontStyle:"italic"}} >Small sized images e.g screenshots for them to load fast </Text>}
+        { sellOBuy!=="toBuy" && !vehiMakeDsp && !vehicleTypeDsp &&  <div >
             {images.length < 4 && (
                 <div>
                     <label for="fileInput">
@@ -329,7 +381,7 @@ const [ imageUpload, setImageUpload] = React.useState([])
                         onChange={handleFileInputChange}
                     />
                 </div>
-            )}
+                )}
 
           <ScrollView  horizontal  showsHorizontalScrollIndicator={false}  >
 
@@ -438,14 +490,28 @@ const [ imageUpload, setImageUpload] = React.useState([])
       { spinnerItem &&<ActivityIndicator size={34} />}
        
                 
-          {!vehicleTypeDsp&& !vehiMakeDsp && <TextInput 
+            {!vehicleTypeDsp&& !vehiMakeDsp && <View>
+    { specproduct !== "Sprovider" &&    <TextInput 
             value={formData.productLoc}
             placeholderTextColor="#6a0c0c"
-            placeholder="Additional Information"
+            placeholder="Product location"
             onChangeText={(text) => handlechange(text, 'productLoc')}
             type="text"
             style={inputstyles.addIterms }
           />}
+
+          
+          <TextInput 
+            value={formData.additionalInfo}
+            placeholderTextColor="#6a0c0c"
+            placeholder="Additional Information"
+            onChangeText={(text) => handlechange(text, 'additionalInfo')}
+            type="text"
+            style={inputstyles.addIterms }
+          />
+
+          </View>
+          }
           
              {!vehicleTypeDsp && !trailerTypeDsp && specproduct ==="vehicles" || specproduct ==="trailers" ? <View style={{margin : 8 , }} >
               <View style={{flexDirection:'row', marginBottom:5}} >

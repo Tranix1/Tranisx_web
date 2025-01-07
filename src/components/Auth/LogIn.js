@@ -1,5 +1,5 @@
 import React from "react";
-import { createUserWithEmailAndPassword , } from 'firebase/auth';
+import { createUserWithEmailAndPassword ,sendEmailVerification } from 'firebase/auth';
 import { db , auth } from "../config/fireBase";
 import { View , TextInput ,TouchableOpacity , Text, ActivityIndicator} from "react-native";
 
@@ -16,17 +16,22 @@ function CreateUser({}) {
   const [spinnerItem, setSpinnerItem] = React.useState(null);
 
   const create = async () => {
-    setSpinnerItem(true)
+     setSpinnerItem(true)
     try {
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      setEmail("")
-      setPassword("")
-      setSpinnerItem(false)
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      await  
+      sendEmailVerification(user); 
+        setPassword("")
+        setEmail("")
+        setSpinnerItem(false)
+        alert('Verification Email Sent', 'Please Verify Your Email To Continue');
       navigate('/addPersnoalInfo/')
-    } catch (err) {
-      setError(err.toString());
-      setSpinnerItem(false)
+    } catch (error) {
+        setSpinnerItem(false)
+      setError(error.message);
     }
+
   };
 
  

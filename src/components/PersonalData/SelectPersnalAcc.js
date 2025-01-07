@@ -15,7 +15,7 @@ const navigate = useNavigate()
         
                     <ArrowBackIcon style={{color : 'white'}} />
         </TouchableOpacity> 
-        <Text style={{fontSize: 20 , color : 'white'}} > Truckerz </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} > Transix </Text>
        </View>
 
            <TouchableOpacity onPress={()=>navigate("/personalInfomation/") } style={styles.buttonPAcc}>

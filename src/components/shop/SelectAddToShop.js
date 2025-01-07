@@ -44,9 +44,6 @@ const [sellOBuy , setSellOBuy] =React.useState(null)
                 <Text style={{color:"white"}}>Spares </Text>
             </TouchableOpacity>
 
-              <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/Sprovider/${sellOBuy}/`)}>
-                <Text style={{color:"white"}}>Service Provider </Text>
-            </TouchableOpacity>
             
             </View>:null }   
 
@@ -59,6 +56,9 @@ const [sellOBuy , setSellOBuy] =React.useState(null)
                     <Text style={{color:'white'}}>Click to Buy</Text>
                 </TouchableOpacity>
 
+              <TouchableOpacity style={styles.buttonSelectStyle} onPress={()=>navigate(`/AddToShop/${location}/Sprovider/${sellOBuy}/`)}>
+                <Text style={{color:"white"}}>Service Provider </Text>
+            </TouchableOpacity>
             </View>:null}
         </View>
     )

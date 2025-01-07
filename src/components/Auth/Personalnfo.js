@@ -50,7 +50,8 @@ const handleSubmitData = async (event) => {
           await setDoc(doc(db, 'personalData', userId ), {
              username: usernameValue, 
              contact: `+${countryCode}${contact}` ,
-             shopLocation : ""
+             shopLocation : "",
+             email : auth.currentUser.email 
               });
       setSpinnerItem(false)
           setUsername("");

@@ -1,6 +1,6 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { View,TouchableOpacity , Text, StyleSheet,ScrollView,Linking } from "react-native";
-import { onSnapshot ,  query ,doc , collection,where ,updateDoc , deleteDoc ,runTransaction} from "firebase/firestore"
+import { onSnapshot ,  query ,doc , collection,where ,updateDoc , deleteDoc ,runTransaction,orderBy,limit,getDocs,startAfter} from "firebase/firestore"
 import { auth , db } from "../config/fireBase";
 
 import {useNavigate , useParams} from 'react-router-dom';
@@ -75,13 +75,13 @@ function BookingsandBiddings(){
     });
       }
 
+  
   const [getAllIterms , setAllIterms]=React.useState([])
      
   const deleteLoad = async (id) => {
   try {
     const loadsDocRef = doc(db, `${dbName}`, id);
     await deleteDoc(loadsDocRef);
-    // Remove the deleted item from loadsList
     setAllIterms((prevLoadsList) => prevLoadsList.filter(item => item.id !== id));
   } catch (error) {
     console.error('Error deleting item:', error);
@@ -106,63 +106,108 @@ setTimeout(() => {
 }, 1000);
 
 
-const getAlltermsF = () => {
-  try {
-    if (auth.currentUser) {
-      const userId = auth.currentUser.uid;
-      const whenBookingIterm = query(collection(db, `${dbName}`), where("bookerId", "==", userId));
-      const whenReceivingABook = query(collection(db, `${dbName}`), where("ownerId", "==", userId));
-      
-      const sendedMsgs = [];
-      const unsubscribe1 = onSnapshot(whenBookingIterm, (querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          const dataWithId = { id: doc.id, ...doc.data() };
-          sendedMsgs.push(dataWithId);
-        });
-        
+  const [dspLoadMoreBtn , setLoadMoreBtn]=React.useState(true)
+  const [LoadMoreData , setLoadMoreData]=React.useState(false)
 
-      });
-      
-      const unsubscribe2 = onSnapshot(whenReceivingABook, (querySnapshot) => {
-        const reacevedMsg = [];
-        querySnapshot.forEach((doc) => {
-          const dataWithId = { id: doc.id, ...doc.data() };
-          reacevedMsg.push(dataWithId);
-        });
-        
-        const combineBoth = [...reacevedMsg, ...sendedMsgs];
-        setAllIterms(combineBoth);
-      });
+async function loadedData(loadMore) {
+  try{
 
-      return () => {
-        unsubscribe1(); // Clean up the listener when the component unmounts
-        unsubscribe2(); // Clean up the listener when the component unmounts
-      };
+    if(loadMore){
+
+       setLoadMoreData(false) 
     }
+    const orderByF = "timestamp";
+    const orderByField = orderBy(orderByF, 'desc'); // Order by timestamp in descending order
+
+    const pagination = loadMore && getAllIterms.length > 0 ? [startAfter(getAllIterms[getAllIterms.length - 1][orderByF])] : [];
+    const userId = auth.currentUser.uid
+    // const dataQuery = query(collection(db, `biddings`), orderByField, ...pagination, limit(15) );
+    let dataQuery
+      if(dspRoute === "yourBookedItems" || dspRoute === "yourBiddedItems" ){
+        dataQuery = query(collection(db, `${dbName}`), orderByField , ...pagination, limit(15) ,where ("ownerId", "==", userId ) );
+
+      }else{
+
+        dataQuery = query(collection(db, `${dbName}`), orderByField , ...pagination, limit(15) ,where ("bookerId", "==", userId ) );
+      }
+
     
-  } catch (error) {
-    console.error(error);
+    const docsSnapshot = await getDocs(dataQuery);
+    
+    let userItemsMap = [];
+    
+    docsSnapshot.forEach(doc => {
+        userItemsMap.push({ id: doc.id, ...doc.data() });
+    });
+
+    const verifiedUsers = userItemsMap.filter(user => user.isVerified);
+    const nonVerifiedUsers = userItemsMap.filter(user => !user.isVerified);
+    
+    userItemsMap = verifiedUsers.concat(nonVerifiedUsers);
+    let loadedData = userItemsMap;
+
+    if (loadedData.length === 0) {
+        setLoadMoreBtn(false);
+    }
+
+    // Update state with the new data
+    setAllIterms(loadMore ? [...getAllIterms , ...loadedData] : loadedData);
+    if(loadMore){
+
+       setLoadMoreData(false) 
+    }
+
+  }catch(err){
+    console.error(err)
   }
-};
+  }
+  
+  
+  useEffect(() => {
+    loadedData();
+  }, [dspRoute]);
+  
+
+
+
+
+
+
+
+
+
+
+
 
   const loadTaken = async (loadid ,bbId) => {
+    if(bbId && !loadid){
+
+    const bbDocRef = doc(db, `${dbName}`, bbId);
+      await deleteDoc(bbDocRef);
+        
+    }else{
+
+    const bbDocRef = doc(db, `${dbName}`, bbId);
+      await deleteDoc(bbDocRef);
         const loadsDocRef = doc(db, 'Loads', loadid);
         await deleteDoc(loadsDocRef);
-    const bbDocRef = doc(db, `${dbName}`, bbId);
-    await deleteDoc(bbDocRef);
-    getAlltermsF()
+    }
+    loadedData()
 };
 
-  React.useEffect(() => {
-    getAlltermsF()
-    },[dspRoute]);
+  // React.useEffect(() => {
+  //   getAlltermsF()
+  //   },[dspRoute]);
 
-    const toggleAcceptOrDeny = async (dbNameMin , id ,decision ) => {
+    const toggleAcceptOrDeny = async (dbNameMin , id ,decision , contact ,message ) => {
       try {
         if (decision === "Accept") {
           const docRef = doc(db, `${dbNameMin}`, id);
           await updateDoc(docRef, { Accept : true ,  });
-          alert("You Accepted the offer");
+          if(message){
+
+            Linking.openURL(`whatsapp://send?phone=${contact}&text=${encodeURIComponent(message)}`)
+          }
         }else{
           const docRef = doc(db, `${dbNameMin}`, id);
           await updateDoc(docRef, { Accept : false ,  });
@@ -187,14 +232,12 @@ const getAlltermsF = () => {
 
 let whnBookBiddAload = getAllIterms.map((item) => {
   const userId = auth.currentUser.uid;
-
-  const message =  ` Is this Load still available   ${item.typeofLoad} from  ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : null}              from https://www.transix.net/selectedUserLoads/${item.userId}/${item.id} ` ; // Set your desired message here
+  const message =  ` ${item.ownerName} \n Is this Load still available   ${item.itemName} from  ${item.fromLocation} to ${item.toLocation} \nRate  ${item.linksrate || item.triaxlerate ? item.triaxlerate &&`triaxle ${item.triaxlerate } ` + item.linksrate&&`links for ${item.linksrate}` : `${item.ratepertonne}` } ${item.pertonne ?"per tonne" : ''}\nfrom https://transix.net/selectedUserLoads/${item.userId}/${item.id} ` ; // Set your desired message here
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
          <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
             <Text style={{color:"#008080"}} >Message now</Text>
             <ChatIcon/>
-
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#40E0D0" , borderWidth:1 , borderColor :'#40E0D0', justifyContent:'center', marginBottom:4}} >
@@ -217,26 +260,26 @@ let whnBookBiddAload = getAllIterms.map((item) => {
             </View>}
 
             
-        <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}} >{item.ownerName} </Text>
+        <Text style={{color:'#5a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}} >{item.ownerName} </Text>
 
          <View style={{flexDirection :'row'}} >
-        <Text style={{width :60}} >{dbName === "bookings" ?  "Booked" : "Bidded"}</Text>
+        <Text style={{width :59}} >{dbName === "bookings" ?  "Booked" : "Bidded"}</Text>
         <Text>:  {item.itemName} </Text>
       </View>
 
-        {!item.linksRate && !item.triaxleRate && <View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Rate</Text>
-        <Text>:  {item.currency ? "USD" : "RAND"} {item.ratePerTonne} {item.perTonne ? "Per tonne" :null} </Text>
+        {item.rate&& <View style={{flexDirection :'row'}} >
+        <Text style={{width :99}} >Rate</Text>
+        <Text>:  {item.currency ? "USD" : "RAND"} {item.rate} {item.perTonne ? "Per tonne" :null} </Text>
       </View>}
 
     
        {item.linksRate&&  <View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Links</Text>
+        <Text style={{width :99}} >Links</Text>
         <Text>:  {item.currency ? "USD" : "RAND"} {item.linksRate} {item.perTonne ? "Per tonne" :null} </Text>
       </View>}
 
        {item.triaxleRate&& <View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Triaxle</Text>
+        <Text style={{width :99}} >Triaxle</Text>
         <Text>:  {item.currency ? "USD" : "RAND"} {item.triaxleRate} {item.perTonne ? "Per tonne" :null} </Text>
       </View>}
 
@@ -270,19 +313,57 @@ let whnBookBiddAload = getAllIterms.map((item) => {
 
 
  let whenMyLoadBookBidd = getAllIterms.map((item)=>{
-  
 const userId = auth.currentUser.uid;
 
-  const message =  ` Is this Load still available   ${item.typeofLoad} from  ${item.fromLocation} to ${item.toLocation} ${item.ratePerTonne} ${item.perTonne ?"Per tonne" : null}             from https://www.transix.net/selectedUserLoads/${item.userId}/${item.id}` ; // Set your desired message here
+         let theRateD
 
- let contactMe = ( <View style={{ paddingLeft: 30 }}>
+        if(item.rate){
+          theRateD = `Rate ${item.rate} ${item.perTonne ?"per tonne":''} `
+        }
+        else if(item.triaxleRate && item.linksRate){
+          theRateD = `Links ${item.linksRate} Triaxle ${item.triaxleRate} ${item.perTonneB ?"per tonne":""} `
+        }else if(item.triaxleRate){
+          theRateD = `Triaxle ${item.triaxleRate} ${item.perTonneB ?"per tonne":""} `
+        }else if(item.linksRate){
+          theRateD = `Links ${item.linksRate} ${item.perTonneB ?"per tonne":""} `
+        }
+
+  const message =  `${item.ownerName}
+Is this Load still available
+${item.itemName} from ${item.fromLocation} to ${item.toLocation}
+${theRateD}
+
+From: https://transix.net/selectedUserLoads/${item.userId}/${item.id}` ; // Set your desired message here
+
+  const messageV =  `${item.ownerName}
+Is this Load still available
+Commodity ${item.itemName}
+from ${item.fromLocation} to ${item.toLocation}
+${theRateD}
+
+Truck Details
+- Horse Registration: ${item.horseReg}
+- Trailer Type: ${item.trailerType}
+- Trailer Registration: ${item.trailerReg}
+- Second Trailer Registration: ${item.scndTrailerReg}
+
+Driver Details
+- Driver Name: ${item.driverName}
+- Driver License: ${item.driverLicense}
+- Driver Passport: ${item.driverPassport}
+- Driver Phone: ${item.driverPhone}
+
+From: https://transix.net/selectedUserLoads/${item.userId}/${item.id} ` ;
+
+   let messageSend = item.isVerified ? messageV : message 
+  
+  let contactMe = ( <View style={{ paddingLeft: 30 ,marginBottom:30}}>
   <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
             <Text style={{color:"#008080"}} >Message now</Text>
             <ChatIcon/>
-
           </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#25D366" , borderWidth:1 , borderColor :'#25D366', justifyContent:'center', marginBottom:6}} >
+            <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(messageSend)}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#25D366" , borderWidth:1 , borderColor :'#25D366', justifyContent:'center', marginBottom:6}} >
             <Text style={{color : "#25D366"}} >WhatsApp </Text> 
             <WhatsApp  />  
           </TouchableOpacity>
@@ -304,17 +385,17 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350
             <VerifiedIcon style={{color : 'green'}} />
             </View>}
 
-            <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}  >{item.ownerName} </Text>
+            <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}  >{item.bookerName} </Text>
 
 
- <View style={{flexDirection :'row'}} >
-        <Text style={{width :75}} >Commodity</Text>
-        <Text>: {item.itemName} was {dbName === "bookings" ?  "Booked" : "Bidded"} </Text>
+ <View style={{flexDirection :'row',marginBottom:6}} >
+        <Text style={{width :85 ,fontStyle:'italic',fontSize:16}} >Commodity</Text>
+        <Text style={{fontSize:17}} >: {item.itemName} was {dbName === "bookings" ?  "Booked" : "Bidded"} </Text>
       </View>
 
-        {!item.linksRate && !item.triaxleRate && <View style={{flexDirection :'row'}} >
+        {item.rate&& <View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >Rate</Text>
-        <Text>:  {item.currency ? "USD" : "RAND"} {item.ratePerTonne} {item.perTonne ? "Per tonne" :null} </Text>
+        <Text>:  {item.currencyB ? "USD" : "RAND"} {item.rate} {item.perTonneB ? "Per tonne" :null} </Text>
       </View>}
 
        {item.linksRate&&  <View style={{flexDirection :'row'}} >
@@ -335,7 +416,7 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350
       </View>
 
                  <View style={{flexDirection:'row' , margin :4}} >      
-           <TouchableOpacity onPress={()=> toggleAcceptOrDeny( dbToBechanged , item.id  , "Accept")} style={styles.bttonIsTrue} >
+           <TouchableOpacity onPress={()=> toggleAcceptOrDeny( dbToBechanged , item.id  , "Accept",item.contact, messageSend)} style={styles.bttonIsTrue} >
             <Text style={{color:'white'}} >Accept </Text>
           </TouchableOpacity>
           
@@ -344,14 +425,14 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350
           </TouchableOpacity>
             </View>
 
-      <View style={{flexDirection:'row', marginBottom : 25 , height : 30 , alignSelf:'center' , marginTop : 6, borderWidth : 2 , borderColor :'#6a0c0c' }} >
-          <TouchableOpacity onPress={()=>navigate(`/selectedUserTrucks/${item.bookerId}`)}style={{alignItems :'center' ,borderColor :'#6a0c0c'  , borderRightWidth :1 , paddingLeft :5 , paddingRight:5 }} >
-          <Text style={{textDecorationLine:'underline',fontSize:17 }} >Bookers trucks</Text>
+      <View style={{flexDirection:'row', marginBottom : 25 , height : 30 , alignSelf:'center' , marginTop : 6,  }} >
+          <TouchableOpacity onPress={()=>navigate('selectedUserTrucks', { userId : item.bookerId , loadIsVerified: item.isVerified , CompanyName : item.bookerName })}style={{    width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' ,  alignSelf:'center', margin:5  }} >
+          <Text style={{fontSize:17,color:'white' }} >Bookers trucks</Text>
 
           </TouchableOpacity>
 
-        <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{  borderRightWidth :1 , paddingLeft :5 , paddingRight:5 }} >
-          <Text style={{textDecorationLine:'underline', fontSize:17,color:'#DC143C'}} > get In Touch now</Text>
+        <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{    width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#228B22' ,  alignSelf:'center', margin:5 }} >
+          <Text style={{color:'white'}} > Get In Touch</Text>
         </TouchableOpacity>
         </View>
 

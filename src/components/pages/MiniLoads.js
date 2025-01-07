@@ -62,7 +62,7 @@ const mainLoadsCollection = collection(db, 'Loads');
 
 const rendereIterms = mainLoadsList.map((item)=>{
   return( <TouchableOpacity style={{borderWidth : 2  , width : 230 , marginRight :16}} 
-  onPress={()=> navigate(`/selectedUserLoads/${item.userId}`) } >
+  onPress={()=> navigate(`/selectedUserLoads/${item.userId}/${item.companyName}`) } >
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />

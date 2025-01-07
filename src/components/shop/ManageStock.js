@@ -31,6 +31,7 @@ function ManageStock(){
                 console.log('Document deleted successfully');
               } else {
                 console.log('Error deleting image:', response.status);
+                
     setSpinnerItem(false);
               }
             })

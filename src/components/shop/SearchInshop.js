@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from "react";
-import { View , Text , ScrollView , TouchableOpacity,TextInput} from "react-native";
+import { View , Text , ScrollView , TouchableOpacity,TextInput,Share} from "react-native";
 
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot ,doc ,where,query} from 'firebase/firestore';
 import { db } from "../config/fireBase";
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 // import { Ionicons } from "@expo/vector-icons";
@@ -11,70 +11,182 @@ import {useNavigate,} from 'react-router-dom';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 
-function SearchInShop({navigation}){
+
+function SearchInShop(){
+
 const navigate = useNavigate()
 
   const loadsCollection = collection(db, "Shop");
       const [loadsList, setLoadsList] = useState([]);
 
-      
-    useEffect(() => {
-      const unsubscribe = onSnapshot(loadsCollection, (querySnapshot) => {
-        let filteredData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        
-        filteredData =   filteredData.sort((a, b) => a.timestamp - b.timestamp);
-
-        setLoadsList(filteredData);
-      });
+  let [textTyped , setTextTyped] = React.useState("")
   
-      return () => {
-        unsubscribe(); // Unsubscribe the listener when the component unmounts
-      };
-    }, []);
+     useEffect(() => {
+    try {
+        const dataQuery = query(collection(db, "Shop"), where("sellOBuy" ,"==", "forSell" ) );
 
-   
+        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
+          let loadedData = [];
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added' || change.type === 'modified') {
+              const dataWithId = { id: change.doc.id, ...change.doc.data() };
+              loadedData.push(dataWithId);
+            }
+          });
+
+          loadedData = loadedData.sort((a, b) => b.timeStamp - a.timeStamp);
+          setLoadsList(loadedData);
+        });
+        
+        // Clean up function to unsubscribe from the listener when the component unmounts
+        return () => unsubscribe();
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
+
+  const [lookingFor , setLookingFor]=React.useState([])
+  useEffect(() => {
+    try {
+        const dataQuery = query(collection(db, "Shop"), where("sellOBuy","==","toBuy" ) );
+
+        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
+          let loadedData = [];
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added' || change.type === 'modified') {
+              const dataWithId = { id: change.doc.id, ...change.doc.data() };
+              loadedData.push(dataWithId);
+            }
+          });
+
+          loadedData = loadedData.sort((a, b) => b.timeStamp - a.timeStamp);
+          setLookingFor(loadedData);
+        });
+        
+        // Clean up function to unsubscribe from the listener when the component unmounts
+        return () => unsubscribe();
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
 
         const [filteredData, setFilteredData] = React.useState([]);
-      
+        const [newFilterLookingFor , setnewFilterLookingFor]=React.useState([])
+        const [wordEntered, setWordEntered] = React.useState("");
           const handleFilter = (text) => {
         const searchWord = text;
+        setTextTyped(text)
         const newFilter = loadsList.filter((value) => {
           const productName = value.productName ? value.productName.toLowerCase() : '';
           return ( productName.includes(searchWord.toLowerCase()));
         });
 
+          const newFilterLoookingFor = lookingFor.filter((value) => {
+          const productName = value.productName ? value.productName.toLowerCase() : '';
+          return ( productName.includes(searchWord.toLowerCase()));
+          });
+
         if (searchWord === "") {
           setFilteredData([]);
         } else {
           setFilteredData(newFilter);
+          setnewFilterLookingFor(newFilterLoookingFor)
         }
       };
        
 
-        const displaySearched =  filteredData.slice(0, 15).map((value , key)=>{
+
+
+        const clearInput = () => {
+          setFilteredData([]); 
+          setWordEntered("");
+        };
+        
+
+
+        const displaySearchedScnd =  newFilterLookingFor.slice(0, 15).map((value , key)=>{
             return(
-              <TouchableOpacity  style={{flex : 1, marginBottom :3 , padding : 6}} key={value.id} onPress={()=> navigate(`/sSoldProducts/${value.userId}/${value.id}/${value.location}/${value.sellOBuy}` ) }>
+      <TouchableOpacity  key={value.id}  onPress={()=>navigate(`sSoldProducts/${value.userId}/${value.timeStamp}/${value.location}/${value.sellOBuy}/${value.specproduct}/${value.CompanyName}`  )} style={{  marginBottom : 4,  padding :7 ,borderWidth : 3 , borderColor:'#6a0c0c', borderRadius:8 ,  }}>
 
             {value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
             <VerifiedIcon style={{color : 'green'}} />
             </View>}
             <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}>{value.CompanyName} </Text>
-
-             <View style={{flexDirection :'row'}} >
-              <Text style={{width :100}} >{value.sellOBuy ==="forSell" ? "Product":'Looking For' }</Text>
-            {<Text>:  {value.productName} {value.sellRent ? "for sell" :'for rental' } </Text>} 
-            </View>
-            <View style={{flexDirection :'row'}} >
-              <Text style={{width :100}} >{value.sellOBuy==='forSell' ?'Price':'Budget' }</Text>
-            {<Text>:  {value.currency?"USD" : "Rand" }  {value.price}</Text>} 
-            </View>
+            <Text >{value.specproduct} : {value.productName}</Text>
+              { value.price &&<View style={{flexDirection :'row'}} >
+                <Text style={{width :40}} >{value.sellOBuy==='forSell' ?'Price':'Budget' } </Text>
+              {<Text style={{color:'green'}} >:  {value.currency?"USD" : "Rand" }  {value.price}</Text>} 
+              </View>}
+                {value.productLoc &&<View style={{flexDirection :'row'}} >
+                <Text style={{width :100}} >Product Loc</Text>
+               {<Text>:  {value.productLoc}  </Text>} 
+               </View>}
+      
             <Text > {value.location} store at {value.shopLocation} </Text>
               </TouchableOpacity>
             )
           })
+
+
+
+        const displaySearched =  filteredData.slice(0, 15).map((value , key)=>{
+            return(
+      <TouchableOpacity  key={value.id}  onPress={()=>navigate(`sSoldProducts/${value.userId}/${value.timeStamp}/${value.location}/${value.sellOBuy}/${value.specproduct}/${value.CompanyName}`)} style={{  marginBottom : 4,  padding :7 ,borderWidth : 3 , borderColor:'#6a0c0c', borderRadius:8 ,  }}>
+
+            {value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
+            <VerifiedIcon style={{color : 'green'}} />
+            </View>}
+            <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 17}}>{value.CompanyName} </Text>
+            <Text >{value.specproduct} : {value.productName}</Text>
+              { value.price &&<View style={{flexDirection :'row'}} >
+                <Text style={{width :40}} >{value.sellOBuy==='forSell' ?'Price':'Budget' } </Text>
+              {<Text style={{color:'green'}} >:  {value.currency?"USD" : "Rand" }  {value.price}</Text>} 
+              </View>}
+                {value.productLoc &&<View style={{flexDirection :'row'}} >
+                <Text style={{width :100}} >Product Loc</Text>
+               {<Text>:  {value.productLoc}  </Text>} 
+               </View>}
+      
+            <Text > {value.location} store at {value.shopLocation} </Text>
+              </TouchableOpacity>
+            )
+          })
+            const handleShareApp = async (companyName) => {
+              try {
+                const message = `I invite you to Transix!
+
+Transix is a tech-driven business enhancing transportation and logistics services, connecting suppliers with demand for truckloads, vehicles, trailers, spare parts etc.
+
+Contact us at +263716325160 with the message "Application" to swiftly receive the application download link.
+
+Explore Application at : https://play.google.com/store/apps/details?id=com.yayapana.Transix
+Explore website at : https://transix.net/
+
+Experience the future of transportation and logistics!  `;
+
+                const result = await Share.share({
+                  message: message,
+                });
+
+                if (result) {
+                  if (result.action === Share.sharedAction) {
+                    if (result.activityType) {
+                      // Shared with activity type of result.activityType
+                    } else {
+                      // Shared
+                    }
+                  } else if (result.action === Share.dismissedAction) {
+                    // Dismissed
+                  }
+                } else {
+                  // Handle the case where result is undefined or null
+                }
+              } catch (error) {
+                alert(error.message);
+              }
+            };
           
            return(
             <View>
@@ -82,7 +194,7 @@ const navigate = useNavigate()
 
               <View  style={{flexDirection : 'row' ,height : 40 , backgroundColor :'#6a0c0c' , alignItems : 'center'}}>
                 <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
-                    <ArrowBackIcon style={{color : 'white'}} />
+                <ArrowBackIcon  size={30} color="white"style={{ marginLeft: 10 }}  />
                 </TouchableOpacity>
                 <TextInput
                     placeholder="Search  Product"
@@ -92,11 +204,14 @@ const navigate = useNavigate()
                     /> 
                     </View>
             </View> 
-            <View style={{flexDirection :'row' , justifyContent:'space-evenly'}} >
+          
+            { lookingFor.length <=0  && loadsList.length <= 0 &&<Text>Loading......</Text>}
+                   <View style={{flexDirection :'row' , }} >
              { filteredData.length > 0 && (
-              <ScrollView  >
-              <Text style={{fontSize : 20 , textDecorationLine:'underline '}}> Available products </Text>
+              <ScrollView style={{width:320}} >
+              <Text style={{fontSize : 20 , textDecorationLine:'underline '}}> For Sale</Text>
               {displaySearched}
+              <View style={{height:300}} ></View>
              </ScrollView>
 
               )
@@ -105,7 +220,23 @@ const navigate = useNavigate()
                 <View style={{ width: 2, backgroundColor: '#6a0c0c' }} >
                   </View>
 
+            { displaySearchedScnd.length > 0 && <ScrollView >
+              <Text style={{fontSize : 20 , textDecorationLine:'underline '}}> Looking For </Text>
+              {displaySearchedScnd}
+              <View style={{height:300}} ></View>
+             </ScrollView>}
+
              </View>
+
+
+                  {textTyped && lookingFor.length >0  && displaySearchedScnd.length <= 0 &&loadsList.length >0  && filteredData.length <= 0  &&<Text style={{fontSize : 16,marginBottom:2  }} >You can also add what you are looking For or selling</Text>}
+
+                {textTyped && lookingFor.length >0  && displaySearchedScnd.length <= 0 &&loadsList.length >0  && filteredData.length <= 0  && <TouchableOpacity onPress={handleShareApp}>
+
+                  <Text style={{fontSize : 20 , textDecorationLine:'underline'}} > Share or recommend our app for more services and products!</Text>
+                </TouchableOpacity> }
+
+
 
           </View>
            )

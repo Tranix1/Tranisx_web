@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
- function Header ({toggleSmallMenu}){
+ function Header ({checkAuth ,dspMenu}){
 
   const navigate = useNavigate()
     return(
@@ -16,9 +16,9 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
                         <SearchIcon style={{color : 'white'}}/>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={{marginLeft : 6}}  onPress={toggleSmallMenu}>
+                    {dspMenu&&<TouchableOpacity style={{marginLeft : 6}}  onPress={checkAuth}>
                     <MoreVertIcon style={{color : 'white'}}/>
-                    </TouchableOpacity>
+                    </TouchableOpacity>}
 
             
                 </View>

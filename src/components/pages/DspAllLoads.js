@@ -1,7 +1,8 @@
+
 import React, { useEffect, useState} from 'react';
 import { View , Text , ScrollView, TouchableOpacity , ActivityIndicator , StyleSheet , Linking, Alert , TextInput , Share} from "react-native"
 import { auth, db } from '../config/fireBase';
-import { collection, onSnapshot , serverTimestamp ,addDoc, query , where , getDocs ,doc,deleteDoc , updateDoc, runTransaction , setDoc} from 'firebase/firestore';
+import { collection, startAfter , serverTimestamp ,addDoc, query , where , getDocs ,doc,deleteDoc , updateDoc, runTransaction , setDoc,orderBy,limit,onSnapshot } from 'firebase/firestore';
 import inputstyles from '../styles/inputElement';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -12,11 +13,27 @@ import { WhatsApp  } from '@mui/icons-material';
 import CallIcon from '@mui/icons-material/Call';
 import ChatIcon from '@mui/icons-material/Chat';
 
-function DspAllLoads({username}){  
 
-  const navigate = useNavigate()
-  const {userId ,  location ,itemId} = useParams()
+
+// import { useNavigation } from '@react-navigation/native';
+
+
+
+
+
+
+
+function DspAllLoads({username ,route, contactG  , sendPushNotification ,userIsVerified,blockVerifiedU ,blackLWarning }){
   
+  const navigate = useNavigate()
+const {userId ,  location ,itemKey, verfiedLoads,companyNameG ,blockVerifiedUP  , blackLWarningP } = useParams()
+
+// const navigate = useNavigate()
+
+// const navigation = useNavigation();
+// const {messageData ,username } = route.params
+  
+
   const deleteLoad = async (id) => {
   try {
     const loadsDocRef = doc(db, 'Loads', id);
@@ -28,19 +45,47 @@ function DspAllLoads({username}){
   }
 };
 
+
+
   const [localLoads , setLocalLoads]=React.useState(false)
 
   function toggleLocalLoads(){
     setLocalLoads(prevState => !prevState)
   }
 
+
   function specifyLocation(loc){
     navigate(`/location/${loc}`) 
     setLocalLoads(prev => false)
   }
 
- 
-      const [loadsList, setLoadsList] = useState([]);
+  
+  const [loadsList, setLoadsList] = useState([]);
+  
+  const [getOneLoad, setgetOneLoad] = useState([]);
+
+    function getOneItemF(){
+
+        const dataQuery = query(collection(db, "Loads"), where("timeStamp", "==", itemKey) , where("userId", "==", userId) );
+
+        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
+          let loadedData = [];
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added' || change.type === 'modified') {
+              const dataWithId = { id: change.doc.id, ...change.doc.data() };
+              loadedData.push(dataWithId);
+            }
+          });
+
+          setgetOneLoad(loadedData);
+        });
+        
+        // Clean up function to unsubscribe from the listener when the component unmounts
+        return () => unsubscribe();
+
+
+    }
+
 
 
      const checkAndDeleteExpiredItems = () => {
@@ -60,86 +105,82 @@ setTimeout(() => {
   checkAndDeleteExpiredItems();
 }, 1000);
     
-  useEffect(() => {
-    const loadData = () => {
-      if (userId) {
-        const dataQuery = query(collection(db, "Loads"), where("userId", "==", userId));
 
-       const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
-      let loadedData = [];
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === 'added' || change.type === 'modified') {
-          const dataWithId = { id: change.doc.id, ...change.doc.data() };
-          loadedData.push(dataWithId);
-        }
-      });
 
-      loadedData = loadedData.sort((a, b) => b.timeStamp - a.timeStamp);
+  const [dspLoadMoreBtn , setLoadMoreBtn]=React.useState(true)
+  const [LoadMoreData , setLoadMoreData]=React.useState(false)
 
-      if (itemId) {
-        const updatedLoadList = loadedData.map(oneLoad => ({
-          ...oneLoad,
-          backgroundColor: oneLoad.id === itemId ? "#F2F2F2" : "#EDEDED"
-        }));
+async function loadedData(loadMore) {
 
-        const sortedLoadList = updatedLoadList.sort((a, b) => a.backgroundColor === "#F2F2F2" ? -1 : b.backgroundColor === "#F2F2F2" ? 1 : 0);
+  try{
+        if(loadMore){
 
-        setLoadsList(sortedLoadList);
-      } else {
-        setLoadsList(loadedData);
+        setLoadMoreData(true) 
       }
+
+    const orderByF = "timeStamp";
+    const orderByField = orderBy(orderByF, 'desc'); // Order by timestamp in descending order
+
+    const pagination = loadMore && loadsList.length > 0 ? [startAfter(loadsList[loadsList.length - 1][orderByF])] : [];
+         let dataQuery
+      if (userId && itemKey ) {
+         dataQuery = query(collection(db, "Loads"),  where("userId", "==", userId) ,orderByField, ...pagination, limit(15) , where("timeStamp", "!=", itemKey)  );
+
+      }else if(userId){
+
+         dataQuery = query(collection(db, "Loads"),  where("userId", "==", userId) ,orderByField, ...pagination, limit(15)  );
+      }else if(location){
+         dataQuery = query(collection(db, "Loads"), where("location", "==", location)  ,orderByField, ...pagination, limit(15));
+
+      } else if(verfiedLoads){
+         dataQuery = query(collection(db, "Loads"), where("isVerified", "==", true)  ,orderByField, ...pagination, limit(15));
+      } else{
+         dataQuery = query(collection(db, "Loads"), orderByField, ...pagination, limit(15) );
+
+      }
+    
+    const docsSnapshot = await getDocs(dataQuery);
+    
+    let userItemsMap = [];
+    
+    docsSnapshot.forEach(doc => {
+        userItemsMap.push({ id: doc.id, ...doc.data() });
     });
 
-        return unsubscribe  
-      }else if(location){
-        const dataQuery = query(collection(db, "Loads"), where("location", "==", location));
+    const verifiedUsers = userItemsMap.filter(user => user.isVerified);
+    const nonVerifiedUsers = userItemsMap.filter(user => !user.isVerified);
+    
+    userItemsMap = verifiedUsers.concat(nonVerifiedUsers);
+    let loadedData = userItemsMap;
 
-        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
-          let loadedData = [];
-          snapshot.docChanges().forEach((change) => {
-            if (change.type === 'added' || change.type === 'modified') {
-              const dataWithId = { id: change.doc.id, ...change.doc.data() };
-              loadedData.push(dataWithId);
-            }
-          });
-
-          loadedData = loadedData.sort((a, b) => b.timeStamp - a.timeStamp);
-
-
-          setLoadsList(loadedData);
-        });
-        return unsubscribe 
-      }    
-      else {
-       const loadsCollection = collection(db, "Loads");
-
-        const unsubscribe = onSnapshot(loadsCollection, (querySnapshot) => {
-          let filteredData = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data()
-          }));
-
-          // Separate verified and non-verified users
-          const verifiedUsers = filteredData.filter(user => user.isVerified);
-          const nonVerifiedUsers = filteredData.filter(user => !user.isVerified);
-
-         let  shuffledDataUnV = nonVerifiedUsers.sort((a, b) => b.timeStamp - a.timeStamp);
-
-          filteredData = verifiedUsers.concat(shuffledDataUnV);
-
-          setLoadsList(filteredData);
-        });
-        
-        return  unsubscribe
-        
-      };
-      
+    if (loadedData.length === 0) {
+        setLoadMoreBtn(false);
     }
-    
-    loadData();
-  }, []); 
 
+    // Update state with the new data
+    setLoadsList(loadMore ? [  ...loadsList , ...loadedData] : loadedData);
+      if(loadMore){
+
+        setLoadMoreData(false) ;
+      }
+    }catch(err){
+      console.error(err)
+    }
+}
     
+  
+
+
+useEffect(() => {
+  loadedData();
+  if(itemKey){
+    getOneItemF()
+
+  }
+}, []);;
+
+
+     
     const [contactDisplay, setContactDisplay] = React.useState({ ['']: false });
     const toggleContact = (itemId) => {
       setContactDisplay((prevState) => ({
@@ -159,7 +200,6 @@ setTimeout(() => {
 
     const [spinnerItem, setSpinnerItem] = React.useState(null);
     const [ bookingError , setBookingError] =React.useState("")
-
     const checkExistiDoc = async (docId) => {
     const chatsRef = collection(db, 'bookings'); // Reference to the 'ppleInTouch' collection
     const chatQuery = query(chatsRef, where('docId', '==',docId )); // Query for matching chat ID
@@ -203,17 +243,20 @@ setTimeout(() => {
   }
 
 
+let mapThsAll = [...getOneLoad , ...loadsList]
       
-    const rendereIterms =  loadsList.map((item)=>{ 
-      
+    const rendereIterms =  mapThsAll.map((item)=>{ 
       const handleSubmit = async (clickedItem , dbName) => {
-        
+
         setSpinnerItem(clickedItem);
         const bookingCollection = collection(db, `${dbName}`);
         const userId = auth.currentUser.uid
         try {
+
+
+
           
-          let docId = item.linksRate || item.triaxleRate ? `${userId}${item.typeofLoad}${item.linksRate || item.triaxleRate }${item.userId}` : `${userId}${item.typeofLoad}${item.ratePerTonne}${item.userId}`
+          let docId = `${userId}${item.typeofLoad}${theRate}${item.userId}`
 
           let existingChat 
             if(dbName === "bookings" ){
@@ -224,8 +267,8 @@ setTimeout(() => {
            let theRate 
            let thelinksRate
            let thetriaxleRate
-           let currencyB 
-           let perTonneB
+           let currencyB = false
+           let perTonneB = false
 
               if(bidDisplay[item.id]){ 
 
@@ -236,14 +279,69 @@ setTimeout(() => {
                perTonneB = perTonneBid
               }else{
 
-               currencyB = null
-               perTonneB = null
+               currencyB = item.currency
+                perTonneB = item.perTonne
                 theRate = item.ratePerTonne
-                thelinksRate = item.linksRate
-                thetriaxleRate= item.triaxleRate
+                thelinksRate = item.links
+                thetriaxleRate= item.triaxle
               }
 
           if(  !existingChat ){
+
+        if(item.isVerified){
+        setBidDisplay({ ['']: false });
+        setBidRate("")
+        setBidLinks("")
+        setBdTriaxle("")
+        setSpinnerItem(null)      
+        navigate(`bbVerifiedLoad`, {        itemName : item.typeofLoad ,
+        fromLocation : item.fromLocation ,
+        toLocation : item.toLocation ,
+        bookerId : userId ,
+        bookerName : username ,
+        ownerName: item.companyName ,
+        ownerId : item.userId ,
+        contact : contactG,
+        Accept : null ,
+        isVerified : item.isVerified ,
+        msgReceiverId : userId ,
+        docId : docId,
+        rate :  theRate ,
+        linksRate :   thelinksRate ,
+        triaxleRate : thetriaxleRate ,
+        currencyB : currencyB ,
+        perTonneB : perTonneB ,
+        loadId : item.id ,
+        deletionTime :Date.now() + 4 * 24 * 60 * 60 * 1000 ,
+        timestamp : serverTimestamp() ,
+        dbName : dbName ,
+        expoPushToken : item.expoPushToken ,
+        sendPushNotification : sendPushNotification ,
+
+
+      })
+              return 
+            }else{
+
+
+      let theRateD
+
+        if(theRate){
+          theRateD = `Rate ${theRate} ${perTonneB ?"per tonne":''} `
+        }
+        else if(thelinksRate && thetriaxleRate){
+          theRateD = `Links ${thelinksRate} Triaxle ${thetriaxleRate} ${perTonneB ?"per tonne":""} `
+        }else if(thetriaxleRate){
+          theRateD = `Triaxle ${thetriaxleRate} ${perTonneB ?"per tonne":""} `
+        }else if(thelinksRate){
+          theRateD = `Links ${thelinksRate} ${perTonneB ?"per tonne":""} `
+        }
+      
+        let message  =`${item.typeofLoad} ${dbName === "bookings" ? "Booked" : "Bidded"} Rate ${theRateD} `
+        let tittle = `From ${item.fromLocation} to ${item.toLocation} `
+        await sendPushNotification(item.expoPushToken, message , tittle,dbName );
+
+        
         const docRef = await addDoc(bookingCollection, {
         itemName : item.typeofLoad ,
         fromLocation : item.fromLocation ,
@@ -252,7 +350,7 @@ setTimeout(() => {
         bookerName : username ,
         ownerName: item.companyName ,
         ownerId : item.userId ,
-        contact : item.contact ,
+        contact : contactG,
         Accept : null ,
         isVerified : item.isVerified ,
         msgReceiverId : userId ,
@@ -265,15 +363,19 @@ setTimeout(() => {
         loadId : item.id ,
         deletionTime :Date.now() + 5 * 24 * 60 * 60 * 1000 ,
         timestamp : serverTimestamp() ,
-      });
+      }
+
       
+      );
+      
+            }
       setBidRate("")
       setBidLinks("")
       setBdTriaxle("")
       setBidDisplay({ ['']: false });
       alert(`${!bidDisplay[item.id] ? "booking": "bidding"} was successfull`)    
         }else {
-          alert("Already Booked this Item!")    
+          alert(`Already ${!bidDisplay[item.id] ? "booked": "bidded"} this Item!`)    
 
         }
         
@@ -320,38 +422,58 @@ setTimeout(() => {
       setBookingError(err.toString());
       setSpinnerItem(null)      
     }
-  };
-        const message =  `${item.companyName} is this Load still available ${item.typeofLoad} from ${item.fromLocation} to ${item.toLocation} ${item.linksRate || item.triaxleRate ? item.triaxleRate &&`Triaxle ${item.triaxleRate } ` + item.linksRate&&`Links for ${item.linksRate}` : `Rate ${item.ratePerTonne}` } ${item.perTonne ?"Per tonne" : ''}            from https://www.transix.net/selectedUserLoads/${item.userId}/${item.id}` ; // Set your desired message here
+  };  
+
+            let theRateM
+
+        if(item.ratePerTonne){
+          theRateM = `Rate ${item.ratePerTonne} ${item.perTonne ?"per tonne":''} `
+        }else if(item.links && item.triaxle){
+          theRateM = `Links ${item.links} Triaxle ${item.triaxle} ${item.perTonneB ?"per tonne":""} `
+        }
+        else if(item.triaxle){
+          theRateM = `Triaxle ${item.triaxle} ${item.perTonneB ?"per tonne":""} `
+        }else if(item.links){
+          theRateM = `Links ${item.links} ${item.ratePerTonne ?"per tonne":""} `
+        }
+
+       
+        const message =  `${item.companyName}
+        Is this Load still available
+        ${item.typeofLoad} from ${item.fromLocation} to ${item.toLocation}
+        ${theRateM}
+
+        From: https://transix.net/selectedUserLoads/${item.userId}/${item.id}`  // Set your desired message here
 
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-            <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
+            {auth.currentUser&&<TouchableOpacity   style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
             <Text style={{color:"#008080"}} >Message now</Text>
             <ChatIcon/>
 
-          </TouchableOpacity>
+          </TouchableOpacity>}
 
             <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=${item.contact}&text=${encodeURIComponent(message)}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#25D366" , borderWidth:1 , borderColor :'#25D366', justifyContent:'center', marginBottom:6}} >
             <Text style={{color : "#25D366"}} >WhatsApp </Text> 
-            <WhatsApp  />  
+              <WhatsApp/>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.contact}`)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#0074D9" , borderWidth:1 , borderColor :'#0074D9', justifyContent:'center', marginBottom:4}} >
             <Text style={{color:'#0074D9'}} >Phone call</Text>
-            <CallIcon/>
+                <CallIcon/>
           </TouchableOpacity>
 
           </View>)
 
 
       let bidNow = (
-        <View style={{position:'absolute' , bottom:0, backgroundColor:'#DDDDDD'}}>
+        <View style={{position:'absolute' , bottom:0, backgroundColor:'white',flex:1 ,padding:7 ,  width:360 ,alignItems:'center'}}>
 
     {spinnerItem === item ? (
         <ActivityIndicator size={34} />
       ) :    <View >
 
-         {!item.linksRate && !item.triaxleRate &&  <View style={{flexDirection:'row', alignItems : 'center' ,}} >
+         {item.ratePerTonne &&  <View style={{flexDirection:'row', alignItems : 'center' ,}} >
 
         <TouchableOpacity onPress={toggleCurrencyBid}>
             {currencyBid ? <Text style={styles.buttonIsFalse} >USD</Text> :
@@ -364,7 +486,7 @@ setTimeout(() => {
             value={bidRate}
             keyboardType="numeric"
             placeholderTextColor="#6a0c0c"
-            style={ {height : 30 , borderBottomWidth: 2 , borderBottomColor : "#6a0c0c" ,marginBottom : 10 , paddingLeft : 20 ,width : 180}}
+            style={ {height : 30 , borderBottomWidth: 2 , borderBottomColor : "#6a0c0c" ,marginBottom : 10 ,padding:0, paddingLeft : 20 ,width : 180}}
             placeholder="Bid rate here"
           />
           <TouchableOpacity onPress={togglePerTonneBid} >
@@ -374,8 +496,8 @@ setTimeout(() => {
           </View>}
 
 
-          {item.linksRate || item.triaxleRate ?   <View>
-                {item.linksRate&& <View style={{flexDirection:'row', alignItems : 'center' ,}} >
+          {item.links|| item.triaxle ?   <View>
+                {item.links&& <View style={{flexDirection:'row', alignItems : 'center' ,}} >
 
         <TouchableOpacity onPress={toggleCurrencyBid}>
             {currencyBid ? <Text style={styles.buttonIsFalse} >USD</Text> :
@@ -388,7 +510,7 @@ setTimeout(() => {
             value={bidLinks}
             keyboardType="numeric"
             placeholderTextColor="#6a0c0c"
-            style={ {height : 30 , borderBottomWidth: 2 , borderBottomColor : "#6a0c0c" ,marginBottom : 10 , paddingLeft : 20 ,width : 180}}
+            style={ {height : 30 , borderBottomWidth: 2 , borderBottomColor : "#6a0c0c" ,marginBottom : 10 ,padding:0, paddingLeft : 20 ,width : 180}}
             placeholder="Bid Links rate"
           />
           <TouchableOpacity onPress={togglePerTonneBid} >
@@ -399,7 +521,7 @@ setTimeout(() => {
           
 
 
- { item.triaxleRate&& <View style={{flexDirection:'row', alignItems : 'center' ,}} >
+ { item.triaxle&& <View style={{flexDirection:'row', alignItems : 'center' ,}} >
 
         <TouchableOpacity onPress={toggleCurrencyBid}>
             {currencyBid ? <Text style={styles.buttonIsFalse} >USD</Text> :
@@ -412,7 +534,7 @@ setTimeout(() => {
             value={bidTriaxle}
             keyboardType="numeric"
             placeholderTextColor="#6a0c0c"
-            style={ {height : 30 , borderBottomWidth: 2 , borderBottomColor : "#6a0c0c" ,marginBottom : 10 , paddingLeft : 20 ,width : 180}}
+            style={ {height : 30 , borderBottomWidth: 2 , borderBottomColor : "#6a0c0c" ,marginBottom : 10 ,padding:0, paddingLeft : 20 ,width : 180,marginTop:5}}
             placeholder="Bid triaxle rate"
           />
           <TouchableOpacity onPress={togglePerTonneBid} >
@@ -425,30 +547,16 @@ setTimeout(() => {
             </View>:null}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-          
    </View>}
 
 
           <View style={{flexDirection:'row' , justifyContent: 'space-evenly'}}>
 
-            <TouchableOpacity onPress={()=>toggleBid(item.id) } style={{ backgroundColor:'#6a0c0c',padding:1 ,paddingLeft :7 , paddingRight:7 ,borderRadius:3}} > 
+            <TouchableOpacity onPress={()=>toggleBid(item.id) } style={{ backgroundColor:'#6a0c0c',padding:1 ,paddingLeft :7 , paddingRight:7 ,borderRadius:3,marginRight:12}} > 
               <Text style={{color:'white'}}>Cancel </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={()=>handleSubmit(item , "biddings")} style={{ backgroundColor:'rgb(129,201,149)',padding:1 ,paddingLeft :7 , paddingRight:7 ,borderRadius:3}} >
+            <TouchableOpacity onPress={()=>handleSubmit(item , "biddings")} style={{ backgroundColor:'#228B22',padding:1 ,paddingLeft :7 , paddingRight:7 ,borderRadius:3}} >
               <Text style={{color:'white'}}> Send</Text>
             </TouchableOpacity>
 
@@ -464,81 +572,120 @@ setTimeout(() => {
 
 
   return(
-    <View  key={item.id} style={{  marginBottom : 8, padding :6  , padding :7, borderWidth : 2 , borderColor:'black', borderRadius:8 ,  shadowColor: '#6a0c0c',
+    <View  key={item.id} style={{  marginBottom : 8,  padding :7 ,borderWidth : 2 , borderColor:'black', borderRadius:8 ,  shadowColor: '#6a0c0c',
         shadowOffset: { width: 1, height: 2 },
         shadowOpacity: 0.7,
-        shadowRadius: 5}} >
+        shadowRadius: 5,   overflow: 'hidden', }} >
 
-            
-            { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white',zIndex : 66}} >
+                          
+              { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
-            </View>}
+              </View>}
         <Text style={{color:'#6a0c0c' , fontSize:15,textAlign :'center' ,fontSize: 21 , fontWeight:'600'}}  >{item.companyName} </Text>
 
-      <View style={{flexDirection :'row'}} >
+       {<View style={{ flexDirection:'row',margin:4}} >
+
+         {item.returnLoad &&  <View style={{backgroundColor :'#6a0c0c',paddingLeft :4 , paddingRight:4 , marginLeft :7}} >
+          <Text style={{color :'white'}} >Return Load</Text>
+          </View>}
+
+         {item.roundTrip &&  <View style={{backgroundColor :'#6a0c0c',paddingLeft :4 , paddingRight:4 , marginLeft :7}} >
+          <Text style={{color :'white'}} >Round Trip</Text>
+          </View>}
+
+         {item.fuelAvai &&  <View style={{backgroundColor :'#6a0c0c',paddingLeft :4 , paddingRight:4 , marginLeft :7}} >
+          <Text style={{color :'white'}} >Fuel</Text>
+          </View>}
+
+      </View>}
+      <View style={{flexDirection :'row', width:245 }} >
         <Text style={{width :100}} >Commodity</Text>
-        <Text  >:  {item.typeofLoad} </Text>
+        <Text  style={{textOverflow:'ellipsis' }} >:  {item.typeofLoad} </Text>
       </View>
 
-      <View style={{flexDirection :'row'}} >
+      <View style={{flexDirection :'row', width:245 }} >
         <Text style={{width :100}} >Route</Text>
-        <Text>:  from  {item.fromLocation}  to  {item.toLocation} </Text>
+        <Text style={{textOverflow:'ellipsis' }} >:  from  {item.fromLocation}  to  {item.toLocation} </Text>
       </View>
 
-      {!item.linksRate && !item.triaxleRate && <View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Rate</Text>
-        <Text>:  {item.currency ? "USD" : "RAND"} {item.ratePerTonne} {item.perTonne ? "Per tonne" :null} </Text>
+      {!item.links && !item.triaxle && <View style={{flexDirection :'row', width:245 }} >
+        <Text style={{width :100,color:'green',fontWeight:'bold',fontSize:16}} >Rate</Text>
+        <Text  style={{color:'green',fontWeight:'bold',fontSize:16}} >:  {item.currency ? "USD" : "RAND"} {item.ratePerTonne} {item.perTonne ? "Per tonne" :null} </Text>
       </View>}
 
-       {item.linksRate&&  <View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Links</Text>
-        <Text>:  {item.currency ? "USD" : "RAND"} {item.linksRate} {item.perTonne ? "Per tonne" :null} </Text>
+       {item.links&&  <View style={{flexDirection :'row', width:245 }} >
+        <Text style={{width :100,color:'green',fontWeight:'bold',fontSize:16}} >Links</Text>
+        <Text style={{color:'green',fontWeight:'bold',fontSize:16}} >:  {item.currency ? "USD" : "RAND"} {item.links} {item.perTonne ? "Per tonne" :null} </Text>
       </View>}
 
-       {item.triaxleRate&& <View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Triaxle</Text>
-        <Text>:  {item.currency ? "USD" : "RAND"} {item.triaxleRate} {item.perTonne ? "Per tonne" :null} </Text>
+       {item.triaxle&& <View style={{flexDirection :'row', width:245 }} >
+        <Text style={{width :100,color:'green',fontWeight:'bold',fontSize:16}} >Triaxle</Text>
+        <Text style={{color:'green',fontWeight:'bold',fontSize:16}} >:  {item.currency ? "USD" : "RAND"} {item.triaxle} {item.perTonne ? "Per tonne" :null} </Text>
       </View>}
 
        {   !contactDisplay[item.id] && <View>
 
-     {!item.isVerified&&  <View style={{flexDirection :'row'}} >
+     {!item.isVerified&&  !blockVerifiedU &&!blackLWarning &&  !blockVerifiedUP  && !blackLWarningP && <View style={{flexDirection :'row', width:245 }} >
         <Text style={{width :100}} >Contact</Text>
-        <Text>:  {item.contact}</Text>
+        <Text style={{textOverflow:'ellipsis' }} >:  {item.contact}</Text>
       </View>}
 
-      <View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Payment Terms</Text>
-        <Text>:  {item.paymentTerms} </Text>
+      <View style={{flexDirection :'row', width:245 }} >
+        <Text style={{width:100}} >Payment Terms</Text>
+        <Text  style={{textOverflow:'ellipsis' }} >: {item.paymentTerms}</Text>
       </View>
 
-    { dspMoreInfo[item.id] && item.requirements && <View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Requirements</Text>
-         <Text>:  {item.requirements} </Text>
+        {item.activeLoading&& <Text style={{fontSize:17 , color:"#FF8C00" }} >Active Loading.... </Text> }
+     { dspMoreInfo[item.id] &&<View>
+    {  item.fuelAvai && <View style={{flexDirection :'row' ,marginTop:5, width:245 }} >
+        <Text style={{width:100}} >Fuel </Text>
+         <Text style={{textOverflow:'ellipsis' }}  >:  {item.fuelAvai} </Text>
+      </View>}
+      { item.additionalInfo && <View style={{flexDirection :'row', width:245 }} >
+        <Text style={{width :100}} >Additional info </Text>
+       {<Text style={{textOverflow:'ellipsis' }} >:  {item.additionalInfo} </Text>} 
       </View>}
 
-      { dspMoreInfo[item.id] && item.additionalInfo && <View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Additional info </Text>
-       {<Text>:  {item.additionalInfo} </Text>} 
+
+    {  item.alertMsg && <View style={{flexDirection :'row',marginTop:5, width:245 }} >
+        <Text style={{width :100 ,backgroundColor:'rgba(220, 20, 60, 0.8)',color:'white' ,textAlign:'center',fontSize:15}} >Alert</Text>
+         <Text style={{paddingRight:7 ,backgroundColor:'rgba(220, 20, 60, 0.8)',color:'white' ,fontSize:15,textOverflow:'ellipsis' }} >:  {item.alertMsg} </Text>
       </View>}
+
+      {item.returnLoad && <View style={{marginTop:5, width:245 }} >
+        <Text style={{alignSelf:'center',color:"rgba(220, 20, 60, 0.8)",fontSize:16 ,margin:3}} >Return Load</Text>
+          { item.returnLoad &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100}} >R Cargo</Text>
+       {<Text style={{textOverflow:'ellipsis' }} >:  {item.returnLoad} </Text>} 
+      </View>}
+          { item.returnRate &&<View style={{flexDirection :'row', width:245 }} >
+        <Text style={{width :100}} >R Rate</Text>
+       {<Text style={{textOverflow:'ellipsis' }} >:  {item.returnRate} </Text>} 
+      </View>}
+          { item.returnTerms &&<View style={{flexDirection :'row', width:245 }} >
+        <Text style={{width :100}} >R Terms</Text>
+       {<Text style={{textOverflow:'ellipsis' }} >:  {item.returnTerms} </Text>} 
+      </View>}
+      </View>}
+ </View>}
+
 
          {!contactDisplay[item.id] && <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
-          <Text style={{color :'green'}} >{  dspMoreInfo[item.id]  ?"See Less": "See more"} </Text>
+          <Text style={{color :'green',fontWeight:'bold',fontSize:16}} >{  dspMoreInfo[item.id]  ?"See Less": "See more"} </Text>
         </TouchableOpacity>}
         </View> }
 
-        {item.activeLoading&& <Text style={{fontSize:17 , color:"#FF8C00" }} >Active Loading.... </Text> }
 
         {contactDisplay[item.id] && contactMe}
 
          {bidDisplay[item.id]&& bidNow}
 
-        { !item.isVerified&& !bidDisplay[item.id]&&  <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{  width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#228B22' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
+        {!blockVerifiedUP  && !blackLWarningP && !blockVerifiedU &&!blackLWarning && !item.isVerified&& !bidDisplay[item.id]&&  <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{  width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#228B22' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
           <Text style={{color:'white'}} > Get In Touch Now</Text>
         </TouchableOpacity>}
         
         
-       {  auth.currentUser ? !bidDisplay[item.id]&& !contactDisplay[item.id]  && <View style={{flexDirection : 'row', justifyContent : 'space-evenly' }} >  
+       {  auth.currentUser  ? !bidDisplay[item.id]&& !contactDisplay[item.id]  && !blockVerifiedUP  && !blackLWarningP &&!blockVerifiedU &&!blackLWarning &&<View style={{flexDirection : 'row', justifyContent : 'space-evenly' }} >  
       {bookingError&&<Text>{bookingError}</Text>}
           {spinnerItem === item ? (
         <ActivityIndicator size={34} />
@@ -552,7 +699,7 @@ setTimeout(() => {
         <Text style={{color:'white'}} >Bid</Text>
       </TouchableOpacity>
 
-        <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.companyName} `)} style={{ width : 90 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
+        <TouchableOpacity   style={{ width : 90 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
           <Text style={{color:'white'}} >Message</Text>
         </TouchableOpacity>       
         </View> : 
@@ -563,12 +710,11 @@ setTimeout(() => {
   )})
 
 
-        let comapnyName = null;
-
-
+  
+  
  const handleShareLink = async (companyName) => {
     try {
-      const url = `https://www.truckerz.net/selectedUserLoads/${userId}`; // Replace this with the URL you want to share
+      const url = `https://transix.net/selectedUserLoads/${userId}`; // Replace this with the URL you want to share
       const message = `Check out ${companyName} loads on Truckerz: ${url}`;
 
       const result = await Share.share({
@@ -593,56 +739,114 @@ setTimeout(() => {
     }
   };
 
+    const handleShareApp = async (companyName) => {
+              try {
+                const message = `I invite you to Transix!
+
+Transix is a tech-driven business enhancing transportation and logistics services, connecting suppliers with demand for truckloads, vehicles, trailers, spare parts etc.
+
+Contact us at +263716325160 with the message "Application" to swiftly receive the application download link.
+
+Explore Application at : https://play.google.com/store/apps/details?id=com.yayapana.Transix
+Explore website at : https://transix.net/
+
+Experience the future of transportation and logistics!  `;
+
+                const result = await Share.share({
+                  message: message,
+                });
+
+                if (result) {
+                  if (result.action === Share.sharedAction) {
+                    if (result.activityType) {
+                      // Shared with activity type of result.activityType
+                    } else {
+                      // Shared
+                    }
+                  } else if (result.action === Share.dismissedAction) {
+                    // Dismissed
+                  }
+                } else {
+                  // Handle the case where result is undefined or null
+                }
+              } catch (error) {
+                alert(error.message);
+              }
+            };
+    
+
   return(
     <View>
-        {  userId  && loadsList.map((item)=>{
-          let showUserName
-          if(userId){
-          const companyName = item.companyName ;
-           showUserName = comapnyName !== companyName;
-          comapnyName = companyName;
-        }
-      return(     
-        showUserName&&<View key={item.id} style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
+              
+      { userId && <View  style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
       
            <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate( '/' )}>
-            {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
-                    <ArrowBackIcon style={{color : 'white'}} />
+            <ArrowBackIcon  size={28} color="white"style={{ marginLeft: 10 }}  />
         </TouchableOpacity> 
        
-                <Text style={{fontSize: 20 , color : 'white'}} > { item.companyName} Loads </Text>
-                <TouchableOpacity  onPress={()=>handleShareLink(item.companyName)} style={{position :'absolute' , right:30 ,  backgroundColor : 'white' }} >
-                    <Text  >Share loads Link</Text>
+                <Text style={{fontSize: 20 , color : 'white'}} > {companyNameG } Loads </Text>
+
+                <TouchableOpacity  onPress={()=>handleShareLink(companyNameG)} style={{position :'absolute' , right:30 , backgroundColor : 'white' }} >
+                    <Text  >Share loads </Text>
                 </TouchableOpacity>
 
-       </View> )})
-       }
+       </View> }
+       
 
-      { location && <View  style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
+
+      { location || verfiedLoads ? <View  style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
          <TouchableOpacity style={{marginRight: 10}}  onPress={()=>navigate(-1)}>
-                    <ArrowBackIcon style={{color : 'white'}} />
+            <ArrowBackIcon  size={28} color="white"style={{ marginLeft: 10 }}  />
         </TouchableOpacity> 
-        <Text style={{fontSize: 20 , color : 'white'}} > {location} Loads</Text>
-       </View>}
+        <Text style={{fontSize: 20 , color : 'white'}} > {location?location:"verfied"  } Loads</Text>
+       </View>:null}
        
 
    {!localLoads &&  <ScrollView style={{padding : 10 , marginTop : 10 , paddingTop : 0}} >
-   {!location && <View style={{flexDirection : 'row' , justifyContent : 'space-evenly' }} >
+   {!location && !verfiedLoads && <View style={{flexDirection : 'row' , justifyContent : 'space-evenly' }} >
     <TouchableOpacity onPress={toggleLocalLoads} style={styles.buttonStyle} >
       <Text style={{color:'white'}} > Local </Text>
     </TouchableOpacity>
 
-    <TouchableOpacity style={styles.buttonStyle} onPress={()=> navigate(`/location/International`) }>
+    <TouchableOpacity style={styles.buttonStyle} onPress={()=> specifyLocation(`International`) }>
       <Text style={{color:'white'}} >International  </Text>
     </TouchableOpacity>
+
+
+
+
+ {/* ()=>navigation.navigate('selectedUserLoads' , {verfiedLoads : true}) */}
+    {userIsVerified && <TouchableOpacity style={styles.buttonStyle} onPress={ ()=> navigate(`/selectedUserLoads/true `)   }>
+      <Text style={{color:'white'}} >Verified</Text>
+    </TouchableOpacity>}
     </View>
+
+
+
+
+
+
 }
-      <div className="Main-grid">
+
+        {!dspLoadMoreBtn && loadsList.length <= 0 && location&&<Text style={{fontSize:19 ,fontWeight:'bold'}} >{location} Do Not Have Local loads </Text> }
+       {!dspLoadMoreBtn && loadsList.length <= 0  && location &&<TouchableOpacity onPress={handleShareApp} >
+         <Text style={{fontSize : 20 , textDecorationLine:'underline'}} >Please share or recommend our app for more loads</Text>
+       </TouchableOpacity>}
+
+
+ <div className="Main-grid">
+
         { loadsList.length>0? rendereIterms: <Text>Loads Loading.....</Text> }
         <View style={{height : 200}} ></View>
-        </div>
-    </ScrollView> }
+ </div>
 
+          {LoadMoreData && loadsList.length>0 && <Text style={{alignSelf:'center'}} >Loading More Loads....... </Text> } 
+          
+         {loadsList.length>15 && dspLoadMoreBtn&& <TouchableOpacity onPress={()=> loadedData(true) } style={{ height :45 , backgroundColor :'#228B22', margin :25 , justifyContent:'center',borderRadius:25}} >
+        <Text style={{color :'white', fontSize :21 , textAlign :'center'}} >Load More......</Text>
+      </TouchableOpacity>}
+        <View style={{height : 200}} ></View>
+    </ScrollView> }
 
        {localLoads && <View style={{alignItems : 'center' , paddingTop : 30}}>
         <TouchableOpacity  onPress={()=>specifyLocation('Zimbabwe')} style={styles.buttonStyleCounry}  >
@@ -704,6 +908,9 @@ const styles = StyleSheet.create({
         alignItems : 'center' ,
         width : 150 ,
         marginBottom: 15 ,
+        borderWidth:2 ,
+        borderColor:"#6a0c0c",
+        borderRadius:10
     },
   
     buttonIsFalse : {

@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { db } from '../config/fireBase';
-import { View , Text  , ScrollView ,TouchableOpacity , Linking , Share , StyleSheet} from 'react-native';
-import {onSnapshot ,  query ,collection,where ,} from "firebase/firestore"
+import React, { useEffect, useState ,useRef} from 'react';
+
+
+
+
+
+
+
 
 import { useParams , useNavigate} from 'react-router-dom';
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -11,16 +15,133 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { WhatsApp  } from '@mui/icons-material';
 import CallIcon from '@mui/icons-material/Call';
 import ChatIcon from '@mui/icons-material/Chat';
-function OneFirmsShop({route , navigation } ){ 
-  
-    const {userId , itemId , agCont ,sellOBuyG,location } = useParams()
-    const navigate = useNavigate()
-    const [allTrucks, setAllTrucks] = useState([]);
-      const [specproduct , setSpecPrduct] = React.useState('')
 
-      let [buyRent , setBuyRent] = React.useState(null)
+import DeleteIcon from '@mui/icons-material/Delete';
+
+
+
+
+import { db , auth} from '../config/fireBase';
+import { View , Text , Image , ScrollView , TouchableOpacity , Linking , StyleSheet, Alert, ActivityIndicator , Share} from 'react-native';
+import {onSnapshot ,  query ,collection,where ,limit,getDocs,startAfter,orderBy,doc,updateDoc , deleteDoc} from "firebase/firestore"
+
+
+function OneFirmsShop({blockVerifiedU, blackLWarning }){
+
+  const {location, specproductG ,sellOBuyG ,userId , CompanyName , itemKey,} = useParams()
+
+  const navigate = useNavigate()
+
+
+      const [specproduct , setSpecPrduct] = React.useState(specproductG)
+
+     const [fontMarkting, setFontMarketing] = useState([]);
+  let [trackDatachange , settrackFmarkt] = React.useState(false)
+
+  function trackFmarket(){
+    settrackFmarkt(prev=>!prev)
+  }
+  useEffect(() => {
+    try {
+      if(auth.currentUser){
+
+        const userId = auth.currentUser.uid;
+        // const dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId) );
+      let dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId), where("frontMarkert" ,"==", true) ,where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) );
+       
+        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
+          const loadedData = [];
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added' || change.type === 'modified') {
+              const dataWithId = { id: change.doc.id, ...change.doc.data() };
+              loadedData.push(dataWithId);
+            }
+          });
+
+        setFontMarketing(loadedData);
+        });
+        
+        // Clean up function to unsubscribe from the listener when the component unmounts
+        return () => unsubscribe();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, [trackDatachange]); 
+
+
+    const toggleFrontMarting = async ( id ,decision ) => {
+      try {
+        if (decision === "Accept"&& fontMarkting.length < 4  ) {
+          const docRef = doc(db, 'Shop', id);
+          await updateDoc(docRef, { frontMarkert : true ,  });
+          alert("Added To Top Listing");
+        }else if(decision === "Accept"&& fontMarkting.length >= 4  ){
+          alert("You can only add 4 iterms to martFrontline")
+        }else{
+          const docRef = doc(db, `Shop`, id);
+          await updateDoc(docRef, { frontMarkert : false ,  });
+          alert("Removed From Top Listing");
+        }
+      trackFmarket()
+      } catch (err) {
+        console.error(err);
+      }
+  }
+    
+
+
+      const [spinnerItem, setSpinnerItem] = React.useState(false);
+
+    const deleteItem = async (id , imageUrls) => {
+      
+    setSpinnerItem(true);
+
+        imageUrls.forEach(async (imageUrl) => {
+    try {
+        const response = await fetch(imageUrl, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            const loadsDocRef = doc(db, 'Shop', id);
+            deleteDoc(loadsDocRef);
+            console.log('Document deleted successfully');
+        } else {
+            console.log('Error deleting image:', response.status);
+        }
+    } catch (error) {
+        console.log('Error deleting image:', error);
+        setSpinnerItem(false);
+    } finally {
+            const loadsDocRef = doc(db, 'Shop', id);
+            deleteDoc(loadsDocRef);
+        setSpinnerItem(false);
+    }
+});
+
+      trackFmarket()
+    } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       let [sellOBuy , setSellOBuy] = React.useState(sellOBuyG)
- const [priceRangeDsp , setPriceRangeDsp]= React.useState(false)
+ const [allSoldIterms, setAllSoldIterms] = useState([]);
+ 
+        let [buyRent , setBuyRent] = React.useState(null)
+const [priceRangeDsp , setPriceRangeDsp]= React.useState(false)
   function addPriceRangeDsp(){
   setPriceRangeDsp(prev => !prev)
   setVehicleTypeDsp(false)
@@ -119,64 +240,124 @@ function OneFirmsShop({route , navigation } ){
       setTrailerType(value)
       setTrailerTypeDsp(false)
     }
-  useEffect(() => {
-    try {
-      let dataQuery
 
-           if(specproduct === "vehicles" ){
+  const [getOneItem, setgetOneItem] = useState([]);
 
-                 if(vehicleType && vehiMake && priceRange && (buyRent === true || buyRent === false||buyRent==="R2B") ){
-                    dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehiMake", "==", vehiMake) , where("priceRange", "==", priceRange) , where("sellRent", "==", buyRent) , where("userId" ,"==", userId),);
+    function getOneItemF(){
+
+        const dataQuery = query(collection(db, "Shop"), where("timeStamp", "==", itemKey) , where("userId", "==", userId) );
+
+        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
+          let loadedData = [];
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added' || change.type === 'modified') {
+              const dataWithId = { id: change.doc.id, ...change.doc.data() };
+              loadedData.push(dataWithId);
+            }
+          });
+
+          setgetOneItem(loadedData);
+        });
+        
+        // Clean up function to unsubscribe from the listener when the component unmounts
+        return () => unsubscribe();
+
+
+    }
+
+        function refreshPageF(){
+            window.location.reload();
+      }
+
+
+
+        
+  const [losdingSpec , setLoadingSpec]=React.useState(false)  
+  const [dspLoadMoreBtn , setLoadMoreBtn]=React.useState(true)
+  const [LoadMoreData , setLoadMoreData]=React.useState(false)
+
+async function fetchData(loadOneMore) {
+
+             if(loadOneMore){
+
+        setLoadMoreData(true) 
+      }
+  try {
+    const mainLoadsCollection = collection(db, 'Shop');
+    const orderByField = 'productName'; // Replace with the actual field name for ordering
+
+    const pagination = loadOneMore && allSoldIterms.length > 0 ? [startAfter(allSoldIterms[allSoldIterms.length - 1][orderByField])] : [];
+
+    
+  let dataQuery;
+
+            if(specproduct === "vehicles" ){
+
+                 if(vehicleType && vehiMake && priceRange && (buyRent===true || buyRent === false || buyRent==="R2B") ){
+                    setLoadingSpec(true)
+                    dataQuery = query(collection(db, "Shop"),orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId),  where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehiMake", "==", vehiMake) , where("priceRange", "==", priceRange) , where("sellRent", "==", buyRent) );
                  }else if(vehicleType && vehiMake && priceRange){
 
-                    dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehiMake", "==", vehiMake) , where("priceRange", "==", priceRange) , where("userId" ,"==", userId),);
+                    setLoadingSpec(true)
+                    dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("vehiMake", "==", vehiMake) , where("priceRange", "==", priceRange) );
                  }
 
                  else if (priceRange) {
 
                 if(vehicleType ){
-                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("priceRange", "==", priceRange) , where("vehicleType", "==", vehicleType), where("userId" ,"==", userId), );
+                    setLoadingSpec(true)
+                  dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("priceRange", "==", priceRange) , where("vehicleType", "==", vehicleType) );
 
                 }else if( vehiMake ){
 
-                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("priceRange", "==", priceRange) , where("vehiMake", "==", vehiMake) , where("userId" ,"==", userId),);
-                }else if ((buyRent === true || buyRent === false ||buyRent==="R2B" ) ){
+                    setLoadingSpec(true)
+                  dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("priceRange", "==", priceRange) , where("vehiMake", "==", vehiMake) );
+                }else if ((buyRent === true || buyRent === false || buyRent ==="R2B" ) ){
 
-                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("sellRent", "==", buyRent) , where("priceRange", "==", priceRange), where("userId" ,"==", userId),);
+                    setLoadingSpec(true)
+                  dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("sellRent", "==", buyRent) , where("priceRange", "==", priceRange));
                 }else{
 
-                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("priceRange", "==", priceRange) , where("userId" ,"==", userId),);
+                    setLoadingSpec(true)
+                  dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("priceRange", "==", priceRange) );
                 }
 
                  }else if(vehicleType){
                   if( vehiMake ){
 
-                    dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) , where("userId" ,"==", userId),);
-                  }else if ((buyRent === true || buyRent === false ||buyRent==="R2B" ) ){
+                    setLoadingSpec(true)
+                    dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("vehiMake", "==", vehiMake) );
+                  }else if ((buyRent === true || buyRent === false || buyRent==="R2B" ) ){
 
-                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("sellRent", "==", buyRent) , where("vehicleType", "==", vehicleType), where("userId" ,"==", userId),);
+                    setLoadingSpec(true)
+                  dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("sellRent", "==", buyRent) , where("vehicleType", "==", vehicleType));
 
                 }
                   else{
 
-                    dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType) , where("userId" ,"==", userId), );
+                    setLoadingSpec(true)
+                    dataQuery = query(collection(db, "Shop"),orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehicleType", "==", vehicleType)  );
                   }
                  }else if(vehiMake){
-                   if ((buyRent === true || buyRent === false ||buyRent==="R2B" ) ){
+                   if ((buyRent === true || buyRent === false || buyRent==="R2B" ) ){
 
-                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("sellRent", "==", buyRent) , where("vehiMake", "==", vehiMake), where("userId" ,"==", userId),);
+                    setLoadingSpec(true)
+                  dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("sellRent", "==", buyRent) , where("vehiMake", "==", vehiMake));
 
                     }else {
 
-                      dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehiMake", "==", vehiMake) , where("userId" ,"==", userId), );
+                    setLoadingSpec(true)
+                      dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("vehiMake", "==", vehiMake)  );
                     }
-                 }else if(buyRent === true || buyRent === false ||buyRent==="R2B" ){
+                 }else if(buyRent === true || buyRent === false || buyRent==="R2B" ){
 
-                      dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy)  , where("sellRent", "==", buyRent) , where("userId" ,"==", userId), );
+                    setLoadingSpec(true)
+                      dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy)  , where("sellRent", "==", buyRent) , );
                  }
                  else{
 
-                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("userId" ,"==", userId), );
+                    setLoadingSpec(true)
+                  dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) );
                 }
             
 
@@ -185,55 +366,81 @@ function OneFirmsShop({route , navigation } ){
             }else   if (specproduct === "trailers") {
               if(trailerType){
 
-                if(buyRent === true || buyRent === false === "R2B" ){
-                  dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("trailerType", "==", trailerType), where("sellRent", "==", buyRent) , where("userId" ,"==", userId), );
+                if(buyRent === true || buyRent === false || buyRent==="R2B" ){
+                  setLoadingSpec(true)
+                  dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("trailerType", "==", trailerType), where("sellRent", "==", buyRent) );
 
                 }else{
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("trailerType", "==", trailerType) , where("userId" ,"==", userId), );
+                    setLoadingSpec(true)
+                dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("trailerType", "==", trailerType) );
                 }
 
-              }else if (buyRent === true || buyRent === false ||buyRent==="R2B" ) {
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) , where("userId" ,"==", userId), );
+              }else if (buyRent === true || buyRent === false || buyRent==="R2B" ) {
+                    setLoadingSpec(true)
+                dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellRent", "==", buyRent) , where("sellOBuy", "==", sellOBuy) );
             } else {
-                dataQuery = query(collection(db, "Shop"), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) , where("userId" ,"==", userId), );
+                    setLoadingSpec(true)
+                dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) );
             }
-        }else if(specproduct){
+        } else if(specproduct === "Sprovider") {
+                    setLoadingSpec(true)
+            dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), );
+        }else{
 
-          dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId), where("sellOBuy", "==", sellOBuy),where("specproduct", "==", specproduct)  );
-        }else {
-
-          dataQuery = query(collection(db, "Shop"), where("userId" ,"==", userId), where("sellOBuy", "==", sellOBuy) );
+                    setLoadingSpec(true)
+            dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) );
         }
 
-        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
-          const loadedData = [];
-          snapshot.docChanges().forEach((change) => {
-            if (change.type === 'added' || change.type === 'modified') {
-              const dataWithId = { id: change.doc.id, ...change.doc.data() };
-              loadedData.push(dataWithId);
-            }
-          });
 
-              if (itemId) {
-        const updatedLoadList = loadedData.map(oneLoad => ({
-          ...oneLoad,
-          backgroundColor: oneLoad.id === itemId ? "#F2F2F2" : "#EDEDED"
-        }));
 
-        const sortedLoadList = updatedLoadList.sort((a, b) => a.backgroundColor === "#F2F2F2" ? -1 : b.backgroundColor === "#F2F2F2" ? 1 : 0);
 
-        setAllTrucks(sortedLoadList);
-      } else {
-        setAllTrucks(loadedData);
-      }
-        });
-        
-        // Clean up function to unsubscribe from the listener when the component unmounts
-        return () => unsubscribe();
-    } catch (err) {
-      console.error(err);
+
+    const docsSnapshot = await getDocs(dataQuery);
+
+    let userItemsMap = [] // Map to store user items
+
+    docsSnapshot.forEach(doc => {
+      userItemsMap.push( { id: doc.id, ...doc.data() }) 
+
+    });
+
+
+    let loadedData = userItemsMap
+    if(loadedData.length < 4 ){
+      setLoadMoreBtn(false)
     }
-  }, [userId , specproduct, buyRent, sellOBuy , priceRange , vehicleType ,vehiMake ,trailerType]); 
+    // Update state with the new data
+    setAllSoldIterms(loadOneMore ? [...allSoldIterms, ...loadedData] : loadedData);
+          if(loadOneMore){
+
+        setLoadMoreData(false) 
+      }
+
+                    setLoadingSpec(false)
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
+
+
+
+
+useEffect(() => {
+  fetchData();
+}, [specproduct, buyRent, sellOBuy , priceRange , vehicleType ,vehiMake ,trailerType, trackDatachange]);;
+
+useEffect(() => {
+
+    getOneItemF()
+
+}, []);;
+
+
+
+
+
+
+        
 
     const [contactDisplay, setContactDisplay] = React.useState({ ['']: false });
     const toggleContact = (itemId) => {
@@ -242,7 +449,6 @@ function OneFirmsShop({route , navigation } ){
         [itemId]: !prevState[itemId],
       }));
     };
-
   const [dspMoreInfo , setDspMoreInfo] = React.useState({ ['']: false })
   function toggleDspMoreInfo(itemId){
           setDspMoreInfo((prevState) => ({
@@ -250,12 +456,37 @@ function OneFirmsShop({route , navigation } ){
         [itemId]: !prevState[itemId],
       }));
   }
-  const rendereIterms = allTrucks.map((item)=>{
 
-        const message =  `${item.CompanyName} is this Product still ${ item.sellOBuy === "forSell"? "available":"wanted" } ${item.productName} ${item.sellRent ? "for sell" :'for rental' }   ${item.currency?"USD" : "Rand" }  ${item.price}             from ${agCont ?`https://www.transix.net/OneFirmsShopA/${item.userId}/${item.id}/${item.location}/${sellOBuy} /${agCont}` :  `https://www.transix.net/OneFirmsShop/${item.userId}/${item.id}/${item.location}/${sellOBuy}`  }` ;
+
+  const [imageLoading, setImageLoading] = useState({ ['']: false });
+    const imagaLoadingF = (itemId , state ) => {
+      setImageLoading((prevState) => ({
+        ...prevState,
+        [itemId]: !prevState[itemId],
+      }));
+  }
+    
+
+const [dspAllImages , setDspAllImages]= React.useState({ ['']: false });
+
+function displayAllImages(itemId){
+  setDspAllImages((prevState) => ({
+        ...prevState,
+        [itemId]: !prevState[itemId],
+      })
+  );
+}
+
+const spreadThis = [...getOneItem ,...allSoldIterms]
+
+
+
+  const rendereIterms = spreadThis.map((item)=>{
+
+        const message =  `${item.CompanyName} is this Product still ${ item.sellOBuy === "forSell"? "available":"wanted" } ${item.productName} ${item.sellRent ? "for sell" :'for rental' }   ${item.currency?"USD" : "Rand" }  ${item.price}                    from https://www.transix.net/OneFirmsShop/${item.userId}/${item.id}/${item.location}/${sellOBuy}` ; // Set your desired message here
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
-             <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
+          <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
             <Text style={{color:"#008080"}} >Message now</Text>
             <ChatIcon/>
 
@@ -270,9 +501,11 @@ function OneFirmsShop({route , navigation } ){
             <Text style={{color:'#0074D9'}} >Phone call</Text>
             <CallIcon/>
           </TouchableOpacity>
+
+
           </View>)
     return(
-      <View key={item.id} style={{padding :7, borderWidth : 2 , borderColor:'black', borderRadius:8 ,  shadowColor: '#6a0c0c',
+      <View  key={item.id}   style={{padding :7, borderWidth : 2 , borderColor:'black', borderRadius:8 ,  shadowColor: '#6a0c0c',
         shadowOffset: { width: 1, height: 2 },
         shadowOpacity: 0.7,
         shadowRadius: 5,backgroundColor:'rgba(235, 142, 81, 0.07)' }}>
@@ -280,10 +513,9 @@ function OneFirmsShop({route , navigation } ){
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
       </View>}
-      
 
-        
-          
+   
+       
            <View>
           {sellOBuy ==="forSell"  &&<ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{  height : 200 ,}} >
         {item.imageUrl.map((image, index) => (
@@ -317,13 +549,11 @@ function OneFirmsShop({route , navigation } ){
 
           </View>
 
+      <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} </Text>
 
-      <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20 , color:"#6a0c0c" , textAlign:'center'}} >{item.CompanyName} {item.specproduct}</Text>
+     {item.specproduct === "vehicles" &&  <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{ margin : 5 , }} >
 
-
-         {item.specproduct === "vehicles" && <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{height: 50 , margin : 5 , }} >
-
-           { item.mileage&& <View  style={{marginRight:12}}>
+           { item.mileage && <View  style={{marginRight:12}}>
               <Text>MILEAGE </Text>
               <Text>{item.mileage} </Text>
             </View>}
@@ -336,7 +566,7 @@ function OneFirmsShop({route , navigation } ){
 
            {item.engine && <View  style={{marginRight:12}}>
               <Text>ENGINE </Text>
-              <Text>{item.engine}  </Text>
+              <Text>{item.engine}</Text>
             </View>}
 
             {item.trans && <View  style={{marginRight:12}} >
@@ -350,10 +580,12 @@ function OneFirmsShop({route , navigation } ){
             </View>}
           </ScrollView>}
 
-          { item.productName &&<View style={{flexDirection :'row'}} >
+          
+         {item.productName &&<View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >{sellOBuy ==="forSell" ? "Product":'Looking For' }</Text>
-       {<Text>:  {item.productName}  { item.sellRent === "R2B" ?"Rent To Buy": item.sellRent ? "for sell" :'for rental' } </Text>} 
+       {<Text>:  {item.productName} { item.sellRent === "R2B" ?"Rent To Buy": item.sellRent ? "for sell" :'for rental' } </Text>} 
       </View>}
+          
          {item.swapWith &&<View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >Swap</Text>
        {<Text>:  {item.swapWith} </Text>} 
@@ -361,16 +593,18 @@ function OneFirmsShop({route , navigation } ){
 
       { item.price &&<View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >{sellOBuy==='forSell' ?'Price':'Budget' }</Text>
-       {<Text style={{color:'green'}} >:  {item.currency?"USD" : "Rand" }  {item.price} </Text>} 
+       {<Text style={{color:'green'}} >:  {item.currency?"USD" : "Rand" }  {item.price}</Text>} 
       </View>}
-      {<View style={{flexDirection :'row'}} >
+
+    
+       { !blockVerifiedU && !blackLWarning &&item.contact && <View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >Contact</Text>
-       {<Text>:  {agCont? agCont : item.contact}</Text>} 
+       {<Text  >:  {item.contact}</Text>} 
       </View>}
 
        {!contactDisplay[item.id] && <View>
 
-  { item.shopLocation &&<View style={{flexDirection :'row'}} >
+      {item.shopLocation &&<View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >Store Loc</Text>
        {<Text>:  {item.shopLocation}  </Text>} 
       </View>}
@@ -379,99 +613,134 @@ function OneFirmsShop({route , navigation } ){
         <Text style={{width :100}} >{specproduct} Loc</Text>
        {<Text>:  {item.productLoc}  </Text>} 
       </View>:null }
-
-      { item.deliveryR && <View style={{flexDirection :'row'}} >
+      
+      {item.deliveryR && <View style={{flexDirection :'row'}} >
         <Text style={{width :100}} >deliveryR</Text>
        {<Text>:  {item.deliveryR}</Text>} 
       </View>}
-      
-      {  dspMoreInfo[item.id]  && item.additionalInfo  &&<View style={{flexDirection :'row'}} >
-        <Text style={{width :100}} >Aditional Info</Text>
-      {<Text>:  {item.additionalInfo}</Text>} 
+
+      {dspMoreInfo[item.id]  && item.additionalInfo  &&<View style={{flexDirection :'row'}} >
+        <Text style={{width :100 }} >Aditional Info</Text>
+      {<Text  >:  {item.additionalInfo}</Text>} 
       </View>}
 
         </View>}
 
         {contactDisplay[item.id] && contactMe}
 
-        { !contactDisplay[item.id] &&  <TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
+       { !contactDisplay[item.id] &&<TouchableOpacity onPress={()=>toggleDspMoreInfo(item.id) } >
           <Text style={{color :'green'}} >{  dspMoreInfo[item.id]  ?"See Less": "See more"} </Text>
         </TouchableOpacity>}
         
-        <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{ width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#228B22' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
+     
+          {!blockVerifiedU && !blackLWarning && <TouchableOpacity  onPress={()=>toggleContact(item.id) } style={{ width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#228B22' ,  borderRadius: 8, alignSelf:'center', margin:5 }} >
           <Text style={{ color:'white'}} > Get In Touch Now</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>}
+        
+             { auth.currentUser && auth.currentUser.uid === userId &&
+        <View style={{justifyContent:'space-between' , flexDirection :'row',padding:6,paddingLeft:15}} >
+
+          {spinnerItem&&<Text> Deleting {item.productName} </Text>}
+          {!item.frontMarkert&& <TouchableOpacity onPress={()=>toggleFrontMarting(item.id , "Accept") } style={{backgroundColor:'#3CB371', flexDirection :'row' , height : 30 , borderRadius:10, width : 155 ,justifyContent:'space-around',alignItems:'center'}}>
+            <Text style={{color:"white"}} >Pick Top Listings</Text>
+          </TouchableOpacity>}
+         {item.frontMarkert&&  <TouchableOpacity onPress={()=>toggleFrontMarting(item.id , "Remove") } style={{backgroundColor:'#DC143C', flexDirection :'row' , height : 30 , borderRadius:10, width : 155 ,justifyContent:'space-around',alignItems:'center'}}>
+            <Text style={{color:'white'}} >Remove Top Listings</Text>
+          </TouchableOpacity>}
+
+        {!spinnerItem&& <TouchableOpacity onPress={()=>deleteItem(item.id , item.imageUrl)}  style={{backgroundColor:'#CE2029' , flexDirection :'row' , height : 30 , borderRadius:10, width : 86 ,justifyContent:'space-around',alignItems:'center'}} >
+            <Text style={{color:'white',fontSize:17}} >Delete</Text>
+            <DeleteIcon size={24} color="red" />
+          </TouchableOpacity>}
+        </View>
+        }
+
     </View>
         )
       })
 
- 
- const handleShareLink = async (companyName) => {
-    try {
-      const url = `https://www.truckerz.net/OneFirmsShop/${userId}`; // Replace this with the URL you want to share
-      const message = `Explore ${companyName} store for top-notch services. Click the link now to be redirected to the store offering the finest services available  ${url} from Truckerz`;
 
-      const result = await Share.share({
-        message: message,
-      });
 
-      if (result) {
-        if (result.action === Share.sharedAction) {
-          if (result.activityType) {
-            // Shared with activity type of result.activityType
-          } else {
-            // Shared
-          }
-        } else if (result.action === Share.dismissedAction) {
-          // Dismissed
-        }
-      } else {
-        // Handle the case where result is undefined or null
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  };
 
-        let comapnyName = null;
-return(
-  <View >
-     { allTrucks.map((item)=>{
-          const companyName = item.companyName;
-          const showUserName = comapnyName !== companyName;
-          comapnyName = companyName;
-      return(     
-        showUserName&&<View  style={{}} >
-          <View style={{flexDirection : 'row' , height : 44  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} > 
-           <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate( `/DspShop/${location}/vehicles/${sellOBuyG}` )}>
-            {/* <Ionicons name="arrow-back" size={28} color="white"style={{ marginLeft: 10 }}  /> */}
+
+
+   const handleShareApp = async (companyName) => {
+              try {
+                const message = `I invite you to Transix!
+
+Transix is a tech-driven business enhancing transportation and logistics services, connecting suppliers with demand for truckloads, vehicles, trailers, spare parts etc.
+
+Contact us at +263716325160 with the message "Application" to swiftly receive the application download link.
+
+Explore Application at : https://play.google.com/store/apps/details?id=com.yayapana.Transix
+Explore website at : https://transix.net/
+
+Experience the future of transportation and logistics!`;
+
+                const result = await Share.share({
+                  message: message,
+                });
+
+                if (result) {
+                  if (result.action === Share.sharedAction) {
+                    if (result.activityType) {
+                      // Shared with activity type of result.activityType
+                    } else {
+                      // Shared
+                    }
+                  } else if (result.action === Share.dismissedAction) {
+                    // Dismissed
+                  }
+                } else {
+                  // Handle the case where result is undefined or null
+                }
+              } catch (error) {
+                alert(error.message);
+              }
+            };
+
+
+    return(
+      <View>
+                 
+        <View style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center', justifyContent:'space-between'}} >
+              <View style={{flexDirection:'row'}} >
+                <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1) } >
                     <ArrowBackIcon style={{color : 'white'}} />
-        </TouchableOpacity>
-      <Text style={{fontSize: 20 , color : 'white'}} > {item.CompanyName} Store</Text>
-      </View>
-
-        <TouchableOpacity  onPress={()=>handleShareLink(item.CompanyName)} style={{position :'absolute' , right:30 , top : 20 ,backgroundColor : 'white' }} >
-          <Text  >Share Store Link</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> 
+       
+                <Text style={{fontSize: 20 , color : 'white'}} > { CompanyName} STORE</Text>
+                </View>
+       {sellOBuy !== "toBuy" || sellOBuy !=="forSell" ?<View style={{ justifyContent:'space-evenly' , backgroundColor:'#6a0c0c', flexDirection : "row" , position:'absolute',right:0, zIndex:10, bottom:7, top: 18,borderLeftColor: "white" , borderLeftWidth:2, paddingLeft:5,alignItems :'center ' ,justifyContent:'center',paddingRight:10}} >
 
 
-     <View style={{justifyContent:'space-evenly' , backgroundColor:'#6a0c0c', flexDirection : "row" }} >
-       {sellOBuy !== "toBuy" || sellOBuy !=="forSell" ?<View style={{backgroundColor:'#6a0c0c' }} >
 
-           {sellOBuy ==="toBuy"&& <TouchableOpacity onPress={()=>setSellOBuy("forSell")}
+
+               {sellOBuy ==="toBuy"&& <TouchableOpacity onPress={()=>setSellOBuy("forSell")}
              style={sellOBuy === "forSell" ? styles.bttonIsTrue : styles.buttonIsFalse} >
-               <Text style={sellOBuy === "forSell" ? {color:'black'} : {color:'white'}} >Click to BUY</Text>
+               {/* <Text style={sellOBuy === "forSell" ? {color:'black'} : {color:'white'}} >Click to BUY</Text> */}
+                   {auth.currentUser&& auth.currentUser.uid === userId ? <Text style={{color:'white',fontWeight:'bold',fontSize:19,alignSelf:'center' }} >Looking For</Text> 
+             : <Text style={sellOBuy === "forSell" ? {color:'black'} : {color:'white',fontWeight:'bold',fontSize:19,alignSelf:'center' }} >Click to BUY</Text>}
             </TouchableOpacity>}
             {sellOBuy ==="forSell"&& <TouchableOpacity onPress={()=>setSellOBuy("toBuy")} style={sellOBuy === "toBuy" ? styles.bttonIsTrue : styles.buttonIsFalse} >
-                <Text style={sellOBuy === "toBuy" ? {color:'black'} :{color:'white'} } >Click to SELL</Text>
+                {/* <Text style={sellOBuy === "toBuy" ? {color:'black'} :{color:'white'} } >Click to SELL</Text> */}
+                 {auth.currentUser && auth.currentUser.uid === userId ? <Text style={{color:'white',fontWeight:'bold',fontSize:19,alignSelf:'center' }} >My Products </Text> :
+
+                 <Text style={sellOBuy === "toBuy" ? {color:'black'} :{color:'white',fontWeight:'bold',fontSize:19,alignSelf:'center' } } >Click to SELL</Text>}
             </TouchableOpacity>}
 
         </View> :null }
 
-          </View>
+        </View> 
 
 
-  <View style={{flexDirection:'row' , justifyContent : 'space-evenly' , paddingLeft : 20 , paddingRight: 20 , height : 40 , alignItems : 'center' , backgroundColor : '#6a0c0c' , paddingTop : 10 }}>
+
+
+
+
+
+
+         <View style={{flexDirection:'row' , justifyContent : 'space-evenly' , paddingLeft : 20 , paddingRight: 20 , height : 40 , alignItems : 'center' , backgroundColor : '#6a0c0c' , marginBottom:10 }}>
 
             <TouchableOpacity onPress={()=> setSpecPrduct("vehicles") } > 
                 {  specproduct === "vehicles" ?
@@ -500,12 +769,10 @@ return(
             </TouchableOpacity>
         </View>
 
-       </View> )})
-       }
-        <ScrollView >
-     { specproduct ==="vehicles" || specproduct ==="trailers" ? <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{marginBottom:10 , marginTop:10}}  >
+     { specproduct ==="vehicles" || specproduct ==="trailers" ? <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{marginBottom:15 , marginLeft:10 , height : 27}} >
 
-         { !priceRangeDsp && !vehicleTypeDsp && !vehiMakeDsp && !trailerTypeDsp && <View style={{flexDirection:'row'}} > 
+
+           { !priceRangeDsp && !vehicleTypeDsp && !vehiMakeDsp && !trailerTypeDsp && <View style={{flexDirection:'row'}} > 
           <TouchableOpacity onPress={()=> setBuyRent(null)} style={buyRent === null ? styles.btnIsActive : styles.bynIsUnActive } >
             <Text style={ buyRent=== null ? {color : 'white'}: {color : 'black'} } >All </Text>
           </TouchableOpacity>
@@ -516,6 +783,7 @@ return(
           <TouchableOpacity onPress={()=> setBuyRent(false)} style={buyRent === false ? styles.btnIsActive : styles.bynIsUnActive }>
             <Text style={ buyRent=== false ? {color : 'white'}: {color : 'black'} } >Rent</Text>
           </TouchableOpacity>
+
           <TouchableOpacity onPress={()=> setBuyRent("R2B")} style={buyRent === "R2B" ? styles.btnIsActive : styles.bynIsUnActive }>
             <Text style={ buyRent=== "R2B" ? {color : 'white'}: {color : 'black'} } >R2B</Text>
           </TouchableOpacity>
@@ -655,7 +923,7 @@ return(
                   <TouchableOpacity onPress={()=>addVehicleType("SUV")} style={ styles.bynIsUnActive } >
                     <Text>SUV</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>addVehicleType("Vans")} style={styles.buttonStyle} >
+                  <TouchableOpacity onPress={()=>addVehicleType("Vans")} style={ styles.bynIsUnActive }  >
                     <Text>Vans</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>addVehicleType("PickupTrucks")} style={styles.bynIsUnActive } >
@@ -850,33 +1118,49 @@ return(
 
 
         </ScrollView> : null }
+        <ScrollView>
+            {losdingSpec && <ActivityIndicator size="small" />}
 
-      <div className="Main-grid">
-         {allTrucks.length > 0 ? rendereIterms
-            : <View style={{flexDirection:'row'}} >
+     {sellOBuy ==="forSell"&& !dspLoadMoreBtn &&allSoldIterms.length <= 0 &&!vehicleType && !priceRange&& !buyRent && !vehiMake&& <Text style={{fontSize:19 ,fontWeight:'bold'}} >{CompanyName} does not have {specproduct} </Text> }
+        {sellOBuy ==="toBuy"&& !dspLoadMoreBtn &&allSoldIterms.length <= 0 &&!vehicleType && !priceRange&& !buyRent && !vehiMake&& <Text style={{fontSize:19 ,fontWeight:'bold'}} >{CompanyName} is not looking for {specproduct} </Text> }
+            { allSoldIterms.length<=0 &&  (vehicleType || priceRange|| buyRent || vehiMake)&&<Text style={{fontSize :15}}> The specified product is not available in {CompanyName} Store. </Text> }
+         { allSoldIterms.length<=0 &&  (vehicleType || priceRange|| buyRent || vehiMake)&& <TouchableOpacity onPress={refreshPageF} style={{borderWidth: 2.5 , width : 150 , height : 30 , borderColor : "#6a0c0c" , alignSelf:'center', margin:4, borderRadius:8 ,  shadowColor: '#6a0c0c',shadowOffset: { width: 1, height: 2 },shadowOpacity: 0.7,shadowRadius: 5,justifyContent:'center',alignItems:'center'  }} >
+          <Text style={{ fontSize:16 , fontWeight:'600',color:'#6a0c0c'}} >Refresh</Text>
+         </TouchableOpacity>}
 
-           <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate( `/DspShop/${location}/vehicles/${sellOBuyG}` )}>
-                    <ArrowBackIcon style={{color : 'black'}} />
-        </TouchableOpacity>
-                    <Text>Loading...</Text> 
-            </View> }
-         <View style={{height : 550}} >
-           </View>
-           </div>
+       {!dspLoadMoreBtn &&allSoldIterms.length <= 0  &&<TouchableOpacity onPress={handleShareApp} >
+
+         <Text style={{fontSize : 20 , textDecorationLine:'underline'}} >Please share or recommend our app for more services and products! </Text>
+       </TouchableOpacity>}
+
+         <div className="Main-grid">
+           { allSoldIterms.length>0 &&  rendereIterms}
+        </div>
+
+         { dspLoadMoreBtn &&allSoldIterms.length<=0  && <Text> {specproduct} Loading.......</Text>} 
+
+
+          {LoadMoreData && allSoldIterms.length>0 && <Text style={{alignSelf:'center'}} >Loading More {specproduct}....... </Text> }
+
+         {allSoldIterms.length>0 && dspLoadMoreBtn&& <TouchableOpacity onPress={()=> fetchData(true) } style={{ height :45 , backgroundColor :'#228B22', margin :25 , justifyContent:'center',borderRadius:25}} >
+        <Text style={{color :'white', fontSize :21 , textAlign :'center'}} >Load More......</Text>
+      </TouchableOpacity>}
+        <View style={{height : 200}} ></View>
         </ScrollView> 
+        
         </View>
-)
+    )
 }
-
-
 export default React.memo(OneFirmsShop)
 
+
 const styles = StyleSheet.create({
-    bynIsUnActive : {
+  bynIsUnActive : {
     // width : 50 ,
     paddingLeft : 6 ,
     paddingRight :4 ,
     color :'white'  , 
+    height : 20 ,
     borderWidth:1, 
     alignItems :'center' ,
     justifyContent :'center' ,
@@ -892,20 +1176,6 @@ const styles = StyleSheet.create({
     marginRight : 7 ,
     borderRadius : 15 ,
     backgroundColor : 'rgb(129,201,149)'
-  }, 
-  buttonIsFalse : {
-     borderWidth : 1 ,
-     borderColor : '#6a0c0c' ,
-     paddingLeft :4 , 
-     paddingRight:4 ,
-    //  marginLeft : 6
-   } , 
-    bttonIsTrue:{
-    backgroundColor : 'white' ,
-     paddingLeft :4 ,
-     paddingRight:4 ,
-     color :'white' 
-
-    }
+  }
 
 });
