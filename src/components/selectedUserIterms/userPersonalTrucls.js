@@ -21,7 +21,7 @@ import { collection,  query , where,onSnapshot ,deleteDoc,doc,limit,startAfter,o
 function SelectedUserTrucks ({blockVerifiedU  , blackLWarning } ){ 
 
   const {navigate} = useNavigate()
-  const {userId , loadIsVerifiedG ,CompanyName,itemKey }= useParams()
+  const {userId , loadIsVerifiedG ,CompanyNameG,itemKey }= useParams()
   let loadIsVerified = loadIsVerifiedG ==="true" ? true : false
 
   const [allTrucks, setAllTrucks] = useState([]);
@@ -38,7 +38,10 @@ function SelectedUserTrucks ({blockVerifiedU  , blackLWarning } ){
           const orderByF = "fromLocation";
           const pagination = loadMore && allTrucks.length > 0 ? [startAfter(allTrucks[allTrucks.length - 1][orderByF])] : [];
           let dataQuery
-          if(loadIsVerified){
+          if(itemKey){
+
+            dataQuery = query(collection(db, "Trucks"),where("userId" ,"==", userId) ,where("deletionTime", "==", parseInt(itemKey)) ,  orderBy(orderByF)  , ...pagination, limit(12) );
+          }else  if(loadIsVerified  ){
             dataQuery = query(collection(db, "Trucks"),where("userId" ,"==", userId) ,where("withDetails" ,"==", true) ,  orderBy(orderByF)  , ...pagination, limit(15) );
 
           }else{
@@ -367,7 +370,7 @@ return(
             <ArrowBackIcon  size={28} color="white"style={{ marginLeft: 10 }}  />
         {!dspLoadMoreBtn &&allTrucks.length <= 0 && <Text style={{fontSize:19 ,fontWeight:'bold'}} >NO Trucks Available </Text> }
         </TouchableOpacity>
-      <Text style={{fontSize: 20 , color : 'white'}} > {CompanyName} Trucks </Text>
+      <Text style={{fontSize: 20 , color : 'white'}} > {CompanyNameG}  </Text>
        </View> 
         <ScrollView>
 

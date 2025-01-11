@@ -146,6 +146,8 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
         
         if(!formData.fromLocation || !formData.toLocation){
           alert("Add The location the truck is needing");
+
+          setSpinnerItem(false)
           return
         }
         
@@ -156,6 +158,7 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
         }else if(truckType==="other" && !formData.trailerModel  ) {
 
           alert("Enter The Trailer Type You Have");
+          setSpinnerItem(false)
           return
         }
 
@@ -170,13 +173,17 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
             return true;
         };
 
-        const excludedKeys = ["scndTrailerReg", "trailerModel"];
+        const excludedKeys = ["scndTrailerReg", "trailerModel","additionalInfo"];
+
+
 
         if (verifiedLoad && !areAllElementsTrueExceptKeys(formData, excludedKeys)) {
             alert("This truck is for verified loads.\n\nAdd all truck details except for Trailer Reg2 if not available.");
+            setSpinnerItem(false)
             return;
         } else if (verifiedLoad && !imageUrl) {
             alert("Please add a truck image.");
+            setSpinnerItem(false)
             return;
         }
     }
@@ -225,7 +232,7 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
       setImage(null);
       setSpinnerItem(false)
       if(verifiedLoad){
-        navigate(-2)
+        navigate(-3)
       }
 
     } catch (err) {

@@ -714,9 +714,9 @@ function App(){
        username={ username}  contact = {contact}  isVerified ={ isVerified}    isBlackListed={isBlackListed}   blackLWarning={blackLWarning} blockVerifiedU={blockVerifiedU} verifyOngoing ={verifyOngoing}  />} />
 
       <Route path="/dspOneTrckType/:truckType" element={<DspOneTruckType blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning}  />} />
-      <Route path="/selectedUserTrucks/:userId/:itemKey/:CompanyName" element={<SelectedUserTrucks   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
+      <Route path="/selectedUserTrucks/:userId/:itemKey/:CompanyNameG" element={<SelectedUserTrucks   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
 
-      <Route path="/selectedUserTrucks/:userId/:loadIsVerifiedG/:CompanyName" element={<SelectedUserTrucks   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
+      <Route path="/selectedUserTrucks/:userId/:loadIsVerifiedG/:CompanyNameG" element={<SelectedUserTrucks   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
 
 
       <Route path="/selectedUserLoads/:userId/:companyNameG" element={<DspAllLoads username={username}  

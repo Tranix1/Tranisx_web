@@ -26,8 +26,7 @@ const {itemName ,fromLocation ,toLocation ,
         perTonneBG ,
         loadId ,
         dbName,
-        expoPushToken,
-        sendPushNotification} = useParams()
+        } = useParams()
 
 let currencyB = currencyBG === "true" ? true : false
 let perTonneB = perTonneBG === "true" ? true : false
@@ -200,7 +199,6 @@ let renderElements = bbVerifiedLoadD.map((item)=>{
 
         let message  =`${itemName} ${dbName === "bookings" ? "Booked" : "Bidded"} ${theRateD} `
         let tittle = `From ${item.fromLocation} to ${item.toLocation} `
-        await sendPushNotification(expoPushToken, message , tittle,dbName );
 
         alert("You Booked A Verified Load");
         navigate(-1)
@@ -350,7 +348,10 @@ return(
 
 <ScrollView>
 
+           <div className="Main-grid">
+
     {renderElements}
+           </div>
     <View style={{height:500}} >
 
     </View>

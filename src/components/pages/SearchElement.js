@@ -109,7 +109,7 @@ function SearchIterms(){
 
           const displaySearchedTrucks =  filteredDataTrucks.slice(0, 15).map((value , key)=>{
             return(
-              <TouchableOpacity  style={{flex : 1, marginBottom :6 , padding : 6}} key={value.id} onPress={()=> navigate(`/selectedUserTrucks/${value.userId}/${value.deletionTime}/${value.CompanyName}} ` ) }>
+              <TouchableOpacity  style={{flex : 1, marginBottom :6 , padding : 6}} key={value.id} onPress={()=> navigate(`/selectedUserTrucks/${value.userId}/${value.deletionTime}/${value.CompanyName} ` ) }>
 
             {value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
             <VerifiedIcon style={{color : 'green'}} />
@@ -125,7 +125,7 @@ function SearchIterms(){
 
         const displaySearched =   filteredData.slice(0, 15).map((value , key)=>{
             return(
-            <TouchableOpacity  style={{flex : 1, marginBottom :6 , padding : 6}} key={value.id} onPress={()=> navigate(`/searchedLoads/${value.userId}/${value.deletionTime}/${value.CompanyName}` ) }>
+            <TouchableOpacity  style={{flex : 1, marginBottom :6 , padding : 6}} key={value.id} onPress={()=> navigate(`/searchedLoads/${value.userId}/${value.deletionTime}/${value.companyName}` ) }>
 
             {value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
             <VerifiedIcon style={{color : 'green'}} />

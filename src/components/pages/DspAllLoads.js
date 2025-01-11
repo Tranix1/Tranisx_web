@@ -110,7 +110,7 @@ async function loadedData(loadMore) {
       }else if(location){
          dataQuery = query(collection(db, "Loads"), where("location", "==", location)  ,orderByField, ...pagination, limit(15));
 
-      } else if(verfiedLoads){
+      } else if(verfiedLoads && userIsVerified){
          dataQuery = query(collection(db, "Loads"), where("isVerified", "==", true)  ,orderByField, ...pagination, limit(15));
       } else{
          dataQuery = query(collection(db, "Loads"), orderByField, ...pagination, limit(15) );
