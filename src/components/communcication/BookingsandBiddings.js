@@ -426,7 +426,7 @@ return (<View style={{ backgroundColor: '#DDDDDD', marginBottom: 15, width : 350
             </View>
 
       <View style={{flexDirection:'row', marginBottom : 25 , height : 30 , alignSelf:'center' , marginTop : 6,  }} >
-          <TouchableOpacity onPress={()=>navigate('selectedUserTrucks', { userId : item.bookerId , loadIsVerified: item.isVerified , CompanyName : item.bookerName })}style={{    width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' ,  alignSelf:'center', margin:5  }} >
+          <TouchableOpacity onPress={()=>navigate(`/selectedUserTrucks/${item.bookerId}/${item.isVerified}/${item.bookerName} }`)}style={{    width : 150 , height : 30 , alignItems :"center" , justifyContent :'center', backgroundColor:'#6a0c0c' ,  alignSelf:'center', margin:5  }} >
           <Text style={{fontSize:17,color:'white' }} >Bookers trucks</Text>
 
           </TouchableOpacity>

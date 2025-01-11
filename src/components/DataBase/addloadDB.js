@@ -4,11 +4,14 @@ import { collection, addDoc, serverTimestamp ,} from 'firebase/firestore';
 
 import { View , TextInput , Text,TouchableOpacity , ActivityIndicator, StyleSheet,Linking, ScrollView} from "react-native";
 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import inputstyles from "../styles/inputElement";
 
+import { useParams , useNavigate } from 'react-router-dom';
 function AddLoadDB ({username ,contact , isVerified,isBlackListed ,blackLWarning ,blockVerifiedU,expoPushToken,verifyOngoing }) {
 
+    const navigate = useNavigate()
 
 const [error , setError]= React.useState("")
 
@@ -143,7 +146,6 @@ const [error , setError]= React.useState("")
         userId: userId, // Add the user ID to the document
         companyName: username,
         contact: contact,
-        expoPushToken :expoPushToken ,
         deletionTime :Date.now() + 3 * 24 * 60 * 60 * 1000 ,
         timeStamp : serverTimestamp() ,
         isVerified : isVerified ,
@@ -182,7 +184,14 @@ const [error , setError]= React.useState("")
   };
 
   return (
-    <View   style={{alignItems :'center', }}>
+    <View   style={{alignItems :'center', paddingTop:80}}>
+            <View  style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
+         <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate(-1)}>
+                    <ArrowBackIcon style={{color : 'white'}} />
+        </TouchableOpacity> 
+        
+        <Text style={{fontSize: 20 , color : 'white'}} > Add Loads </Text>
+       </View>
         {verifyOngoing && !isVerified&&<TouchableOpacity  onPress={() => Linking.openURL(`whatsapp://send?phone=+263716325160  &text=${encodeURIComponent(`
 I aspire to become verified at the first level on Transix Now!
 To make this happen without any delays or uncertainties.

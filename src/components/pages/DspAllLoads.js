@@ -23,10 +23,11 @@ import ChatIcon from '@mui/icons-material/Chat';
 
 
 
-function DspAllLoads({username ,route, contactG  , sendPushNotification ,userIsVerified,blockVerifiedU ,blackLWarning }){
+function DspAllLoads({username ,route, contactG  ,userIsVerified,blockVerifiedU ,blackLWarning }){
   
   const navigate = useNavigate()
-const {userId ,  location ,itemKey, verfiedLoads,companyNameG ,blockVerifiedUP  , blackLWarningP } = useParams()
+const {userId ,  location ,itemKey, verfiedLoadsG,companyNameG ,blockVerifiedUP  , blackLWarningP ,} = useParams()
+ let verfiedLoads = verfiedLoadsG === "true" ? true : false
 
 // const navigate = useNavigate()
 
@@ -55,36 +56,13 @@ const {userId ,  location ,itemKey, verfiedLoads,companyNameG ,blockVerifiedUP  
 
 
   function specifyLocation(loc){
-    navigate(`/location/${loc}`) 
+    navigate(`/dspLoads/location/${loc}`) 
     setLocalLoads(prev => false)
   }
 
   
   const [loadsList, setLoadsList] = useState([]);
   
-  const [getOneLoad, setgetOneLoad] = useState([]);
-
-    function getOneItemF(){
-
-        const dataQuery = query(collection(db, "Loads"), where("timeStamp", "==", itemKey) , where("userId", "==", userId) );
-
-        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
-          let loadedData = [];
-          snapshot.docChanges().forEach((change) => {
-            if (change.type === 'added' || change.type === 'modified') {
-              const dataWithId = { id: change.doc.id, ...change.doc.data() };
-              loadedData.push(dataWithId);
-            }
-          });
-
-          setgetOneLoad(loadedData);
-        });
-        
-        // Clean up function to unsubscribe from the listener when the component unmounts
-        return () => unsubscribe();
-
-
-    }
 
 
 
@@ -124,7 +102,7 @@ async function loadedData(loadMore) {
     const pagination = loadMore && loadsList.length > 0 ? [startAfter(loadsList[loadsList.length - 1][orderByF])] : [];
          let dataQuery
       if (userId && itemKey ) {
-         dataQuery = query(collection(db, "Loads"),  where("userId", "==", userId) ,orderByField, ...pagination, limit(15) , where("timeStamp", "!=", itemKey)  );
+         dataQuery = query(collection(db, "Loads"),  where("userId", "==", userId) ,orderBy("deletionTime") , ...pagination, limit(15) , where("deletionTime", "!=", parseInt(itemKey) ) , );
 
       }else if(userId){
 
@@ -168,8 +146,30 @@ async function loadedData(loadMore) {
     }
 }
     
-  
+  const [getOneLoad, setgetOneLoad] = useState([]);
 
+      function getOneItemF(){
+
+        const dataQuery = query(collection(db, "Loads"), where("deletionTime", "==", parseInt(itemKey) ) ,   where("userId", "==", userId) );
+
+        const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
+          let loadedData = [];
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added' || change.type === 'modified') {
+              const dataWithId = { id: change.doc.id, ...change.doc.data() };
+              loadedData.push(dataWithId);
+            }
+          });
+
+          setgetOneLoad(loadedData);
+        });
+        
+        // Clean up function to unsubscribe from the listener when the component unmounts
+        return () => unsubscribe();
+
+
+    }
+  
 
 useEffect(() => {
   loadedData();
@@ -254,18 +254,11 @@ let mapThsAll = [...getOneLoad , ...loadsList]
         try {
 
 
-
           
-          let docId = `${userId}${item.typeofLoad}${theRate}${item.userId}`
+          
 
-          let existingChat 
-            if(dbName === "bookings" ){
-
-               existingChat = await checkExistiDoc(docId);
-            }
-
-           let theRate 
            let thelinksRate
+          let theRate 
            let thetriaxleRate
            let currencyB = false
            let perTonneB = false
@@ -286,40 +279,25 @@ let mapThsAll = [...getOneLoad , ...loadsList]
                 thetriaxleRate= item.triaxle
               }
 
+          let docId = `${userId}${item.typeofLoad}${theRate}${item.userId}`
+
+          let existingChat 
+            if(dbName === "bookings" ){
+
+               existingChat = await checkExistiDoc(docId);
+            }
           if(  !existingChat ){
 
-        if(item.isVerified){
+        if(!item.isVerified){
         setBidDisplay({ ['']: false });
         setBidRate("")
         setBidLinks("")
         setBdTriaxle("")
         setSpinnerItem(null)      
-        navigate(`bbVerifiedLoad`, {        itemName : item.typeofLoad ,
-        fromLocation : item.fromLocation ,
-        toLocation : item.toLocation ,
-        bookerId : userId ,
-        bookerName : username ,
-        ownerName: item.companyName ,
-        ownerId : item.userId ,
-        contact : contactG,
-        Accept : null ,
-        isVerified : item.isVerified ,
-        msgReceiverId : userId ,
-        docId : docId,
-        rate :  theRate ,
-        linksRate :   thelinksRate ,
-        triaxleRate : thetriaxleRate ,
-        currencyB : currencyB ,
-        perTonneB : perTonneB ,
-        loadId : item.id ,
-        deletionTime :Date.now() + 4 * 24 * 60 * 60 * 1000 ,
-        timestamp : serverTimestamp() ,
-        dbName : dbName ,
-        expoPushToken : item.expoPushToken ,
-        sendPushNotification : sendPushNotification ,
+        navigate(`/bbVerifiedLoad/${item.typeofLoad}/${item.fromLocation}/${item.toLocation}/${userId}/${username}/${item.companyName}/${item.userId}/${contactG}/${item.isVerified}/${userId}/${docId}/${theRate}/${thelinksRate}/${thetriaxleRate}/${currencyB}/${perTonneB}/${item.id}/${dbName} `
 
 
-      })
+      )
               return 
             }else{
 
@@ -339,7 +317,6 @@ let mapThsAll = [...getOneLoad , ...loadsList]
       
         let message  =`${item.typeofLoad} ${dbName === "bookings" ? "Booked" : "Bidded"} Rate ${theRateD} `
         let tittle = `From ${item.fromLocation} to ${item.toLocation} `
-        await sendPushNotification(item.expoPushToken, message , tittle,dbName );
 
         
         const docRef = await addDoc(bookingCollection, {
@@ -816,7 +793,7 @@ Experience the future of transportation and logistics!  `;
 
 
  {/* ()=>navigation.navigate('selectedUserLoads' , {verfiedLoads : true}) */}
-    {userIsVerified && <TouchableOpacity style={styles.buttonStyle} onPress={ ()=> navigate(`/selectedUserLoads/true `)   }>
+    {userIsVerified && <TouchableOpacity style={styles.buttonStyle} onPress={ ()=> navigate(`/dspLoads/verified/true`)   }>
       <Text style={{color:'white'}} >Verified</Text>
     </TouchableOpacity>}
     </View>

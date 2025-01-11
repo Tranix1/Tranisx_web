@@ -5,30 +5,36 @@ import { auth ,db} from "../config/fireBase";
 import VerifiedIcon from '@mui/icons-material/Verified';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-import { collection, addDoc, query , where,onSnapshot ,deleteDoc,doc } from 'firebase/firestore';
+import { collection, addDoc, query , where,onSnapshot ,deleteDoc,doc,serverTimestamp } from 'firebase/firestore';
+import { useParams , useNavigate } from 'react-router-dom';
 
-function BBVerifiedLoad({navigation,route}){
+function BBVerifiedLoad({}){
+  const navigate = useNavigate()
 const {itemName ,fromLocation ,toLocation ,
         bookerId ,
         bookerName ,
         ownerName,
         ownerId  ,
         contact ,
-        Accept  ,
-        isVerified ,
+        isVerifiedG ,
         msgReceiverId ,
         docId,
-        rate ,
-        linksRate ,
-        triaxleRate ,
-        currencyB,
-        perTonneB ,
+        rateG ,
+        linksRateG ,
+        triaxleRateG ,
+        currencyBG ,
+        perTonneBG ,
         loadId ,
-        deletionTime,
-        timestamp,
         dbName,
         expoPushToken,
-        sendPushNotification} = route.params
+        sendPushNotification} = useParams()
+
+let currencyB = currencyBG === "true" ? true : false
+let perTonneB = perTonneBG === "true" ? true : false
+let rate = rateG === "null" ? null : rateG
+let linksRate = linksRateG === "null" ? null : linksRateG
+let triaxleRate = triaxleRateG === "null" ? null : triaxleRateG
+let isVerified = isVerifiedG === "true" ? true : false
 
 
 const [bbVerifiedLoadD ,setbbVerifiedLoadD]=React.useState([])
@@ -151,7 +157,6 @@ let renderElements = bbVerifiedLoadD.map((item)=>{
         ownerName :ownerName ,
         ownerId :ownerId ,
         contact :contact ,
-        Accept :Accept ,
         isVerified :isVerified,
         msgReceiverId :msgReceiverId ,
         docId :docId ,
@@ -161,8 +166,13 @@ let renderElements = bbVerifiedLoadD.map((item)=>{
         currencyB :currencyB,
         perTonneB :perTonneB,
         loadId :loadId,
-        deletionTime :deletionTime ,
-        timestamp:timestamp ,
+
+        Accept : null ,
+        deletionTime :Date.now() + 4 * 24 * 60 * 60 * 1000 ,
+        timestamp : serverTimestamp() ,
+
+
+
 
         trailerType : item.trailerType,
         horseReg  : item.horseReg,
@@ -193,7 +203,7 @@ let renderElements = bbVerifiedLoadD.map((item)=>{
         await sendPushNotification(expoPushToken, message , tittle,dbName );
 
         alert("You Booked A Verified Load");
-        navigation.goBack()
+        navigate(-1)
     }
    
     return(
@@ -283,14 +293,14 @@ return(
     <View>
         <View style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
 
-                <TouchableOpacity style={{marginRight: 12}} onPress={() => navigation.goBack()} >
+                <TouchableOpacity style={{marginRight: 12}} onPress={() => navigate(-1)} >
             <ArrowBackIcon  size={28} color="white"style={{ marginLeft: 10 }}  />
         </TouchableOpacity> 
 
             <Text style={{fontSize: 20 , color : 'white'}} >Pick the truck for the job </Text>
         </View>
 
-        <TouchableOpacity onPress={()=>navigation.navigate("selectAddIterms" ,{verifiedLoad:true , fromLocation :fromLocation , toLocation : toLocation } ) } style={{position :'absolute',top: 440 ,right:10 , width : 77 , height : 35 , backgroundColor:'white' , zIndex :200 , borderRadius: 8,flexDirection:'row',justifyContent:'space-around',alignItems:'center'}} >
+        <TouchableOpacity onPress={()=>navigate(`/AddIterms/verifiedLoad/${fromLocation}/${toLocation}`  ) } style={{position :'absolute',top: 440 ,right:10 , width : 77 , height : 35 , backgroundColor:'white' , zIndex :200 , borderRadius: 8,flexDirection:'row',justifyContent:'space-around',alignItems:'center'}} >
 
             <Text style={{fontSize:17}} >Add</Text>
             <VerifiedIcon style={{color : 'green'}} />

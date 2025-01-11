@@ -68,38 +68,55 @@ const rendereIterms = mainLoadsList.map((item)=>{
             <VerifiedIcon style={{color : 'green'}} />
       </View>}
 
-      <View className='miniloadH3Div' key={item.id} style={{backgroundColor : '#228B22' ,  }} >
-         <Text style={{color : 'white' , textAlign : 'center' , fontSize : 18}} > {item.companyName} </Text>
-      </View  >
+              {<View style={{ flexDirection:'row',margin:4}} >
 
-      <View style={{padding : 8}} >
-          <View style={{flexDirection :'row'}} >
-        <Text style={{width :75}} >Commodity</Text>
-        <Text  >:  {item.typeofLoad} </Text>
+         {item.returnLoad &&  <View style={{backgroundColor :'#6a0c0c',paddingLeft :4 , paddingRight:4 , marginLeft :7}} >
+          <Text style={{color :'white'}} >Return Load</Text>
+          </View>}
+
+         {item.roundTrip &&  <View style={{backgroundColor :'#6a0c0c',paddingLeft :4 , paddingRight:4 , marginLeft :7}} >
+          <Text style={{color :'white'}} >Round Trip</Text>
+          </View>}
+
+         {item.fuelAvai &&  <View style={{backgroundColor :'#6a0c0c',paddingLeft :4 , paddingRight:4 , marginLeft :7}} >
+          <Text style={{color :'white'}} >Fuel</Text>
+          </View>}
+
+      </View>}
+
+      <View style={{padding : 8, paddingTop:0}} >
+          <View style={{flexDirection :'row',color:"#6a0c0c"}} >
+        <Text style={{width :75,color:'#6a0c0c'}} >Commodity</Text>
+        <Text style={{color:'#6a0c0c'}} >:  {item.typeofLoad} </Text>
       </View>
 
       <View style={{flexDirection :'row'}} >
-        <Text style={{width :75}} >Route</Text>
-        <Text>:  from  {item.fromLocation}  to  {item.toLocation} </Text>
+        <Text style={{width :75}} >From Route</Text>
+        <Text>: {item.fromLocation} </Text>
       </View>
 
-      {!item.linksRate && !item.triaxleRate && <View style={{flexDirection :'row'}} >
-        <Text style={{width :34}} >Rate</Text>
-        <Text>:  {item.currency ? "USD" : "RAND"} {item.ratePerTonne} {item.perTonne ? "Per tonne" :null} </Text>
+      <View style={{flexDirection :'row'}} >
+        <Text style={{width :75}} >To Route</Text>
+        <Text>:  {item.toLocation} </Text>
+      </View>
+
+      {item.ratePerTonne&& <View style={{flexDirection :'row'}} >
+        <Text style={{width :50,color:'green',fontWeight:'bold',fontSize:16}} >Rate</Text>
+        <Text style={{color:'green',fontWeight:'bold',fontSize:16}} >:  {item.currency ? "USD" : "RAND"} {item.ratePerTonne} {item.perTonne ? "Per tonne" :null} </Text>
+      </View>}
+  <View style={{flexDirection:'row'}} >
+
+        {item.links&&  <View style={{flexDirection :'row'}} >
+        <Text style={{width :50,color:'green',fontWeight:'bold',fontSize:14}} >Links</Text>
+        <Text style={{color:'green',fontWeight:'bold',fontSize:14}} >:  {item.currency ? "USD" : "RAND"} {item.links} {item.perTonne ? "Per tonne" :null} </Text>
       </View>}
 
-        <View style={{flexDirection:'row'}} >
-       {item.linksRate&&  <View style={{flexDirection :'row'}} >
-        <Text style={{width :34}} >Link</Text>
-        <Text>: {item.currency ? "USD" : "RAND"} {item.linksRate} {item.perTonne ? "Per tonne" :null} </Text>
+       {item.triaxle&& <View style={{flexDirection :'row'}} >
+        <Text style={{width :50,color:'green',fontWeight:'bold',fontSize:14}} >Triaxle</Text>
+        <Text style={{color:'green',fontWeight:'bold',fontSize:14}} >:  {item.currency ? "USD" : "RAND"} {item.triaxle} {item.perTonne ? "Per tonne" :null} </Text>
       </View>}
 
-       {item.triaxleRate&& <View style={{flexDirection :'row'}} >
-        <Text style={{width :30}} >Triax</Text>
-        <Text>: {item.currency ? "USD" : "RAND"} {item.triaxleRate} {item.perTonne ? "Per tonne" :null} </Text> 
-      </View>}
-        </View>
-
+  </View>
     </View>
     </TouchableOpacity>
 

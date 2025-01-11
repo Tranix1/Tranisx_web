@@ -25,13 +25,17 @@ function SignIn(){
     try {
      const userCredential =  await signInWithEmailAndPassword(auth, email, password);
 
-      const user = userCredential.user;
-      await  
-      sendEmailVerification(user); 
+      if(!auth.currentUser.emailVerified ){
+
+       const user = userCredential.user;
+       alert('Verification Email Sent', 'Please Verify Your Email To Continue');
+        await  sendEmailVerification(user); 
+     }
+      
+      
       setEmail("")
       setPassword("")
 
-      alert('Verification Email Sent', 'Please Verify Your Email To Continue');
       navigate("/")
       setSpinnerItem(false)
     } catch (error) {

@@ -21,7 +21,8 @@ import { collection,  query , where,onSnapshot ,deleteDoc,doc,limit,startAfter,o
 function SelectedUserTrucks ({blockVerifiedU  , blackLWarning } ){ 
 
   const {navigate} = useNavigate()
-  const {userId , loadIsVerified ,CompanyName,itemKey }= useParams()
+  const {userId , loadIsVerifiedG ,CompanyName,itemKey }= useParams()
+  let loadIsVerified = loadIsVerifiedG ==="true" ? true : false
 
   const [allTrucks, setAllTrucks] = useState([]);
 
@@ -75,7 +76,7 @@ function SelectedUserTrucks ({blockVerifiedU  , blackLWarning } ){
 
     function getOneItemF(){
 
-        const dataQuery = query(collection(db, "Trucks"), where("timeStamp", "==", itemKey) , where("userId", "==", userId) );
+        const dataQuery = query(collection(db, "Trucks"), where("deletionTime", "==", parseInt(itemKey)) , where("userId", "==", userId) );
 
         const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
           let loadedData = [];
@@ -238,7 +239,7 @@ let mapThis = [...getOneTruck , ...allTrucks]
       </View>}
 
          {item.imageUrl&& <Image source={{uri: item.imageUrl }} style={{ height : 250 , borderRadius: 10}} />}
-          {!item.imageUrl && <Image source={defaultImage} style={{ height: 280, borderRadius: 10 , width : 368}} />}
+          {!item.imageUrl && <Image source={defaultImage} style={{ height: 280, borderRadius: 10 , }} />}
          
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20}} >{item.CompanyName} </Text>
       { item.fromLocation && <View style={{flexDirection :'row',width:245}} >

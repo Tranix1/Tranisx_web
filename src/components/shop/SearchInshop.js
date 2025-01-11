@@ -108,7 +108,7 @@ const navigate = useNavigate()
 
         const displaySearchedScnd =  newFilterLookingFor.slice(0, 15).map((value , key)=>{
             return(
-      <TouchableOpacity  key={value.id}  onPress={()=>navigate(`sSoldProducts/${value.userId}/${value.timeStamp}/${value.location}/${value.sellOBuy}/${value.specproduct}/${value.CompanyName}`  )} style={{  marginBottom : 4,  padding :7 ,borderWidth : 3 , borderColor:'#6a0c0c', borderRadius:8 ,  }}>
+      <TouchableOpacity  key={value.id}  onPress={()=>navigate(`/sSoldProducts/${value.userId}/${value.imageUrl}/${value.location}/${value.sellOBuy}/${value.specproduct}/${value.CompanyName}`  )} style={{  marginBottom : 4,  padding :7 ,borderWidth : 3 , borderColor:'#6a0c0c', borderRadius:8 ,  }}>
 
             {value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
             <VerifiedIcon style={{color : 'green'}} />
@@ -133,7 +133,7 @@ const navigate = useNavigate()
 
         const displaySearched =  filteredData.slice(0, 15).map((value , key)=>{
             return(
-      <TouchableOpacity  key={value.id}  onPress={()=>navigate(`sSoldProducts/${value.userId}/${value.timeStamp}/${value.location}/${value.sellOBuy}/${value.specproduct}/${value.CompanyName}`)} style={{  marginBottom : 4,  padding :7 ,borderWidth : 3 , borderColor:'#6a0c0c', borderRadius:8 ,  }}>
+      <TouchableOpacity  key={value.id}  onPress={()=>navigate(`/sSoldProducts/${value.userId}/${value.productName}/${value.additionalInfo}/${value.location}/${value.sellOBuy}/${value.specproduct}/${value.CompanyName}`)} style={{  marginBottom : 4,  padding :7 ,borderWidth : 3 , borderColor:'#6a0c0c', borderRadius:8 ,  }}>
 
             {value.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66 }} >
             <VerifiedIcon style={{color : 'green'}} />

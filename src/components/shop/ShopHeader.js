@@ -142,7 +142,7 @@ const [sellOBuy , setSellOBuy] = React.useState('forSell')
   {smallMenu && <TouchableOpacity style={{position : 'absolute' , right : 0 ,top: 0, bottom : 0 , left : 0 ,zIndex : 400 }} onPress={checkAuth}> 
    <View style={{position : 'absolute' , right : 0  , borderBlockColor:"#6a0c0c",borderWidth:3 , backgroundColor :'white'  , width : 200 , borderRadius: 13 , zIndex : 1000}} >
 
-                        <TouchableOpacity onPress={()=> navigate(`oneFirmsShop/${userId}/${location}/${sellOBuy}/vehicles/Manage`) } style={styles.buttonStyle} >
+                        <TouchableOpacity onPress={()=> navigate(`/oneFirmsShop/${userId}/${location}/${sellOBuy}/vehicles/Manage`) } style={styles.buttonStyle} >
                         <Text  > Manage Stock</Text>
                         </TouchableOpacity>
 

@@ -174,7 +174,7 @@ setTimeout(() => {
       </View>}
       
          {item.imageUrl&& <Image source={{uri: item.imageUrl }} style={{ height : 250 , borderRadius: 10}} />}
-          {!item.imageUrl && <Image source={defaultImage} style={{ height: 280, borderRadius: 10 , width : 368}} />}
+          {!item.imageUrl && <Image source={defaultImage} style={{ height: 280, borderRadius: 10 , }} />}
         
       <Text style={{marginLeft : 60 , fontWeight : 'bold', fontSize : 20}} >{item.CompanyName} </Text>
       { item.fromLocation && <View style={{flexDirection :'row',width:245}} >

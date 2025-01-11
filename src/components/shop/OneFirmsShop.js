@@ -28,7 +28,7 @@ import {onSnapshot ,  query ,collection,where ,limit,getDocs,startAfter,orderBy,
 
 function OneFirmsShop({blockVerifiedU, blackLWarning }){
 
-  const {location, specproductG ,sellOBuyG ,userId , CompanyName , itemKey,} = useParams()
+  const {location, specproductG ,sellOBuyG ,userId , CompanyName , itemKey,sItemKey} = useParams()
 
   const navigate = useNavigate()
 
@@ -243,9 +243,10 @@ const [priceRangeDsp , setPriceRangeDsp]= React.useState(false)
 
   const [getOneItem, setgetOneItem] = useState([]);
 
+    
     function getOneItemF(){
 
-        const dataQuery = query(collection(db, "Shop"), where("timeStamp", "==", itemKey) , where("userId", "==", userId) );
+        const dataQuery = query(collection(db, "Shop"), where("productName", "==", itemKey) , where("additionalInfo", "==", sItemKey) , where("userId", "==", userId) );
 
         const unsubscribe = onSnapshot(dataQuery, (snapshot) => {
           let loadedData = [];
@@ -388,7 +389,7 @@ async function fetchData(loadOneMore) {
         }else{
 
                     setLoadingSpec(true)
-            dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId), where("specproduct", "==", specproduct), where("location", "==", location), where("sellOBuy", "==", sellOBuy) );
+            dataQuery = query(collection(db, "Shop"), orderBy(orderByField), ...pagination , limit(8) , where("userId" ,"==", userId),  );
         }
 
 
@@ -430,8 +431,10 @@ useEffect(() => {
 }, [specproduct, buyRent, sellOBuy , priceRange , vehicleType ,vehiMake ,trailerType, trackDatachange]);;
 
 useEffect(() => {
+  if(itemKey){
 
     getOneItemF()
+  }
 
 }, []);;
 
@@ -478,7 +481,7 @@ function displayAllImages(itemId){
 }
 
 const spreadThis = [...getOneItem ,...allSoldIterms]
-
+console.log(getOneItem)
 
 
   const rendereIterms = spreadThis.map((item)=>{

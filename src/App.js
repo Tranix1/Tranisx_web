@@ -696,21 +696,37 @@ function App(){
       <Route path="/bookingsandBiddings/" element={<BookingsandBiddings/>} />
       <Route path="/bookingsandBiddings/:dbName/:dspRoute" element={<BookingsandBiddings/>} />
 
-      <Route path="/BBVerifiedLoad/:dbName/:dspRoute" element={<BBVerifiedLoad/>} />
+      <Route path="/BBVerifiedLoad/:itemName/:fromLocation/:toLocation/:bookerId/:bookerName/:ownerName/:ownerId/:contact/:isVer/:msgReceiverId/:docId/:rateG/:linksRateG/:triaxleRateG/:currencyBG/:perTonneBG/:loadId/:dbName" element={<BBVerifiedLoad/>} />
+
+
+
+
+      
 
       <Route path="/AddIterms/" element={<AddIterms/>}/>
       <Route path="/AddIterms/:addTrucks" element={<AddIterms/>}/>
+      <Route path="/AddIterms/:addTrucks/:fromLocation/:toLocation/:verifiedLoad" element={<AddIterms/>}/>
+      <Route path="/AddIterms/:verifiedLoad/:fromLocation/:toLocation" element={<AddIterms/>}/>
       <Route path="/AddIterms/addLoadsDB" element={<AddLoadDB  
       username = {username} contact = {contact}  isVerified={isVerified}   isBlackListed={isBlackListed}   blackLWarning={blackLWarning} blockVerifiedU={blockVerifiedU} verifyOngoing ={verifyOngoing}  />}   />
 
-      <Route path="/addTrucksDB/:truckType" element={<DBTrucksAdd 
+      <Route path="/addTrucksDB/:truckType/:fromLocation/:toLocation/:verifiedLoadG" element={<DBTrucksAdd 
        username={ username}  contact = {contact}  isVerified ={ isVerified}    isBlackListed={isBlackListed}   blackLWarning={blackLWarning} blockVerifiedU={blockVerifiedU} verifyOngoing ={verifyOngoing}  />} />
 
       <Route path="/dspOneTrckType/:truckType" element={<DspOneTruckType blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning}  />} />
       <Route path="/selectedUserTrucks/:userId/:itemKey/:CompanyName" element={<SelectedUserTrucks   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
+
+      <Route path="/selectedUserTrucks/:userId/:loadIsVerifiedG/:CompanyName" element={<SelectedUserTrucks   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
+
+
       <Route path="/selectedUserLoads/:userId/:companyNameG" element={<DspAllLoads username={username}  
       contact ={contact} blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
-      <Route path="/searchedLoads/:userId/:itemId/:companyNameG" element={<DspAllLoads username={username} />} />
+      <Route path="/searchedLoads/:userId/:itemKey/:companyNameG" element={<DspAllLoads username={username} />} />
+      <Route path="/dspLoads/verified/:verfiedLoadsG" element={<DspAllLoads username={username}  
+      contact ={contact} blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
+      <Route path="/dspLoads/location/:location" element={<DspAllLoads username={username}  
+      contact ={contact} blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
+
 
       <Route path="/shopLocation/" element={<ShopLocation/>} />
       <Route path="/DspShop/:location/:specproduct/:sellOBuy" element={<DspShopIterms  spechopLoc={spechopLoc}  blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
@@ -724,7 +740,7 @@ function App(){
       <Route path="/OneFirmsShop/:userId/:location/:sellOBuyG/:specproductG/:CompanyName" element={<OneFirmsShop   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
       {/* <Route path="/OneFirmsShopA/:userId/:itemId/:location/:sellOBuyG/:agCont" element={<OneFirmsShop/>} /> */}
       <Route path="/manageStock/" element={<ManageStock/>} />
-      <Route path="/sSoldProducts/:userId/:itemKey/:location/:sellOBuyG/:specproductG/:CompanyName" element={<OneFirmsShop/>} />
+      <Route path="/sSoldProducts/:userId/:itemKey/:sItemKey/:location/:sellOBuyG/:specproductG/:CompanyName" element={<OneFirmsShop/>} />
       <Route path="/shosearchElement/" element={<SearchInshop/>} />
 
       <Route path="/helpHome/" element={<HelpHome/>} />
