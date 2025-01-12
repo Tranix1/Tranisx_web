@@ -481,12 +481,23 @@ function displayAllImages(itemId){
 }
 
 const spreadThis = [...getOneItem ,...allSoldIterms]
-console.log(getOneItem)
 
+
+ 
+function replaceSpacesWithPercent(url) {
+    return url.replace(/ /g, '%20');
+}
 
   const rendereIterms = spreadThis.map((item)=>{
+    
+const url = `https://www.transix.net/OneFirmsShop/${item.userId}/${item.location}/${sellOBuy}/${item.specproduct}/${item.CompanyName}/${item.productName}/${item.additionalInfo}`  ;
 
-        const message =  `${item.CompanyName} is this Product still ${ item.sellOBuy === "forSell"? "available":"wanted" } ${item.productName} ${item.sellRent ? "for sell" :'for rental' }   ${item.currency?"USD" : "Rand" }  ${item.price}                    from https://www.transix.net/OneFirmsShop/${item.userId}/${item.id}/${item.location}/${sellOBuy}` ; // Set your desired message here
+const updatedUrl = replaceSpacesWithPercent(url);
+    
+
+      const message = specproduct !== "Sprovider" ?  `${item.CompanyName} \n Is this Product still ${ item.sellOBuy === "forSell"? "available":"wanted" } ${item.productName} ${item.sellRent ? "for sell" :'for rental' } \nPrice  ${item.currency?"USD" : "Rand" }  ${item.price} \n\n from  ${updatedUrl} ` :
+             `${item.CompanyName} \n Do you still offer  ${item.productName}  \nI am intrested \n\n from  https://www.transix.net/OneFirmsShop/${item.userId}/${item.location}/${sellOBuy}/${item.specproduct}/${item.CompanyName} `
+          ; // Set your desired message here
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
           <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >
@@ -703,6 +714,39 @@ Experience the future of transportation and logistics!`;
             };
 
 
+      const [updateApp , setUpdateApp]=React.useState(true)
+      const [downloadPlayStore , setDownloadOnPlaystore]=React.useState(false)
+      const [downloadApkLink , setDownloadApkLink]=React.useState(false)
+      
+          React.useEffect(() => {
+        try {
+            const loadsQuery = query(collection(db, "updateEveryone"));
+            const unsubscribe = onSnapshot(loadsQuery, (querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                const data = doc.data();
+
+
+                const newAppUpdateApkLink = data.newAppUpdateApkLink
+                const newAppUpdatePlystore = data.switchToPlayStoreLink
+
+                    
+                    if(newAppUpdateApkLink){
+
+                      setDownloadApkLink(newAppUpdateApkLink)
+                    }else if(newAppUpdatePlystore){
+                         setDownloadOnPlaystore(newAppUpdatePlystore)
+                    }
+
+                  
+                                        
+              });
+            });
+
+            return () => unsubscribe(); // Cleanup the listener when the component unmounts
+        } catch (error) {
+          console.error(error);
+        }
+      }, [userId]);
     return(
       <View>
                  
@@ -714,6 +758,32 @@ Experience the future of transportation and logistics!`;
        
                 <Text style={{fontSize: 20 , color : 'white'}} > { CompanyName} STORE</Text>
                 </View>
+
+
+ {updateApp &&  userId && itemKey && <View style={{position:'fixed', top: 10 , left :0 , right:0 , bottom : 0 , zIndex: 500 , backgroundColor:'rgba(106, 12, 12, 0.4)'}}>
+ <View style={{alignSelf:'center', backgroundColor :'white', zIndex:100, position:'fixed', top : 130 , width:300, padding:7, height:100, justifyContent:'center',alignItems :'center', borderRadius:7}} >
+
+         {downloadApkLink ?      <Text>Download App not yet on Playstore </Text> : <Text>Update App on Playstore</Text>}
+         <Text>For Android</Text>
+
+                  <View style={{flexDirection:'row', justifyContent:"space-evenly",marginTop:7}} >
+
+              <TouchableOpacity style={{height:27 , backgroundColor:'red', width:65,borderRadius:5, alignItems:'center',margin:7}} onPress={()=>setUpdateApp(false) } >
+                <Text style={{color:'white'}}>Cancel</Text>
+               </TouchableOpacity>
+
+             
+               {<TouchableOpacity onPress={()=>Linking.openURL(`${downloadApkLink ? downloadApkLink : downloadPlayStore }`)} style={{height:27 , backgroundColor:'green', width:65,borderRadius:5, alignItems:'center',margin:7}}>
+        
+                <Text style={{color:'white'}} >OK</Text>
+               </TouchableOpacity>}
+
+              </View>
+             </View>
+             </View>
+             }
+
+
        {sellOBuy !== "toBuy" || sellOBuy !=="forSell" ?<View style={{ justifyContent:'space-evenly' , backgroundColor:'#6a0c0c', flexDirection : "row" , position:'absolute',right:0, zIndex:10, bottom:7, top: 18,borderLeftColor: "white" , borderLeftWidth:2, paddingLeft:5,alignItems :'center ' ,justifyContent:'center',paddingRight:10}} >
 
 

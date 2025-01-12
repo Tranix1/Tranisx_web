@@ -113,10 +113,7 @@ return(
          </View>
     </TouchableOpacity>
     
-    <TouchableOpacity onPress={()=>navigate('/selectChat/') } style={styles.buttonStyle}>
-        <Text> Chats</Text>
-    </TouchableOpacity>
-    
+        
        <TouchableOpacity   onPress={()=>navigate('/verifyInfo/') }  style={styles.buttonStyle}>
         <Text>Verification</Text>
         </TouchableOpacity>
@@ -125,16 +122,16 @@ return(
         <Text>Blacklisted</Text>
         </TouchableOpacity>
 
-    <TouchableOpacity   onPress={()=>navigate('/mobileAppSD/') }  style={styles.buttonStyle}>
+    <TouchableOpacity   onPress={()=>navigate('/mobileAppSD') }  style={styles.buttonStyle}>
         <Text>Mobile App </Text>
     </TouchableOpacity>
 
-    <TouchableOpacity style={styles.buttonStyle} onPress={()=>navigate('/updates/') }  >
+    <TouchableOpacity style={styles.buttonStyle} onPress={()=>navigate('/updates') }  >
         <Text>Updates</Text>
         {/* <Text>{valueOfUpdates} </Text> */}
     </TouchableOpacity>
 
-    <TouchableOpacity   onPress={()=>navigate('/helpHome/') }  style={styles.buttonStyle}>
+    <TouchableOpacity   onPress={()=>navigate('/helpHome') }  style={styles.buttonStyle}>
         <Text> Help </Text>
     </TouchableOpacity>
    

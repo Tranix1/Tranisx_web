@@ -300,9 +300,20 @@ useEffect(() => {
       }));
   }
 
-  const rendereIterms = allSoldIterms.map((item)=>{
+ 
+function replaceSpacesWithPercent(url) {
+    return url.replace(/ /g, '%20');
+}
 
-        const message =  `${item.CompanyName} is this Product still ${ item.sellOBuy === "forSell"? "available":"wanted" } ${item.productName} ${item.sellRent ? "for sell" :'for rental' }   ${item.currency?"USD" : "Rand" }  ${item.price}                    from https://www.transix.net/OneFirmsShop/${item.userId}/${item.id}/${item.location}/${sellOBuy}` ; // Set your desired message here
+  const rendereIterms = allSoldIterms.map((item)=>{
+    
+const url = `https://www.transix.net/OneFirmsShop/${item.userId}/${item.location}/${sellOBuy}/${item.specproduct}/${item.CompanyName}/${item.productName}/${item.additionalInfo}`  ;
+
+const updatedUrl = replaceSpacesWithPercent(url);
+    
+
+      const message = specproduct !== "Sprovider" ?  `${item.CompanyName} \n Is this Product still ${ item.sellOBuy === "forSell"? "available":"wanted" } ${item.productName} ${item.sellRent ? "for sell" :'for rental' } \nPrice  ${item.currency?"USD" : "Rand" }  ${item.price} \n\n from  ${updatedUrl} ` :
+             `${item.CompanyName} \n Do you still offer  ${item.productName}  \nI am intrested \n\n from  https://www.transix.net/OneFirmsShop/${item.userId}/${item.location}/${sellOBuy}/${item.specproduct}/${item.CompanyName} `
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
           <TouchableOpacity  onPress={()=>navigate(`/message/${item.userId}/${item.CompanyName} `)} style={{height : 30 ,  flexDirection:'row', alignItems :'center',color : "#008080" , borderWidth:1 , borderColor :'#008080', justifyContent:'center', marginBottom : 5 , marginTop:6}} >

@@ -46,15 +46,14 @@ const navigate = useNavigate()
 
         {dspHelpcenter && <View style={{alignItems:'center',}} >
             <View style={{width : 390 , backgroundColor:'#D3D3D3', marginBottom:10 , padding:10 , }} >
-            <Text style={{lineHeight:21.5 , color:'#9c2828' , fontWeight:'bold',fontSize:15}} > Your gateway to the future of logistics is here! Our innovative software solutions are tailor-made to fulfill your every need.</Text>
-            <Text style={{lineHeight:21.5 , fontWeight:'bold',fontSize:15}} >From finding loads to securing trucks, selling products to discovering work opportunities in your area, our cutting-edge technologies are designed to streamline and enhance your logistics experience</Text>
+            <Text style={{lineHeight:21.5 , fontWeight:'bold',fontSize:15,color:'#6a0c0c'}} > Your gateway to the future of logistics is here! Our innovative software solutions are tailor-made to fulfill your every need.</Text>
+            <Text style={{lineHeight:21.5 , fontWeight:'bold',fontSize:15,color:'#6a0c0c'}} >From finding loads to securing trucks, selling products to discovering work opportunities in your area, our cutting-edge technologies are designed to streamline and enhance your logistics experience</Text>
              </View>
 
             <View style={{width : 390 , backgroundColor:'#D3D3D3', marginBottom:10 , padding:10 , }}>
-            <Text style={{lineHeight:21.5,fontWeight:'bold',fontSize:15 }}>We believe in a seamless tomorrow, where efficiency and convenience meet your demands. Contact us today to embark on a journey towards a smarter logistics world</Text>
-            <Text style={{lineHeight:21.5 ,fontWeight:'bold',fontSize:15}} >We're here to transform the way you navigate the industry. Reach out now and let's revolutionize logistics together!</Text>
+            <Text style={{lineHeight:21.5,fontWeight:'bold',fontSize:15 ,color:'green'}}>We believe in a seamless tomorrow, where efficiency and convenience meet your demands. Contact us today to embark on a journey towards a smarter logistics world</Text>
+            <Text style={{lineHeight:21.5 ,fontWeight:'bold',fontSize:15,color:'green'}} >We're here to transform the way you navigate the industry. Reach out now and let's revolutionize logistics together!</Text>
             </View>
-            
                 <Text>
                     For immediate help, please contact us via our social platforms. 
                     </Text> 
@@ -64,7 +63,7 @@ const navigate = useNavigate()
                      <Text style={{color :'#0000FF'}} >email  <Email /> </Text> 
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=+263786936437`)} >
+                    <TouchableOpacity onPress={() => Linking.openURL(`whatsapp://send?phone=+263716325160`)} >
                        <Text style={{color:"#25D366"}} >WhatsApp <WhatsApp /> </Text> 
                     </TouchableOpacity>
 
@@ -85,10 +84,10 @@ const navigate = useNavigate()
 
         {softInfo && <View  style={{alignItems : 'center'}}>
 
-            <Text style={{fontWeight :'bold', fontSize:17}} > Truckerz </Text>
+            <Text style={{fontWeight :'bold', fontSize:17}} > Transix</Text>
             <Text> We the future for transport and logistics </Text>
            <img src={defaultImage}  style={{height : 85 , borderRadius : 10 , width: 170, margin :6}}/>
-            <Text style={{fontStyle:'italic'}} > From 2023 - 2024 </Text>
+            <Text style={{fontStyle:'italic'}} > From 2023 - 2025 </Text>
             <Text style={{fontStyle:'italic'}} > © Parent company ARMAMENT VENTURES </Text>
         </View> }
 

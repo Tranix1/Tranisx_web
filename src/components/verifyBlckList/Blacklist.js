@@ -40,7 +40,19 @@ const rendereIterms = updates.map((item)=>{
 return (
 
         <View>
+      <ScrollView  horizontal  showsHorizontalScrollIndicator={false} style={{  height : 200 ,}} >
+        {item.imageUrl.map((image, index) => (
+          <View>
+            {
+              image ?
+            <img key={index} src={image} alt={`Image ${index}`} style={{ margin: 7, maxWidth: '100%', height: 200, }} loading='lazy'/>
+            : <Text style={{alignSelf:'center'}} >quality images loading </Text>
+            }
+          </View>
+        ))}
 
+          </ScrollView>
+          
             <View>
                 <Text> {item.companyName}</Text>
                 <Text> {item.teamNames}</Text>
@@ -60,12 +72,12 @@ return (
 
         </TouchableOpacity> 
         
-        <Text style={{fontSize: 20 , color : 'white'}} > Latest Updates  </Text>
+        <Text style={{fontSize: 20 , color : 'white'}} > Black Listed </Text>
        </View>
 
            <ScrollView style={{padding : 10 }}>
           <div className='Main-grid'>
-         {updates.length > 0 ? rendereIterms   : <Text>updates Loading.........</Text>}
+         {updates.length > 0 ? rendereIterms   : <Text>Black List Loading.........</Text>}
          <View style={{height : 550}} >
            </View>
             </div>

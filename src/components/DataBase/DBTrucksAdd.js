@@ -12,6 +12,7 @@ import inputstyles from "../styles/inputElement";
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 
+import VerifiedIcon from '@mui/icons-material/Verified';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useParams , useNavigate } from 'react-router-dom';
 
@@ -32,7 +33,7 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
     additionalInfo :"" ,
     trailerType : '',
     trailerModel :"" ,
-    truckTonnage :"",
+    truckTonnage :null,
       
     horseReg :"" ,
     trailerReg :"",
@@ -99,6 +100,11 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
 
 
   const  handlechange  = (value, fieldName) => {
+    if (fieldName === 'truckTonnage' && isNaN(value)) {
+        // Handle the case where the input is not a number for the price field
+        alert('Truck Tonnage must be a number.');
+        return;
+    }
     setFormData((prevFormData) => ({
       ...prevFormData,
       [fieldName]: value,
@@ -250,6 +256,39 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
        </View>
 
 
+        {verifyOngoing && !isVerified&&<TouchableOpacity  onPress={() => Linking.openURL(`whatsapp://send?phone=+263716325160  &text=${encodeURIComponent(`
+I aspire to become verified at the first level on Transix Now!
+To make this happen without any delays or uncertainties.
+
+Provide:
+- Company Address
+- Company Details (e.g., Articles of Association, tax clearance, etc.)
+- National ID or Passport must match details in company details
+
+- Verify Address using Utility Bill (electricity, water, internet, gas),
+  Lease Agreement, Business Licence, Tax Document.
+
+- The document for Address must be from 3-6 months ago.
+
+There is a $5 monthly subscription fee, and you can choose for how long you want to be verified.
+
+The Future Of Transport And Logistics (Transix)
+`)} `)}  style={{  marginBottom : 4,  padding :7 ,borderWidth : 3 , borderColor:'#6a0c0c', borderRadius:8 ,  shadowColor: '#6a0c0c',
+        shadowOffset: { width: 3, height: 2 },
+        shadowOpacity: 0.7,
+        shadowRadius: 5, margin :10}} >
+              {<View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
+            <VerifiedIcon style={{color : 'green'}} />
+              </View>}
+
+          <Text style={{alignSelf:'flex-start',fontSize:13 , color:'green',fontStyle:'italic'}} >Ongoing Verification</Text>
+        {!verifiedLoad&&<Text style={{textAlign:'center',fontSize :17,color:"#6a0c0c",fontWeight:'500'}} > Your Business is not verified </Text>}
+        {!verifiedLoad&&<Text style={{}} > If You Are Legit Click Here </Text>}
+
+        {verifiedLoad&&<Text style={{textAlign:'center',fontSize :17,color:"#6a0c0c",fontWeight:'500'}} > You Want A verified Load</Text>}
+        {verifiedLoad&& <Text style={{}}>Your truck details will be deleted in 2 days. Be verified to prevent deletion.</Text>}
+      </TouchableOpacity>
+      }
      {/* {image && <Image source={{ uri: image.localUri }} style={{ width: 200, height: 200 }} />} */}
       {image && <img src={image} alt="Selected" style={{ width : 200 , height : 200}} />}
 

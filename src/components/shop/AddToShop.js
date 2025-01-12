@@ -451,9 +451,9 @@ const [ imageUpload, setImageUpload] = React.useState([])
               </TouchableOpacity>
             </View>
 
-        <TextInput
+            <TextInput
           value={formData.productName}
-          placeholder="Product Name"
+          placeholder={specproduct === "Sprovider" ? "What Do You offer" : "Product Name" }
           placeholderTextColor="#6a0c0c"
           onChangeText={(text) => handlechange(text, 'productName')}
           type="text" 

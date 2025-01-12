@@ -245,6 +245,10 @@ useEffect(() => {
 
 let mapThsAll = [...getOneLoad , ...loadsList]
       
+
+function replaceSpacesWithPercent(url) {
+    return url.replace(/ /g, '%20');
+}
     const rendereIterms =  mapThsAll.map((item)=>{ 
       const handleSubmit = async (clickedItem , dbName) => {
 
@@ -415,12 +419,15 @@ let mapThsAll = [...getOneLoad , ...loadsList]
         }
 
        
+     
+        const url = `https://transix.net/selectedUserLoads/${item.userId}/${item.companyName}/${item.deletionTime}` 
+        const updatedUrl = replaceSpacesWithPercent(url);
         const message =  `${item.companyName}
         Is this Load still available
         ${item.typeofLoad} from ${item.fromLocation} to ${item.toLocation}
         ${theRateM}
 
-        From: https://transix.net/selectedUserLoads/${item.userId}/${item.id}`  // Set your desired message here
+        From: ${updatedUrl} `  // Set your desired message here
 
     let contactMe = ( <View style={{ paddingLeft: 30 }}>
 
@@ -750,7 +757,41 @@ Experience the future of transportation and logistics!  `;
                 alert(error.message);
               }
             };
-    
+            
+
+      const [updateApp , setUpdateApp]=React.useState(true)
+      const [downloadPlayStore , setDownloadOnPlaystore]=React.useState(false)
+      const [downloadApkLink , setDownloadApkLink]=React.useState(false)
+      
+          React.useEffect(() => {
+        try {
+            const loadsQuery = query(collection(db, "updateEveryone"));
+            const unsubscribe = onSnapshot(loadsQuery, (querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                const data = doc.data();
+
+
+                const newAppUpdateApkLink = data.newAppUpdateApkLink
+                const newAppUpdatePlystore = data.switchToPlayStoreLink
+
+                    
+                    if(newAppUpdateApkLink){
+
+                      setDownloadApkLink(newAppUpdateApkLink)
+                    }else if(newAppUpdatePlystore){
+                         setDownloadOnPlaystore(newAppUpdatePlystore)
+                    }
+
+                  
+                                        
+              });
+            });
+
+            return () => unsubscribe(); // Cleanup the listener when the component unmounts
+        } catch (error) {
+          console.error(error);
+        }
+      }, [userId]);
 
   return(
     <View>
@@ -770,6 +811,28 @@ Experience the future of transportation and logistics!  `;
        </View> }
        
 
+ {updateApp &&  userId && itemKey && <View style={{position:'fixed', top: 10 , left :0 , right:0 , bottom : 0 , zIndex: 500 , backgroundColor:'rgba(106, 12, 12, 0.4)'}}>
+ <View style={{alignSelf:'center', backgroundColor :'white', zIndex:100, position:'fixed', top : 130 , width:300, padding:7, height:100, justifyContent:'center',alignItems :'center', borderRadius:7}} >
+
+         {downloadApkLink ?      <Text>Download App not yet on Playstore </Text> : <Text>Update App on Playstore</Text>}
+         <Text>For Android</Text>
+
+                  <View style={{flexDirection:'row', justifyContent:"space-evenly",marginTop:7}} >
+
+              <TouchableOpacity style={{height:27 , backgroundColor:'red', width:65,borderRadius:5, alignItems:'center',margin:7}} onPress={()=>setUpdateApp(false) } >
+                <Text style={{color:'white'}}>Cancel</Text>
+               </TouchableOpacity>
+
+             
+               {<TouchableOpacity onPress={()=>Linking.openURL(`${downloadApkLink ? downloadApkLink : downloadPlayStore }`)} style={{height:27 , backgroundColor:'green', width:65,borderRadius:5, alignItems:'center',margin:7}}>
+        
+                <Text style={{color:'white'}} >OK</Text>
+               </TouchableOpacity>}
+
+              </View>
+             </View>
+             </View>
+             }
 
       { location || verfiedLoads ? <View  style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
          <TouchableOpacity style={{marginRight: 10}}  onPress={()=>navigate(-1)}>

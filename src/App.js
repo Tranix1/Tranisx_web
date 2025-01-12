@@ -51,7 +51,6 @@ import VerifyInfo from "./components/verifyBlckList/verifyInfo";
 import VerifyNewUser from "./components/verifyBlckList/verifyNewUser";
 import Blacklist from "./components/verifyBlckList/Blacklist";
 
-import AppUpdates from "./components/pages/Updates"
 
 
 
@@ -284,7 +283,39 @@ const [whenemailVerifiedN , setemailVerifiedN] = React.useState(false)
 
 
 
+      const [updateApp , setUpdateApp]=React.useState(true)
+      const [downloadPlayStore , setDownloadOnPlaystore]=React.useState(false)
+      const [downloadApkLink , setDownloadApkLink]=React.useState(false)
+      
+          React.useEffect(() => {
+        try {
+            const loadsQuery = query(collection(db, "updateEveryone"));
+            const unsubscribe = onSnapshot(loadsQuery, (querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                const data = doc.data();
 
+
+                const newAppUpdateApkLink = data.newAppUpdateApkLink
+                const newAppUpdatePlystore = data.switchToPlayStoreLink
+
+                    
+                    if(newAppUpdateApkLink){
+
+                      setDownloadApkLink(newAppUpdateApkLink)
+                    }else if(newAppUpdatePlystore){
+                         setDownloadOnPlaystore(newAppUpdatePlystore)
+                    }
+
+                  
+                                        
+              });
+            });
+
+            return () => unsubscribe(); // Cleanup the listener when the component unmounts
+        } catch (error) {
+          console.error(error);
+        }
+      }, [currentUser,username]);
 
 
 
@@ -369,6 +400,33 @@ function checkAuth(routeToGo){
 
              </View>
              {smallMenu && <SmallMenu  toggleSmallMenu={toggleSmallMenu}  /> }
+
+
+ {updateApp &&  <View style={{position:'fixed', top: 10 , left :0 , right:0 , bottom : 0 , zIndex: 500 , backgroundColor:'rgba(106, 12, 12, 0.4)'}}>
+ <View style={{alignSelf:'center', backgroundColor :'white', zIndex:100, position:'fixed', top : 130 , width:300, padding:7, height:100, justifyContent:'center',alignItems :'center', borderRadius:7}} >
+
+         {downloadApkLink ?      <Text>Download App not yet on Playstore </Text> : <Text>Update App on Playstore</Text>}
+         <Text>For Android</Text>
+
+                  <View style={{flexDirection:'row', justifyContent:"space-evenly",marginTop:7}} >
+
+              <TouchableOpacity style={{height:27 , backgroundColor:'red', width:65,borderRadius:5, alignItems:'center',margin:7}} onPress={()=>setUpdateApp(false) } >
+                <Text style={{color:'white'}}>Cancel</Text>
+               </TouchableOpacity>
+
+             
+               {<TouchableOpacity onPress={()=>Linking.openURL(`${downloadApkLink ? downloadApkLink : downloadPlayStore }`)} style={{height:27 , backgroundColor:'green', width:65,borderRadius:5, alignItems:'center',margin:7}}>
+        
+                <Text style={{color:'white'}} >OK</Text>
+               </TouchableOpacity>}
+
+              </View>
+             </View>
+             </View>
+             }
+
+
+
 
 
     {blackLWarningDSP && <View style={{alignSelf:'center', backgroundColor :'white', zIndex:100, position:'absolute', top : 130 , width:300, padding:7, height:150, justifyContent:'center',alignItems :'center', borderRadius:7}} >
@@ -677,7 +735,7 @@ function App(){
 
       <Route path="/addPersnoalInfo/" element={<PersonalAccInfo/>} />
 
-      <Route path="/updates/" element={<Updates/>} />
+      <Route path="/updates" element={<Updates/>} />
       <Route path="/addUpdate/" element={<AddUpdate/>} />
 
       <Route path="/selectPeronalAcc/" element={<SelectPersnalAcc/>} />
@@ -715,11 +773,14 @@ function App(){
 
       <Route path="/dspOneTrckType/:truckType" element={<DspOneTruckType blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning}  />} />
       <Route path="/selectedUserTrucks/:userId/:itemKey/:CompanyNameG" element={<SelectedUserTrucks   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
+      <Route path="/selectedUserTrucks/:userId/:itemKey/:CompanyNameG/:wereFrom" element={<SelectedUserTrucks   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
 
       <Route path="/selectedUserTrucks/:userId/:loadIsVerifiedG/:CompanyNameG" element={<SelectedUserTrucks   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
 
 
       <Route path="/selectedUserLoads/:userId/:companyNameG" element={<DspAllLoads username={username}  
+      contact ={contact} blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
+      <Route path="/selectedUserLoads/:userId/:companyNameG/:itemKey" element={<DspAllLoads username={username}  
       contact ={contact} blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
       <Route path="/searchedLoads/:userId/:itemKey/:companyNameG" element={<DspAllLoads username={username} />} />
       <Route path="/dspLoads/verified/:verfiedLoadsG" element={<DspAllLoads username={username}  
@@ -738,13 +799,14 @@ function App(){
        deliveryR ={deliveryR}  username={ username}  contact = {contact}  isVerified ={ isVerified} shopLocation={spechopLoc}/>} />
 
       <Route path="/OneFirmsShop/:userId/:location/:sellOBuyG/:specproductG/:CompanyName" element={<OneFirmsShop   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
+      <Route path="/OneFirmsShop/:userId/:location/:sellOBuyG/:specproductG/:CompanyName/:itemKey/:sItemKey" element={<OneFirmsShop   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
       {/* <Route path="/OneFirmsShopA/:userId/:itemId/:location/:sellOBuyG/:agCont" element={<OneFirmsShop/>} /> */}
       <Route path="/manageStock/" element={<ManageStock/>} />
       <Route path="/sSoldProducts/:userId/:itemKey/:sItemKey/:location/:sellOBuyG/:specproductG/:CompanyName" element={<OneFirmsShop/>} />
       <Route path="/shosearchElement/" element={<SearchInshop/>} />
 
-      <Route path="/helpHome/" element={<HelpHome/>} />
-      <Route path="/mobileAppSD/" element={<MobileAppSD/>} />
+      <Route path="/helpHome" element={<HelpHome/>} />
+      <Route path="/mobileAppSD" element={<MobileAppSD/>} />
 
       <Route path="/verifyInfo/" element={<VerifyInfo/>} />
       <Route path="/blacklist/" element={<Blacklist/>} />
