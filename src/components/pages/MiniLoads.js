@@ -67,6 +67,9 @@ const rendereIterms = mainLoadsList.map((item)=>{
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
             <VerifiedIcon style={{color : 'green'}} />
       </View>}
+          <View className='miniloadH3Div' key={item.id} style={{backgroundColor : '#228B22' ,  }} >
+         <Text style={{color : 'white' , textAlign : 'center' , fontSize : 18}} > {item.companyName} </Text>
+      </View  >
 
               {<View style={{ flexDirection:'row',margin:4}} >
 

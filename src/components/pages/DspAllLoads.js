@@ -799,7 +799,7 @@ Experience the future of transportation and logistics!  `;
       { userId && <View  style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
       
            <TouchableOpacity style={{marginRight: 10}} onPress={() => navigate( '/' )}>
-            <ArrowBackIcon  size={28} color="white"style={{ marginLeft: 10 }}  />
+            <ArrowBackIcon  size={28} style={{ marginLeft: 10 ,color:"white" }}  />
         </TouchableOpacity> 
        
                 <Text style={{fontSize: 20 , color : 'white'}} > {companyNameG } Loads </Text>
@@ -836,7 +836,7 @@ Experience the future of transportation and logistics!  `;
 
       { location || verfiedLoads ? <View  style={{flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center'}} >
          <TouchableOpacity style={{marginRight: 10}}  onPress={()=>navigate(-1)}>
-            <ArrowBackIcon  size={28} color="white"style={{ marginLeft: 10 }}  />
+            <ArrowBackIcon  size={28} style={{ marginLeft: 10 ,color:"white" }}  />
         </TouchableOpacity> 
         <Text style={{fontSize: 20 , color : 'white'}} > {location?location:"verfied"  } Loads</Text>
        </View>:null}
