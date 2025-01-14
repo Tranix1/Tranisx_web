@@ -738,7 +738,7 @@ function App(){
       <Route path="/updates" element={<Updates/>} />
       <Route path="/addUpdate/" element={<AddUpdate/>} />
 
-      <Route path="/selectPeronalAcc/" element={<SelectPersnalAcc/>} />
+      <Route path="/selectPeronalAcc/" element={<SelectPersnalAcc/>} isVerified ={ isVerified} />
       <Route path="/personalInfomation/" element={<PersnonalAccInfoEdit  
       username ={username}  contact ={contact} />}/>
       <Route path="/peronalAccLoads/" element={<PersnalAccLoads/>}/>
@@ -775,7 +775,7 @@ function App(){
       <Route path="/selectedUserTrucks/:userId/:itemKey/:CompanyNameG" element={<SelectedUserTrucks   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
       <Route path="/selectedUserTrucks/:userId/:itemKey/:CompanyNameG/:wereFrom" element={<SelectedUserTrucks   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
 
-      <Route path="/selectedUserTrucks/:userId/:loadIsVerifiedG/:CompanyNameG" element={<SelectedUserTrucks   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
+      <Route path="/selectedUserTrucks/:userId/:loadIsVerifiedG/:CompanyNameG" element={<SelectedUserTrucks   blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} isVerified={isVerified} />} />
 
 
       <Route path="/selectedUserLoads/:userId/:companyNameG" element={<DspAllLoads username={username}  

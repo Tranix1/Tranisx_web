@@ -1,9 +1,10 @@
 import React from "react";
 import { View , TouchableOpacity , Text , StyleSheet} from "react-native";
 
+import { auth } from "../config/fireBase";
 import {useNavigate} from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-function SelectPersonalAcc(){
+function SelectPersonalAcc({isVerified}){
 
 const navigate = useNavigate()
 
@@ -26,7 +27,7 @@ const navigate = useNavigate()
             <Text>Manage Loads </Text>
             </TouchableOpacity> 
 
-           <TouchableOpacity onPress={()=>navigate("/peronalAccTrucks/") } style={styles.buttonStyleIterm} >
+           <TouchableOpacity onPress={()=>navigate(`/selectedUserTrucks/${auth.currentUser.uid}/${isVerified}/Manage`)} style={styles.buttonStyleIterm} >
             <Text>Manage Trucks </Text>
             </TouchableOpacity>
              
