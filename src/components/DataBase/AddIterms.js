@@ -5,13 +5,16 @@ import {useNavigate , useParams} from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function AddIterms(){
-    const [truckType , setTruckType] =React.useState(false)
     const navigate = useNavigate()
-const {addTrucks , fromLocation ,toLocation,verifiedLoad } = useParams()
+    const {addTrucks , fromLocation ,toLocation,verifiedLoad } = useParams()
 
-    function toggleSelecTruck(){
-        setTruckType(prev =>!prev)
+    const [truckType , setTruckType] =React.useState(false)
+    const [truckTonnageDsp , setTruckTonnageDap] =React.useState(false)
+    function addTruckType(truckTypeF){
+        setTruckType(truckTypeF)
+        setTruckTonnageDap(true)
     }
+ 
     return(
         <View style={{alignItems : 'center' , paddingTop : 80}} >
 
@@ -32,34 +35,65 @@ const {addTrucks , fromLocation ,toLocation,verifiedLoad } = useParams()
             </View>}
 
            { addTrucks &&<View>
-                <TouchableOpacity  onPress={()=> navigate(`/addTrucksDB/BulkTrailers/${fromLocation}/${toLocation}/${verifiedLoad}`) }  style={styles.buttonStyle}>
-                    <Text style={{color:"#6a0c0c"}}>BulkTrailers</Text>
+
+            {!truckTonnageDsp&& <View>
+                   <TouchableOpacity   style={styles.buttonStyle} onPress={()=>addTruckType("BulkTrailers")} >
+
+                    <Text style={{color:"#6a0c0c"}}>BulkTrailers </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity  onPress={()=> navigate(`/addTrucksDB/flatDecks/${fromLocation}/${toLocation}/${verifiedLoad}`) }  style={styles.buttonStyle}>
-                    <Text style={{color:"#6a0c0c"}}>Flat Decks</Text>
+                <TouchableOpacity  onPress={()=>addTruckType("flatDecks")}  style={styles.buttonStyle}>
+                    <Text style={{color:"#6a0c0c"}}>flatDecks </Text>
+                </TouchableOpacity>
+                <TouchableOpacity  onPress={()=>addTruckType("sideTippers")}  style={styles.buttonStyle}>
+                    <Text style={{color:"#6a0c0c"}}>SideTippers </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity  onPress={()=> navigate( `/addTrucksDB/sideTippers/${fromLocation}/${toLocation}/${verifiedLoad}`) }  style={styles.buttonStyle}>
-                    <Text style={{color:"#6a0c0c"}}>SideTipper</Text>
+                <TouchableOpacity onPress={()=>addTruckType("LowBeds")} style={styles.buttonStyle}>
+                    <Text style={{color:"#6a0c0c"}}> Lowbeds </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={()=> navigate(`/addTrucksDB/LowBeds/${fromLocation}/${toLocation}/${verifiedLoad}`) }  style={styles.buttonStyle}>
-                    <Text style={{color:"#6a0c0c"}}>Lowbeds</Text>
+                <TouchableOpacity onPress={()=>addTruckType("tauntliner")}  style={styles.buttonStyle}>
+                    <Text style={{color:"#6a0c0c"}}> Tautliners </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={()=> navigate(`/addTrucksDB/tauntliner/${fromLocation}/${toLocation}/${verifiedLoad}` ) } style={styles.buttonStyle}>
-                    <Text style={{color:"#6a0c0c"}}>Tautliner</Text>
+                <TouchableOpacity onPress={()=>addTruckType("tanker")}  style={styles.buttonStyle} >
+                    <Text style={{color:"#6a0c0c"}}>Tankers </Text>
+                </TouchableOpacity>
+               <TouchableOpacity onPress={()=>addTruckType("Rigid")}  style={styles.buttonStyle} >
+                    <Text style={{color:"#6a0c0c"}}>Rigids </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={()=> navigate(`/addTrucksDB/tanker/${fromLocation}/${toLocation}/${verifiedLoad}`) } style={styles.buttonStyle} >
-                    <Text style={{color:"#6a0c0c"}}>Tankers</Text>
+               <TouchableOpacity onPress={()=>addTruckType("other")}   style={styles.buttonStyle} >
+                    <Text style={{color:"#6a0c0c"}}>Other</Text>
+                </TouchableOpacity>
+                 </View>}
+
+                    {truckTonnageDsp && <View>
+                <Text style={{alignSelf:'center', fontSize:18 , fontWeight:'bold'}} >Truck Tonnage</Text>
+                <TouchableOpacity style={styles.buttonStyle} onPress={()=> navigate(`/addTrucksDB/${truckType}/${fromLocation}/${toLocation}/${verifiedLoad}/1-3 T`) }   >
+                    <Text>1-3 T</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={()=> navigate(`/addTrucksDB/Rigid/${fromLocation}/${toLocation}/${verifiedLoad}`) } style={styles.buttonStyle} >
-                    <Text style={{color:"#6a0c0c"}}>Rigid</Text>
+                <TouchableOpacity style={styles.buttonStyle}  onPress={()=> navigate(`/addTrucksDB/${truckType}/${fromLocation}/${toLocation}/${verifiedLoad}/4 - 7 T`) }  >
+                    <Text>4 - 7 T</Text>
                 </TouchableOpacity>
 
+                    <TouchableOpacity style={styles.buttonStyle}  onPress={()=> navigate(`/addTrucksDB/${truckType}/${fromLocation}/${toLocation}/${verifiedLoad}/8 - 14 T`) } >
+                        <Text>8 - 14 T</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=> navigate(`/addTrucksDB/${truckType}/${fromLocation}/${toLocation}/${verifiedLoad}/15 - 25 T`) }  >
+                        <Text>15 - 25 T</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.buttonStyle}   onPress={()=> navigate(`/addTrucksDB/${truckType}/${fromLocation}/${toLocation}/${verifiedLoad}/26 T +++`) } >
+                        <Text>26 T +++ </Text>
+                    </TouchableOpacity>
+                   
+
+
+                </View> }
             </View>}
         </View>
     )

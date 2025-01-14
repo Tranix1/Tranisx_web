@@ -186,6 +186,17 @@ let frontMarkert = false
       setTrailerTypeDsp(false)
     }
 
+   const [ sProviderDsp , setSproviderDsp] = React.useState(false)
+    function toggleSproviderDsp(){
+      setSproviderDsp(prev=>!prev)
+    }
+    const [ sProviderType , setSProviderType] = React.useState(null)
+    function addSProviderType(value){
+      setSProviderType(value)
+      setSproviderDsp(false)
+    }
+
+
 const [images, setImages] = useState([]);
 
 const [ imageUpload, setImageUpload] = React.useState([])    
@@ -317,6 +328,7 @@ const [ imageUpload, setImageUpload] = React.useState([])
             negetiatable : negetiatable ,
             vehiMake : vehiMake,
             trailerType : trailerType ,
+            sProviderType : sProviderType ,
             timeStamp : serverTimestamp() ,
 
         });
@@ -343,6 +355,8 @@ const [ imageUpload, setImageUpload] = React.useState([])
       setBrandNew(false)
       setnegotiatable(false)
       setSwapA(false)
+      setSProviderType(null)
+      setTrailerType(null)
         console.log('Document added with image URLs:', docRef.id);
     } catch (error) {
       setSpinnerItem(false)
@@ -437,19 +451,32 @@ const [ imageUpload, setImageUpload] = React.useState([])
           
         </ScrollView>}
 
-              <View style={{flexDirection:'row', margin :5}} >
-              <TouchableOpacity onPress={toggleBrandNew} style={ brandNew ? styles.bttonIsTrue : styles.buttonIsFalse} >
+                       { specproduct !== "Sprovider" &&  <View style={{flexDirection:'row', margin :5,marginBottom :15,alignSelf:'center'}} >
+              <TouchableOpacity onPress={toggleBrandNew} style={ brandNew ? { 
+     backgroundColor : '#40E0D0' ,
+     paddingLeft :4 ,
+     paddingRight:4 ,
+     color :'white' }: styles.buttonIsFalse} >
                 <Text style={ brandNew ? {color:'white'} :null } >Brand New</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={toggleSwapA} style={  swapA ? styles.bttonIsTrue : styles.buttonIsFalse} >
+              <TouchableOpacity onPress={toggleSwapA} style={  swapA ? {  
+     backgroundColor : '#008080' ,
+     paddingLeft :4 ,
+     paddingRight:4 ,
+     color :'white' } : styles.buttonIsFalse} >
                 <Text style={ swapA ? {color:'white'} :null } >Swap</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={toggleNegotiatable} style={ negetiatable ? styles.bttonIsTrue : styles.buttonIsFalse} >
+              <TouchableOpacity onPress={toggleNegotiatable} style={ negetiatable ? { 
+     backgroundColor : '#25D366' ,
+     paddingLeft :4 ,
+     paddingRight:4 ,
+     color :'white' } : styles.buttonIsFalse} >
+
                 <Text style={ negetiatable ? {color:'white'} :null } >Negotiable</Text>
               </TouchableOpacity>
-            </View>
+            </View>}
 
             <TextInput
           value={formData.productName}
@@ -592,6 +619,42 @@ const [ imageUpload, setImageUpload] = React.useState([])
                     </View> }
 
 
+                    {specproduct=== "Sprovider" && <View style={{alignSelf:'center'}} >
+                      <TouchableOpacity onPress={toggleSproviderDsp} style={!sProviderType ? styles.buttonSelectStyle : styles.buttonStyle } >
+                        <Text style={!sProviderType ? {color :'white'}:null } >{sProviderType ? sProviderType  : "S Provider Type" } </Text>
+                      </TouchableOpacity>
+
+                     {sProviderDsp && <View style={{alignSelf:'center'}} >
+                        <TouchableOpacity onPress={()=>addSProviderType("AutoMechanic")}  style={styles.buttonStyle} >
+                        <Text>Auto Mech</Text>
+                      </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>addSProviderType("HeavyDutyMechanic")}  style={styles.buttonStyle} >
+                        <Text>Heavy Equip Mech</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addSProviderType("MotoMechanic")} style={styles.buttonStyle} >
+                        <Text>Moto Mech</Text>
+                      </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>addSProviderType("AutoTechnician")}  style={styles.buttonStyle} >
+                        <Text>Auto Tech</Text>
+                      </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>addSProviderType("MotoTechnician")}  style={styles.buttonStyle} >
+                        <Text>Moto Tech</Text>
+                      </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>addSProviderType("HeavyEquipmentTechnician")}  style={styles.buttonStyle} >
+                        <Text>Heavy Equip Tech</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addSProviderType("Towing")}  style={styles.buttonStyle} >
+                        <Text>Towing</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addSProviderType("Warehouse")}  style={styles.buttonStyle} >
+                        <Text>Warehouse</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>addSProviderType("other")}  style={styles.buttonStyle} >
+                        <Text>other</Text>
+                      </TouchableOpacity>
+                     
+                        </View>}
+                    </View> }
 
                  { vehicleTypeDsp && <View>
                  { !heavyEquipment && <TouchableOpacity onPress={toggleCargoTrcks} style={styles.buttonSelectStyle} >

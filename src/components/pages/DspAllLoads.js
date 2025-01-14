@@ -611,7 +611,7 @@ function replaceSpacesWithPercent(url) {
 
      {!item.isVerified&&  !blockVerifiedU &&!blackLWarning &&  !blockVerifiedUP  && !blackLWarningP && <View style={{flexDirection :'row', width:245 }} >
         <Text style={{width :100}} >Contact</Text>
-        <Text style={{textOverflow:'ellipsis' }} >:  {item.contact}</Text>
+         <Text style={{textOverflow:'ellipsis' }} >:  {item.contact}</Text>
       </View>}
 
       <View style={{flexDirection :'row', width:245 }} >

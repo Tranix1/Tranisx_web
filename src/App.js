@@ -768,7 +768,7 @@ function App(){
       <Route path="/AddIterms/addLoadsDB" element={<AddLoadDB  
       username = {username} contact = {contact}  isVerified={isVerified}   isBlackListed={isBlackListed}   blackLWarning={blackLWarning} blockVerifiedU={blockVerifiedU} verifyOngoing ={verifyOngoing}  />}   />
 
-      <Route path="/addTrucksDB/:truckType/:fromLocation/:toLocation/:verifiedLoadG" element={<DBTrucksAdd 
+      <Route path="/addTrucksDB/:truckType/:fromLocation/:toLocation/:verifiedLoadG/:truckTonnageG" element={<DBTrucksAdd 
        username={ username}  contact = {contact}  isVerified ={ isVerified}    isBlackListed={isBlackListed}   blackLWarning={blackLWarning} blockVerifiedU={blockVerifiedU} verifyOngoing ={verifyOngoing}  />} />
 
       <Route path="/dspOneTrckType/:truckType" element={<DspOneTruckType blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning}  />} />

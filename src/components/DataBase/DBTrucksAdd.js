@@ -18,7 +18,7 @@ import { useParams , useNavigate } from 'react-router-dom';
 
 function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWarning,blockVerifiedU ,verifyOngoing} ) {
 
-    const {truckType, verifiedLoadG , fromLocation  , toLocation} = useParams()
+    const {truckType, verifiedLoadG , fromLocation  , toLocation,truckTonnageG} = useParams()
 
     let verifiedLoad = null
     verifiedLoadG === "verifiedLoad" ?verifiedLoad= true : verifiedLoad = false
@@ -33,7 +33,6 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
     additionalInfo :"" ,
     trailerType : '',
     trailerModel :"" ,
-    truckTonnage :null,
       
     horseReg :"" ,
     trailerReg :"",
@@ -51,6 +50,16 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
   });
 
 
+  const [location , setlocation] =   React.useState("")
+  const [localOperation , setLocalLoads]=React.useState(false)
+
+  function toggleLocalLoads(){
+    setLocalLoads(prevState => !prevState)
+  }
+    function specifyLocation(loc){
+    setlocation(loc)
+    setLocalLoads(prev => false)
+  }
 
   const [ truckDetails , setTruckDDsp]=React.useState(false)
 
@@ -100,11 +109,7 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
 
 
   const  handlechange  = (value, fieldName) => {
-    if (fieldName === 'truckTonnage' && isNaN(value)) {
-        // Handle the case where the input is not a number for the price field
-        alert('Truck Tonnage must be a number.');
-        return;
-    }
+ 
     setFormData((prevFormData) => ({
       ...prevFormData,
       [fieldName]: value,
@@ -133,6 +138,7 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
           }else{
             imageUrl = null
           }
+          
         if(isBlackListed ){
         return
       }else if(blackLWarning ){
@@ -149,7 +155,10 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
         }else{
           imageUrl = null
         }
-        
+           if(!location){
+                alert("Choose were the truck operate")
+                return
+              }
         if(!formData.fromLocation || !formData.toLocation){
           alert("Add The location the truck is needing");
 
@@ -209,6 +218,8 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
         isVerified : isVerified ,
         withDetails : withDetails ,
         deletionTime :Date.now() + 2 * 24 * 60 * 60 * 1000 ,
+        location : location ,
+        truckTonnage : truckTonnageG ,
         ...formData ,       
       });
 
@@ -217,7 +228,6 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
     toLocation:  "",
     additionalInfo :"" ,
     trailerType : '',
-    truckTonnage :"",
 
 
     horseReg :"" ,
@@ -338,14 +348,7 @@ The Future Of Transport And Logistics (Transix)
             type="text"
           style={inputstyles.addIterms }
           />}
-            <TextInput 
-            value={formData.truckTonnage}
-            placeholderTextColor="#6a0c0c"
-            placeholder="Truck Tonnage"
-            onChangeText={(text) => handlechange(text, 'truckTonnage')}
-        keyboardType="numeric"
-          style={inputstyles.addIterms }
-          />
+         
           <TextInput 
             value={formData.trailerType}
             placeholderTextColor="#6a0c0c"
@@ -510,8 +513,56 @@ The Future Of Transport And Logistics (Transix)
             />
               
 
+   {localOperation && <View style={{alignSelf:'center'}} >
+           <TouchableOpacity onPress={()=>specifyLocation('International')} style={styles.buttonStyle} > 
+            <Text style={{color:'#6a0c0c'}}>International</Text>
+          </TouchableOpacity>
+                <Text style={{alignSelf:'center', fontSize:18 , fontWeight:'bold'}} > local operators</Text>
+          <TouchableOpacity onPress={()=>specifyLocation('Zimbabwe')} style={styles.buttonStyle} > 
+            <Text style={{color:'#6a0c0c'}}>Zimbabwe </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleSubmit} style={{alignSelf :"center", backgroundColor : '#6a0c0c' , width : 100 , height : 30 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center',}} >
+            <TouchableOpacity onPress={()=> specifyLocation('SouthAfrica') } style={styles.buttonStyle} >
+                  <Text style={{color:'#6a0c0c'}} >  South Africa</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={()=> specifyLocation('Namibia') } style={styles.buttonStyle}>
+                  <Text style={{color:'#6a0c0c'}}>Namibia </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={()=> specifyLocation('Tanzania') } style={styles.buttonStyle}>
+                  <Text style={{color:'#6a0c0c'}}> Tanzania</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={()=>specifyLocation ('Mozambique') } style={styles.buttonStyle}>
+                  <Text style={{color:'#6a0c0c'}}>Mozambique </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={()=> specifyLocation('Zambia') } style={styles.buttonStyle}>
+                  <Text style={{color:'#6a0c0c'}}> Zambia</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={()=> specifyLocation('Botswana') } style={styles.buttonStyle} >
+                  <Text style={{color:'#6a0c0c'}}>Botswana </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={()=> specifyLocation('Malawi') }style={styles.buttonStyle} >
+                  <Text style={{color:'#6a0c0c'}}>Malawi </Text>
+              </TouchableOpacity>
+
+        </View>
+        }
+
+
+
+  
+        <TouchableOpacity onPress={toggleLocalLoads} style={{}}>
+          {!location? <Text style={styles.buttonIsFalse}>Operating Location</Text>:
+          <Text  style={styles.buttonIsFalse}>{location}</Text>
+
+        }
+        </TouchableOpacity>    
+        <TouchableOpacity onPress={handleSubmit} style={{alignSelf :"center", backgroundColor : '#6a0c0c' , width : 100 , height : 30 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center',marginTop:5}} >
 
         <Text style={{color:'white'}} >submit</Text>
 
@@ -548,5 +599,14 @@ const styles = StyleSheet.create({
         marginTop: 10 ,
         borderRadius: 10
 
-    }
+    },
+          buttonIsFalse : {
+     borderWidth : 1 ,
+     borderColor : '#6a0c0c' ,
+     paddingLeft :4 , 
+     paddingRight:4 ,
+     alignSelf:'center'
+
+    //  marginLeft : 6
+   } ,
 });
