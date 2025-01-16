@@ -28,7 +28,6 @@ function DspAllLoads({username ,route, contactG  ,userIsVerified,blockVerifiedU 
   const navigate = useNavigate()
 const {userId ,  location ,itemKey, verfiedLoadsG,companyNameG ,blockVerifiedUP  , blackLWarningP ,} = useParams()
  let verfiedLoads = verfiedLoadsG === "true" ? true : false
-
 // const navigate = useNavigate()
 
 // const navigation = useNavigation();
@@ -95,7 +94,6 @@ async function loadedData(loadMore) {
 
         setLoadMoreData(true) 
       }
-
     const orderByF = "timeStamp";
     const orderByField = orderBy(orderByF, 'desc'); // Order by timestamp in descending order
 
@@ -111,8 +109,10 @@ async function loadedData(loadMore) {
          dataQuery = query(collection(db, "Loads"), where("location", "==", location)  ,orderByField, ...pagination, limit(15));
 
       } else if(verfiedLoads && userIsVerified){
+        alert("hiiii")
          dataQuery = query(collection(db, "Loads"), where("isVerified", "==", true)  ,orderByField, ...pagination, limit(15));
       } else{
+        alert("Byeeee")
          dataQuery = query(collection(db, "Loads"), orderByField, ...pagination, limit(15) );
 
       }
@@ -177,7 +177,7 @@ useEffect(() => {
     getOneItemF()
 
   }
-}, []);;
+}, [ ]);;
 
 
      
@@ -209,7 +209,9 @@ useEffect(() => {
       return !querySnapshot.empty; // Returns true if a document exists, false otherwise
     };
 
-    const checkExistixtBBDoc = async (receriverId) => {
+  // This function is checking if user has already an id in add new iterms
+// Whe we are counting how many new iterms were boked ot bidded it check wheter to create a new doc or update an exsiting one
+   const checkExistixtBBDoc = async (receriverId) => {
     const chatsRef = collection(db, 'newIterms'); // Reference to the 'ppleInTouch' collection
     const chatQuery = query(chatsRef, where('receriverId', '==', receriverId)); // Query for matching chat ID
 
@@ -217,6 +219,7 @@ useEffect(() => {
      // Check if any documents exist with the chat ID
       return !querySnapshot.empty; // Returns true if a document exists, false otherwise
     };
+// If the id already exisist it create else it update the doc
     
 
             const [currencyBid , setCurrencyBid] = React.useState(true)
@@ -292,7 +295,7 @@ function replaceSpacesWithPercent(url) {
             }
           if(  !existingChat ){
 
-        if(!item.isVerified){
+        if(item.isVerified){
         setBidDisplay({ ['']: false });
         setBidRate("")
         setBidLinks("")
@@ -360,6 +363,7 @@ function replaceSpacesWithPercent(url) {
 
         }
         
+        // The code below is used to add 1 when a users add to tell the owner how many of his itemrs were booked and how many were bidded
           const existingBBDoc = await checkExistixtBBDoc(userId);
         // const existingChat = await checkExistingChat(addChatId);
         let newBiddedDoc = 0
@@ -618,7 +622,10 @@ function replaceSpacesWithPercent(url) {
         <Text style={{width:100}} >Payment Terms</Text>
         <Text  style={{textOverflow:'ellipsis' }} >: {item.paymentTerms}</Text>
       </View>
-
+   { item.requirements&&<View style={{flexDirection :'row', width:245 }} >
+        <Text style={{width:100}} >Requirements</Text>
+        <Text  style={{textOverflow:'ellipsis' }} >: { item.requirements}</Text>
+      </View>}
         {item.activeLoading&& <Text style={{fontSize:17 , color:"#FF8C00" }} >Active Loading.... </Text> }
      { dspMoreInfo[item.id] &&<View>
     {  item.fuelAvai && <View style={{flexDirection :'row' ,marginTop:5, width:245 }} >
@@ -696,32 +703,7 @@ function replaceSpacesWithPercent(url) {
 
   
   
- const handleShareLink = async (companyName) => {
-    try {
-      const url = `https://transix.net/selectedUserLoads/${userId}`; // Replace this with the URL you want to share
-      const message = `Check out ${companyName} loads on Truckerz: ${url}`;
 
-      const result = await Share.share({
-        message: message,
-      });
-
-      if (result) {
-        if (result.action === Share.sharedAction) {
-          if (result.activityType) {
-            // Shared with activity type of result.activityType
-          } else {
-            // Shared
-          }
-        } else if (result.action === Share.dismissedAction) {
-          // Dismissed
-        }
-      } else {
-        // Handle the case where result is undefined or null
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  };
 
     const handleShareApp = async (companyName) => {
               try {
@@ -804,9 +786,7 @@ Experience the future of transportation and logistics!  `;
        
                 <Text style={{fontSize: 20 , color : 'white'}} > {companyNameG } Loads </Text>
 
-                <TouchableOpacity  onPress={()=>handleShareLink(companyNameG)} style={{position :'absolute' , right:30 , backgroundColor : 'white' }} >
-                    <Text  >Share loads </Text>
-                </TouchableOpacity>
+               
 
        </View> }
        

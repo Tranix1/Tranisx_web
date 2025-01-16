@@ -242,8 +242,8 @@ const [whenemailVerifiedN , setemailVerifiedN] = React.useState(false)
                 }
 
                 const timeRemainingReVer = reverfyTime - Date.now();
-                  if(reverifyUserValue <= 0 ){
-                    if(timeRemainingReVer){
+                  if(reverifyUserValue  ){
+                    if(timeRemainingReVer <= 0){
                       changeStatuses(userId,"reverfyOff")
 
                     }else{
@@ -526,7 +526,7 @@ function checkAuth(routeToGo){
               </View>
              </View>}
 
-           {!blockVerifiedU && !blackLWarning && username !== false   && <TouchableOpacity onPress={()=>checkAuth("selectAddIterms")  }  style={{position :'absolute',top: 440 ,right:10 , width : 80 , height : 35 , alignItems :"center" , justifyContent :"space-around", backgroundColor:'#228B22' , zIndex :200 , borderRadius: 8, flexDirection:'row'}} >
+           {!blockVerifiedU && !blackLWarning && username !== false   && <TouchableOpacity onPress={()=>checkAuth("selectAddIterms")  }  style={{position :'fixed',top: 440 ,right:10 , width : 80 , height : 35 , alignItems :"center" , justifyContent :"space-around", backgroundColor:'#228B22' , zIndex :200 , borderRadius: 8, flexDirection:'row'}} >
                 <Text style={{color : 'white',fontSize:17,fontWeight:'bold'}} >Add</Text>
                  <AddBoxIcon style={{color:'white'}} />
              </TouchableOpacity>}
@@ -784,7 +784,7 @@ function App(){
       contact ={contact} blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
       <Route path="/searchedLoads/:userId/:itemKey/:companyNameG" element={<DspAllLoads username={username} />} />
       <Route path="/dspLoads/verified/:verfiedLoadsG" element={<DspAllLoads username={username}  
-      contact ={contact} blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
+      contact ={contact} blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} userIsVerified={isVerified} />} />
       <Route path="/dspLoads/location/:location" element={<DspAllLoads username={username}  
       contact ={contact} blockVerifiedU={blockVerifiedU}  blackLWarning={blackLWarning} />} />
 
