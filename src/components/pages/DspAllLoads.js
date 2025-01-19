@@ -109,10 +109,8 @@ async function loadedData(loadMore) {
          dataQuery = query(collection(db, "Loads"), where("location", "==", location)  ,orderByField, ...pagination, limit(15));
 
       } else if(verfiedLoads && userIsVerified){
-        alert("hiiii")
          dataQuery = query(collection(db, "Loads"), where("isVerified", "==", true)  ,orderByField, ...pagination, limit(15));
       } else{
-        alert("Byeeee")
          dataQuery = query(collection(db, "Loads"), orderByField, ...pagination, limit(15) );
 
       }
@@ -857,7 +855,6 @@ Experience the future of transportation and logistics!  `;
  <div className="Main-grid">
 
         { loadsList.length>0? rendereIterms: <Text>Loads Loading.....</Text> }
-        <View style={{height : 200}} ></View>
  </div>
 
           {LoadMoreData && loadsList.length>0 && <Text style={{alignSelf:'center'}} >Loading More Loads....... </Text> } 
@@ -865,7 +862,7 @@ Experience the future of transportation and logistics!  `;
          {loadsList.length>15 && dspLoadMoreBtn&& <TouchableOpacity onPress={()=> loadedData(true) } style={{ height :45 , backgroundColor :'#228B22', margin :25 , justifyContent:'center',borderRadius:25}} >
         <Text style={{color :'white', fontSize :21 , textAlign :'center'}} >Load More......</Text>
       </TouchableOpacity>}
-        <View style={{height : 200}} ></View>
+        <View style={{height : 300}} ></View>
     </ScrollView> }
 
        {localLoads && <View style={{alignItems : 'center' , paddingTop : 30}}>

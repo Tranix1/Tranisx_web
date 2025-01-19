@@ -201,28 +201,32 @@ const [images, setImages] = useState([]);
 
 const [ imageUpload, setImageUpload] = React.useState([])    
 
-    const handleFileInputChange = (e) => {
-        const files = Array.from(e.target.files);
+  const handleFileInputChange = (e) => {
+      const files = Array.from(e.target.files);
 
-        // Limit the number of images to 4
-        if (images.length + files.length > 4) {
-            alert('You can only add up to 4 images.');
-            return;
-        }
-        
-            setImageUpload(prevImages => [...prevImages, ...files]);
+      // Limit the number of images to 4
+      if (images.length + files.length > 4) {
+          alert('You can only add up to 4 images.');
+          return;
+      }
 
-        // Handle multiple file input change
-        files.forEach(file => {
+      files.forEach(file => {
+          // Check if the file size is more than 2MB
+          if (file.size > 2 * 1024 * 1024) { // 2MB in bytes
+              alert('The selected image must not be more than 1.5MB.\n Add screenshot or compress the image');
+              return;
+          }
 
-            const reader = new FileReader();
-            reader.onload = () => {
-                setImages(prevImages => [...prevImages, reader.result]);
-            };
-            reader.readAsDataURL(file);
-        });
-    };
+          const reader = new FileReader();
+          reader.onload = () => {
+              setImages(prevImages => [...prevImages, reader.result]);
+          };
+          reader.readAsDataURL(file);
+      });
 
+      // Add the files to the image upload state
+      setImageUpload(prevImages => [...prevImages, ...files]);
+  };
 
 
     const [spinnerItem, setSpinnerItem] = React.useState(false);
@@ -901,11 +905,16 @@ const [ imageUpload, setImageUpload] = React.useState([])
                       </TouchableOpacity>
                   </View>}
 
-        <TouchableOpacity onPress={handleSubmit} style={{backgroundColor : '#6a0c0c' , width : 70 , height : 30 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center', marginTop :6}} >
+      {!spinnerItem ?  <TouchableOpacity onPress={handleSubmit} style={{backgroundColor : '#6a0c0c' , width : 70 , height : 30 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center', marginTop :6}} >
 
         <Text style={{color:'white'}} >submit</Text>
 
         </TouchableOpacity>
+      : <View>
+        <Text style={{alignSelf:"center",fontStyle:'italic'}} >The {specproduct} is being added Please wait </Text>  
+         <Text style={{alignSelf:"center",fontStyle:'italic'}} >Add Screenshot Images so they can be added fast </Text>           
+      </View>
+      }
       
       </View>
 

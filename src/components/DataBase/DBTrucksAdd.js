@@ -94,15 +94,23 @@ function DBTrucksAdd( { username ,contact , isVerified ,isBlackListed ,blackLWar
 
     const handleFileInputChange = (e) => {
     // Handle file input change here
-    setImageUpload(e.target.files[0])
-    const file = e.target.files[0];
+      const file = e.target.files[0];
 
-     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+    if (file) {
+        // Check if the file size is more than 2MB
+        if (file.size > 1.5 * 1024 * 1024) { // 2MB in bytes
+              alert('The selected image must not be more than 1.5MB.\n Add screenshot or compress the image');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        // Handle case when no file is selected
+        setImage(null);
     }
   };
 
@@ -429,7 +437,7 @@ The Future Of Transport And Logistics (Transix)
             type="text"
           style={inputstyles.addIterms }
           />
-
+      
 
           <TextInput 
             value={formData.driverPassport}
@@ -440,7 +448,8 @@ The Future Of Transport And Logistics (Transix)
           style={inputstyles.addIterms }
           />
 
-          <TextInput 
+
+               <TextInput 
             value={formData.driverPhone}
             placeholderTextColor="#6a0c0c"
             placeholder="driverPhone"
@@ -561,12 +570,15 @@ The Future Of Transport And Logistics (Transix)
           <Text  style={styles.buttonIsFalse}>{location}</Text>
 
         }
-        </TouchableOpacity>    
-        <TouchableOpacity onPress={handleSubmit} style={{alignSelf :"center", backgroundColor : '#6a0c0c' , width : 100 , height : 30 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center',marginTop:5}} >
+        </TouchableOpacity>  
+
+       {!spinnerItem? <TouchableOpacity onPress={handleSubmit} style={{alignSelf :"center", backgroundColor : '#6a0c0c' , width : 100 , height : 30 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center',marginTop:5}} >
 
         <Text style={{color:'white'}} >submit</Text>
 
-        </TouchableOpacity>
+        </TouchableOpacity>:
+        <Text style={{alignSelf:"center",fontStyle:'italic'}} >The truck is being added Please wait </Text>
+        }
         <View style={{height:300}} ></View>
             </ScrollView>
       
