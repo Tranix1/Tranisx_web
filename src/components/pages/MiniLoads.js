@@ -61,7 +61,7 @@ const mainLoadsCollection = collection(db, 'Loads');
 
 
 const rendereIterms = mainLoadsList.map((item)=>{
-  return( <TouchableOpacity style={{borderWidth : 2  , width : 230 , marginRight :16}} 
+  return( <TouchableOpacity style={{borderWidth : 2  , width : 280 , marginRight :16}} 
   onPress={()=> navigate(`/selectedUserLoads/${item.userId}/${item.companyName}`) } >
 
       { item.isVerified&& <View style={{position : 'absolute' , top : 0 , right : 0 , backgroundColor : 'white' , zIndex : 66}} >
@@ -102,12 +102,11 @@ const rendereIterms = mainLoadsList.map((item)=>{
         <Text style={{width :75}} >To Route</Text>
         <Text>:  {item.toLocation} </Text>
       </View>
-
-      {item.ratePerTonne&& <View style={{flexDirection :'row'}} >
+     {item.ratePerTonne&& !item.links&& !item.triaxle&& <View style={{flexDirection :'row'}} >
         <Text style={{width :50,color:'green',fontWeight:'bold',fontSize:16}} >Rate</Text>
         <Text style={{color:'green',fontWeight:'bold',fontSize:16}} >:  {item.currency ? "USD" : "RAND"} {item.ratePerTonne} {item.perTonne ? "Per tonne" :null} </Text>
       </View>}
-  <View style={{flexDirection:'row'}} >
+  <View  >
 
         {item.links&&  <View style={{flexDirection :'row'}} >
         <Text style={{width :50,color:'green',fontWeight:'bold',fontSize:14}} >Links</Text>
@@ -127,7 +126,7 @@ const rendereIterms = mainLoadsList.map((item)=>{
 })
  
   return (
-    <ScrollView style={{margin:10 , height : 110}} horizontal  showsHorizontalScrollIndicator={false} >
+    <ScrollView style={{margin:10 , height : 150}} horizontal  showsHorizontalScrollIndicator={false} >
       {mainLoadsList.length > 0 ? rendereIterms   : <Text>Mini Loads Loading......</Text>}
 
     </ScrollView>

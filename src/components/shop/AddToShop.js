@@ -212,7 +212,7 @@ const [ imageUpload, setImageUpload] = React.useState([])
 
       files.forEach(file => {
           // Check if the file size is more than 2MB
-          if (file.size > 2 * 1024 * 1024) { // 2MB in bytes
+          if (file.size > 1.5 * 1024 * 1024) { // 2MB in bytes
               alert('The selected image must not be more than 1.5MB.\n Add screenshot or compress the image');
               return;
           }
@@ -905,7 +905,7 @@ const [ imageUpload, setImageUpload] = React.useState([])
                       </TouchableOpacity>
                   </View>}
 
-      {!spinnerItem ?  <TouchableOpacity onPress={handleSubmit} style={{backgroundColor : '#6a0c0c' , width : 70 , height : 30 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center', marginTop :6}} >
+      {!spinnerItem ?  <TouchableOpacity onPress={handleSubmit} style={{backgroundColor : '#6a0c0c' , width : 70 , height : 30 , borderRadius: 5 , alignItems : 'center' , justifyContent : 'center', marginTop :6,alignSelf:'center'}} >
 
         <Text style={{color:'white'}} >submit</Text>
 

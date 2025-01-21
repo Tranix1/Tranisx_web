@@ -265,10 +265,7 @@ async function fetchData(loadOneMore) {
     });
 
 
-    const verifiedUsers = userItemsMap.filter(user => user.isVerified);
-          const nonVerifiedUsers = userItemsMap.filter(user => !user.isVerified);
 
-          userItemsMap = verifiedUsers.concat(nonVerifiedUsers);
 
           let loadedData = userItemsMap
 

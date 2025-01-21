@@ -134,7 +134,7 @@ return(
     <TouchableOpacity   onPress={()=>navigate('/helpHome') }  style={styles.buttonStyle}>
         <Text> Help </Text>
     </TouchableOpacity>
-   
+       
 </View>
 
   {window.location.hostname === 'localhost' ? <View style={{ position : 'absolute' , right : 0 ,top : 360  , borderBlockColor:"#6a0c0c",borderWidth:3 , backgroundColor :'white'  , width : 235 , borderRadius: 13}} >
