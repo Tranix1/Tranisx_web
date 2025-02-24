@@ -1,5 +1,6 @@
 import React from "react";
 import { View , Text  , TouchableOpacity , StyleSheet} from "react-native";
+
 // shop Home 
 // Add to shop 
 //  iterms like trucks , trailer , spares , 
@@ -10,7 +11,7 @@ function ShopHome(){
     const navigate = useNavigate()
 
 return(
-    <View style={{alignItems :'center', paddingTop : 80}}>
+    <View style={{alignItems :'center', paddingTop : 80,alignSelf:'center'}}>
 
  <View  style={{position:'absolute' , top : 0 , left: 0 , right : 0 , flexDirection : 'row' , height : 74  ,  paddingLeft : 6 , paddingRight: 15 , paddingTop:10 ,backgroundColor : '#6a0c0c' ,paddingTop : 15 , alignItems : 'center' , }} >
          <TouchableOpacity style={{marginRight: 10}}  onPress={()=>navigate('/')}>
@@ -21,7 +22,9 @@ return(
         
         <Text style={{fontSize: 20 , color : 'white'}} > Welcome To Store  </Text>
        </View>
-        <TouchableOpacity onPress={()=> navigate('/DspShop/Zimbabwe/vehicles/forSell') } style={styles.buttonStyle} >
+       
+
+                <TouchableOpacity onPress={()=> navigate('/DspShop/Zimbabwe/vehicles/forSell') } style={styles.buttonStyle} >
             <Text style={{color:'#6a0c0c'}}> Zimbabwe</Text>
         </TouchableOpacity>
 
