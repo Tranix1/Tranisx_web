@@ -91,7 +91,7 @@ const [sellOBuy , setSellOBuy] = React.useState('forSell')
      
           </View>
                 <View style={{flexDirection: 'row'}} > 
-                    <TouchableOpacity onPress={()=> navigate('/shosearchElement/') }>
+                    <TouchableOpacity onPress={()=> navigate('/shosearchElement/') } >
 
                           <SearchIcon style={{color : 'white'}}/>
 
